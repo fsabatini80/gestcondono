@@ -13,7 +13,8 @@
 				<table>
 					<tr>
 						<td>Descrizione:</td>
-						<td><form:textarea path="descrizione" rows="5" cols="40" /><form:hidden path="iddatiabuso" /></td>
+						<td><form:textarea path="descrizione" rows="5" cols="40" />
+							<form:hidden path="iddatiabuso" /></td>
 					</tr>
 					<tr>
 						<td>Destinazione d'uso*:</td>
@@ -25,7 +26,7 @@
 					</tr>
 					<tr>
 						<td>Tipologia*:</td>
-						<td><form:select path="epocaAbuso">
+						<td><form:select path="tipologiaAbuso">
 								<form:options items="${tipologiaAbusos}" itemLabel="descrizione"
 									itemValue="idtipologiaAbuso" />
 							</form:select></td>
@@ -33,7 +34,7 @@
 					<tr>
 						<td>Epoca abuso*:</td>
 						<td><form:select path="epocaAbuso">
-								<form:options items="${epocaAbusos}" itemLabel="epocaA"
+								<form:options items="${epocaAbusos}" itemLabel="epocaDa"
 									itemValue="idepocaAbuso" />
 							</form:select></td>
 					</tr>

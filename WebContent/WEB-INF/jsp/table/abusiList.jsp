@@ -26,9 +26,9 @@
 		<c:forEach var="abuso" items="${abusi}">
 			<tr>
 				<td>${abuso.descrizione}</td>
-				<td>${abuso.destinazioneUso}</td>
-				<td>${abuso.epocaAbuso}</td>
-				<td>${abuso.tipoOpera}</td>
+				<td>${abuso.destinazioneUso.descrizioneTipologia}</td>
+				<td>da ${abuso.epocaAbuso.epocaDa} a ${abuso.epocaAbuso.epocaA}</td>
+				<td>${abuso.tipoOpera.descrizione}</td>
 				<td><a
 					href="<c:url value="modificaAbuso.htm?idabuso=${abuso.iddatiabuso}" />"
 					title="modifica abuso"><img src="img/32/form_blue_edit.png"

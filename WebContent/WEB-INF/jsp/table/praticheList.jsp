@@ -31,7 +31,7 @@
 				<td>${pratica.numeroProtocollo}</td>
 				<td>${pratica.richiedente.cognome} ${pratica.richiedente.nome}</td>
 				<td>${pratica.dataDomanda}</td>
-				<td>${pratica.leggeCondono}</td>
+				<td>${pratica.leggeCondono.leggeNumero}</td>
 				<td><a
 					href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
 					title="modifica pratica"><img src="img/32/form_blue_edit.png"
