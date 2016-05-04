@@ -1,8 +1,11 @@
 package it.soft.web.pojo;
 
 import it.soft.domain.DatiLocalizzazione;
-import it.soft.domain.Datipratica;
+import it.soft.domain.EpocaAbuso;
 import it.soft.domain.SoggettiAbuso;
+import it.soft.domain.TipoOpera;
+import it.soft.domain.TipologiaAbuso;
+import it.soft.domain.TipologiaDestinazioneUso;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,11 +16,12 @@ public class DatiAbusoPojo implements Serializable {
 
 	private String iddatiabuso;
 	private String dataUltimazioneLavori;
+	private TipologiaAbuso tipologiaAbuso;
 	private String descrizione;
-	private String destinazioneUso;
-	private String epocaAbuso;
+	private TipologiaDestinazioneUso destinazioneUso;
+	private EpocaAbuso epocaAbuso;
 	private String esenzioniPagamenti;
-	private Datipratica datiPratica;
+	private String datiPratica;
 	private String nonresidenziale;
 	private String nonresidenzialeVuoto;
 	private String numeroAddetti;
@@ -25,7 +29,7 @@ public class DatiAbusoPojo implements Serializable {
 	private String riduzioni;
 	private String superficeTotale;
 	private String superficeUtile;
-	private String tipoOpera;
+	private TipoOpera tipoOpera;
 	private String tipoReddito;
 	private String volumeDirezionale;
 	private String volumeTotale;
@@ -57,20 +61,12 @@ public class DatiAbusoPojo implements Serializable {
 		this.descrizione = descrizione;
 	}
 
-	public String getDestinazioneUso() {
+	public TipologiaDestinazioneUso getDestinazioneUso() {
 		return this.destinazioneUso;
 	}
 
-	public void setDestinazioneUso(String destinazioneUso) {
+	public void setDestinazioneUso(TipologiaDestinazioneUso destinazioneUso) {
 		this.destinazioneUso = destinazioneUso;
-	}
-
-	public String getEpocaAbuso() {
-		return this.epocaAbuso;
-	}
-
-	public void setEpocaAbuso(String epocaAbuso) {
-		this.epocaAbuso = epocaAbuso;
 	}
 
 	public String getEsenzioniPagamenti() {
@@ -81,11 +77,11 @@ public class DatiAbusoPojo implements Serializable {
 		this.esenzioniPagamenti = esenzioniPagamenti;
 	}
 
-	public Datipratica getIdPratica() {
+	public String getIdPratica() {
 		return this.datiPratica;
 	}
 
-	public void setIdPratica(Datipratica datipratica) {
+	public void setIdPratica(String datipratica) {
 		this.datiPratica = datipratica;
 	}
 
@@ -145,11 +141,11 @@ public class DatiAbusoPojo implements Serializable {
 		this.superficeUtile = superficeUtile;
 	}
 
-	public String getTipoOpera() {
+	public TipoOpera getTipoOpera() {
 		return this.tipoOpera;
 	}
 
-	public void setTipoOpera(String tipoOpera) {
+	public void setTipoOpera(TipoOpera tipoOpera) {
 		this.tipoOpera = tipoOpera;
 	}
 
@@ -199,6 +195,22 @@ public class DatiAbusoPojo implements Serializable {
 
 	public void setSoggettiAbuso(List<SoggettiAbuso> soggettiAbuso) {
 		this.soggettiAbuso = soggettiAbuso;
+	}
+
+	public TipologiaAbuso getTipologiaAbuso() {
+		return tipologiaAbuso;
+	}
+
+	public void setTipologiaAbuso(TipologiaAbuso tipologiaAbuso) {
+		this.tipologiaAbuso = tipologiaAbuso;
+	}
+
+	public void setEpocaAbuso(EpocaAbuso epocaAbuso) {
+		this.epocaAbuso = epocaAbuso;
+	}
+
+	public EpocaAbuso getEpocaAbuso() {
+		return epocaAbuso;
 	}
 
 }

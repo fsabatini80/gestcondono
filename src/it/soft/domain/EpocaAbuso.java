@@ -1,8 +1,15 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the epoca_abuso database table.
@@ -18,13 +25,11 @@ public class EpocaAbuso implements Serializable {
 	@Column(name = "idepoca_abuso", unique = true, nullable = false)
 	private int idepocaAbuso;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "epoca_a")
-	private Date epocaA;
+	@Column(name = "epoca_a", length = 10)
+	private String epocaA;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "epoca_da")
-	private Date epocaDa;
+	@Column(name = "epoca_da", length = 10)
+	private String epocaDa;
 
 	@OneToOne
 	@JoinColumn(name = "id_legge_condono")
@@ -41,19 +46,19 @@ public class EpocaAbuso implements Serializable {
 		this.idepocaAbuso = idepocaAbuso;
 	}
 
-	public Date getEpocaA() {
+	public String getEpocaA() {
 		return this.epocaA;
 	}
 
-	public void setEpocaA(Date epocaA) {
+	public void setEpocaA(String epocaA) {
 		this.epocaA = epocaA;
 	}
 
-	public Date getEpocaDa() {
+	public String getEpocaDa() {
 		return this.epocaDa;
 	}
 
-	public void setEpocaDa(Date epocaDa) {
+	public void setEpocaDa(String epocaDa) {
 		this.epocaDa = epocaDa;
 	}
 

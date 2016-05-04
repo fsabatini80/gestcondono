@@ -1,7 +1,6 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * The persistent class for the richiedente database table.
@@ -44,9 +41,8 @@ public class Richiedente implements Serializable {
 	@Column(name = "comune_residenza", length = 45)
 	private String comuneResidenza;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data_nascita")
-	private Date dataNascita;
+	@Column(name = "data_nascita", length = 10)
+	private String dataNascita;
 
 	@Column(length = 45)
 	private String indirizzo;
@@ -141,11 +137,11 @@ public class Richiedente implements Serializable {
 		this.comuneResidenza = comuneResidenza;
 	}
 
-	public Date getDataNascita() {
+	public String getDataNascita() {
 		return this.dataNascita;
 	}
 
-	public void setDataNascita(Date dataNascita) {
+	public void setDataNascita(String dataNascita) {
 		this.dataNascita = dataNascita;
 	}
 

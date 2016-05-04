@@ -1,5 +1,7 @@
 package it.soft.web.pojo;
 
+import it.soft.domain.LeggiCondono;
+
 import java.io.Serializable;
 
 public class DatiPraticaPojo implements Serializable {
@@ -10,7 +12,7 @@ public class DatiPraticaPojo implements Serializable {
 	private String idutente;
 	private String dataDomanda;
 	private String dataProtocollo;
-	private String leggeCondono;
+	private LeggiCondono leggeCondono;
 	private String numeroPratica;
 	private String numeroProtocollo;
 	private String idrichiedente;
@@ -181,11 +183,11 @@ public class DatiPraticaPojo implements Serializable {
 		this.isvalid = isvalid;
 	}
 
-	public String getLeggeCondono() {
+	public LeggiCondono getLeggeCondono() {
 		return this.leggeCondono;
 	}
 
-	public void setLeggeCondono(String leggeCondono) {
+	public void setLeggeCondono(LeggiCondono leggeCondono) {
 		this.leggeCondono = leggeCondono;
 	}
 

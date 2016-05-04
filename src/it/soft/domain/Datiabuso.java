@@ -44,6 +44,10 @@ public class Datiabuso implements Serializable {
 	@JoinColumn(name = "epoca_abuso")
 	private EpocaAbuso epocaAbuso;
 
+	@OneToOne
+	@JoinColumn(name = "idtipologia_abuso")
+	private TipologiaAbuso tipologiaAbuso;
+
 	@Column(name = "esenzioni_pagamenti", length = 45)
 	private String esenzioniPagamenti;
 
@@ -265,6 +269,14 @@ public class Datiabuso implements Serializable {
 
 	public void setSoggettis(List<RelSoggettoAbuso> soggettis) {
 		this.soggettis = soggettis;
+	}
+
+	public TipologiaAbuso getTipologiaAbuso() {
+		return tipologiaAbuso;
+	}
+
+	public void setTipologiaAbuso(TipologiaAbuso tipologiaAbuso) {
+		this.tipologiaAbuso = tipologiaAbuso;
 	}
 
 }

@@ -2,7 +2,6 @@ package it.soft.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * The persistent class for the datipratica database table.
@@ -30,18 +27,17 @@ public class Datipratica implements Serializable {
 	@Column(name = "iddatipratica", unique = true, nullable = false)
 	private BigDecimal iddatipratica;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data_domanda")
-	private Date dataDomanda;
+	@Column(name = "data_domanda", length = 10)
+	private String dataDomanda;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data_protocollo")
-	private Date dataProtocollo;
+	@Column(name = "data_protocollo", length = 10)
+	private String dataProtocollo;
 
 	private byte isvalid;
 
-	@Column(name = "legge_condono", nullable = false, length = 45)
-	private String leggeCondono;
+	@OneToOne
+	@JoinColumn(name = "legge_condono", nullable = false)
+	private LeggiCondono leggeCondono;
 
 	@Column(name = "numero_pratica", nullable = false, length = 45)
 	private String numeroPratica;
@@ -52,7 +48,7 @@ public class Datipratica implements Serializable {
 	@Column(name = "idUtente")
 	private BigDecimal idUtente;
 
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "idrichiedente")
 	private Richiedente richiedente;
 
@@ -67,19 +63,19 @@ public class Datipratica implements Serializable {
 		this.iddatipratica = iddatipratica;
 	}
 
-	public Date getDataDomanda() {
+	public String getDataDomanda() {
 		return this.dataDomanda;
 	}
 
-	public void setDataDomanda(Date dataDomanda) {
+	public void setDataDomanda(String dataDomanda) {
 		this.dataDomanda = dataDomanda;
 	}
 
-	public Date getDataProtocollo() {
+	public String getDataProtocollo() {
 		return this.dataProtocollo;
 	}
 
-	public void setDataProtocollo(Date dataProtocollo) {
+	public void setDataProtocollo(String dataProtocollo) {
 		this.dataProtocollo = dataProtocollo;
 	}
 
@@ -91,11 +87,11 @@ public class Datipratica implements Serializable {
 		this.isvalid = isvalid;
 	}
 
-	public String getLeggeCondono() {
+	public LeggiCondono getLeggeCondono() {
 		return this.leggeCondono;
 	}
 
-	public void setLeggeCondono(String leggeCondono) {
+	public void setLeggeCondono(LeggiCondono leggeCondono) {
 		this.leggeCondono = leggeCondono;
 	}
 

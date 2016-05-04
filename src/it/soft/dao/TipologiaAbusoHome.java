@@ -1,5 +1,6 @@
 package it.soft.dao;
 
+import it.soft.domain.LeggiCondono;
 import it.soft.domain.TipologiaAbuso;
 
 import java.util.Iterator;
@@ -63,6 +64,24 @@ public class TipologiaAbusoHome {
 		try {
 			return (List<TipologiaAbuso>) hibernateTemplate.findByExample(
 					"it.soft.domain.TipologiaAbuso", new TipologiaAbuso());
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<TipologiaAbuso> findAll(LeggiCondono leggiCondono) {
+		log.debug("getting TipologiaAbuso instance");
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(TipologiaAbuso.class);
+			cr.add(Restrictions.eq("leggeCondono", leggiCondono));
+			List<TipologiaAbuso> results = cr.list();
+			log.debug("get successful");
+			return results;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
 			throw re;

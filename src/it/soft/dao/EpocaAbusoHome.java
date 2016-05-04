@@ -1,6 +1,7 @@
 package it.soft.dao;
 
 import it.soft.domain.EpocaAbuso;
+import it.soft.domain.LeggiCondono;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +32,7 @@ public class EpocaAbusoHome {
 
 	@SuppressWarnings("unchecked")
 	public EpocaAbuso findById(int id) {
-		log.debug("getting Datiabuso instance with id: " + id);
+		log.debug("getting EpocaAbuso instance with id: " + id);
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
@@ -39,7 +40,7 @@ public class EpocaAbusoHome {
 			EpocaAbuso epocaAbuso = new EpocaAbuso();
 			epocaAbuso.setIdepocaAbuso(id);
 			Criteria cr = sess.createCriteria(EpocaAbuso.class);
-			cr.add(Restrictions.eq("idepoca_abuso", id));
+			cr.add(Restrictions.eq("idepocaAbuso", id));
 			List<EpocaAbuso> results = cr.list();
 			if (results != null && !results.isEmpty()) {
 				for (Iterator<EpocaAbuso> iterator = results.iterator(); iterator
@@ -62,6 +63,24 @@ public class EpocaAbusoHome {
 		try {
 			return (List<EpocaAbuso>) hibernateTemplate.findByExample(
 					"it.soft.domain.EpocaAbuso", new EpocaAbuso());
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<EpocaAbuso> findAll(LeggiCondono leggiCondono) {
+		log.debug("getting EpocaAbuso instance");
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(EpocaAbuso.class);
+			cr.add(Restrictions.eq("leggeCondono", leggiCondono));
+			List<EpocaAbuso> results = cr.list();
+			log.debug("get successful");
+			return results;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
 			throw re;

@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -25,13 +25,13 @@ public class TipologiaAbuso implements Serializable {
 	@Column(name = "idtipologia_abuso", unique = true, nullable = false)
 	private int idtipologiaAbuso;
 
-	@Column
+	@Column(length = 300)
 	private String descrizione;
 
 	@Column(name = "descrizione_breve")
-	private int descrizioneBreve;
+	private Integer descrizioneBreve;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "id_legge_condono")
 	private LeggiCondono leggeCondono;
 
@@ -62,12 +62,12 @@ public class TipologiaAbuso implements Serializable {
 		this.descrizioneBreve = descrizioneBreve;
 	}
 
-	public LeggiCondono getIdLeggeCondono() {
+	public LeggiCondono getLeggeCondono() {
 		return this.leggeCondono;
 	}
 
-	public void setIdLeggeCondono(LeggiCondono leggeCondono) {
-		this.leggeCondono = leggeCondono;
+	public void setLeggeCondono(LeggiCondono idLeggeCondono) {
+		this.leggeCondono = idLeggeCondono;
 	}
 
 }

@@ -72,7 +72,6 @@ public class PraticheController extends BaseController {
 	List<EpocaAbuso> epocaAbusos;
 	List<TipoOpera> tipoOperas;
 	List<TipologiaAbuso> tipologiaAbusos;
-	
 
 	@RequestMapping(value = "/pratiche", method = RequestMethod.GET)
 	public ModelAndView praticheHome(ModelMap model, DatiPraticaPojo pojo,
@@ -87,7 +86,7 @@ public class PraticheController extends BaseController {
 	@RequestMapping(value = "/nuovaPratica", method = RequestMethod.GET)
 	public ModelAndView nuovaPratica(ModelMap model) throws Exception {
 
-		String view = "wizard/DatiPraticaForm";
+		String view = "form/formPratica";
 		DatiPraticaPojo datiPraticaPojo = new DatiPraticaPojo();
 		initModel(model);
 		model.addAttribute("datiPraticaPojo", datiPraticaPojo);
@@ -100,9 +99,10 @@ public class PraticheController extends BaseController {
 
 		String view = "redirect:pratiche.htm";
 		validatorPratica.validate(pojo, errors);
+		this.d = pojo;
 		if (errors.hasFieldErrors()) {
 			initModel(model);
-			view = "wizard/DatiPraticaForm";
+			view = "form/formPratica";
 		} else {
 			User user = (User) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal();
@@ -121,13 +121,15 @@ public class PraticheController extends BaseController {
 		initModel(model);
 		this.d = datiPraticaService.findById(id);
 		model.addAttribute("datiPraticaPojo", this.d);
-		return new ModelAndView("wizard/DatiPraticaForm", model);
+		return new ModelAndView("form/formPratica", model);
 	}
 
 	@RequestMapping(value = "/abusi", method = RequestMethod.GET)
-	public ModelAndView abusi(ModelMap model) throws Exception {
+	public ModelAndView abusi(@RequestParam(value = "idpratica") String id,
+			ModelMap model) throws Exception {
 		String view = "table/abusiList";
 		List<Datiabuso> list = datiAbusoService.findAll();
+		this.d = datiPraticaService.findById(id);
 		model.addAttribute("abusi", list);
 		return new ModelAndView(view, model);
 	}
@@ -145,7 +147,9 @@ public class PraticheController extends BaseController {
 	public ModelAndView salvaAbuso(ModelMap model, DatiAbusoPojo pojo,
 			Errors errors) throws Exception {
 
-		String view = "redirect:abusi.htm";
+		String view = "redirect:abusi.htm?idpratica=".concat(this.d
+				.getIddatipratica());
+		this.a = pojo;
 		datiAbusoValidator.validate(pojo, errors);
 		if (errors.hasFieldErrors()) {
 			initModelAbuso(model);
@@ -315,9 +319,10 @@ public class PraticheController extends BaseController {
 
 	private void initModelAbuso(ModelMap model) {
 		this.tipologiaDestinazioneUsos = destinazioneUsoHome.findAll();
-		this.epocaAbusos = epocaAbusoHome.findAll();
+		this.epocaAbusos = epocaAbusoHome.findAll(this.d.getLeggeCondono());
 		this.tipoOperas = tipoOperaHome.findAll();
-		this.tipologiaAbusos = tipologiaAbusoHome.findAll();
+		this.tipologiaAbusos = tipologiaAbusoHome.findAll(this.d
+				.getLeggeCondono());
 		model.addAttribute("tipologiaDestinazioneUsos",
 				tipologiaDestinazioneUsos);
 		model.addAttribute("epocaAbusos", epocaAbusos);

@@ -40,7 +40,7 @@ public class DestinazioneUsoHome {
 			TipologiaDestinazioneUso tipologiaDestinazioneUso = new TipologiaDestinazioneUso();
 			tipologiaDestinazioneUso.setIdtipologiaDestinazioneUso(id);
 			Criteria cr = sess.createCriteria(TipologiaDestinazioneUso.class);
-			cr.add(Restrictions.eq("idtipologia_destinazione_uso", id));
+			cr.add(Restrictions.eq("idtipologiaDestinazioneUso", id));
 			List<TipologiaDestinazioneUso> results = cr.list();
 			if (results != null && !results.isEmpty()) {
 				for (Iterator<TipologiaDestinazioneUso> iterator = results.iterator(); iterator

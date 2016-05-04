@@ -34,7 +34,7 @@ public class LeggiCondonoHome {
 					.getCurrentSession();
 			sess.beginTransaction();
 			Criteria criteria = sess.createCriteria(LeggiCondono.class);
-			criteria.add(Restrictions.eq("idcomuni", id));
+			criteria.add(Restrictions.eq("idleggiCondono", id));
 			@SuppressWarnings("unchecked")
 			List<LeggiCondono> l = criteria.list();
 			log.debug("get successful");

@@ -1,6 +1,7 @@
 package it.soft.service;
 
 import it.soft.dao.DatiPraticaHome;
+import it.soft.dao.LeggiCondonoHome;
 import it.soft.domain.Datipratica;
 import it.soft.domain.Richiedente;
 import it.soft.util.Converter;
@@ -17,6 +18,8 @@ public class DatiPraticaService {
 
 	@Autowired
 	DatiPraticaHome datiPraticaHome;
+	@Autowired
+	LeggiCondonoHome leggiCondonoHome;
 
 	public void saveDatiPratica(DatiPraticaPojo pojo) {
 		Datipratica datipratica;
@@ -27,13 +30,12 @@ public class DatiPraticaService {
 		else
 			datipratica = new Datipratica();
 		if (pojo.getDataDomanda() != null && !"".equals(pojo.getDataDomanda()))
-			datipratica.setDataDomanda(Converter.convertData(pojo
-					.getDataDomanda()));
+			datipratica.setDataDomanda(pojo.getDataDomanda());
 		if (pojo.getDataProtocollo() != null
 				&& !"".equals(pojo.getDataProtocollo()))
-			datipratica.setDataProtocollo(Converter.convertData(pojo
-					.getDataProtocollo()));
-		datipratica.setLeggeCondono(pojo.getLeggeCondono());
+			datipratica.setDataProtocollo(pojo.getDataProtocollo());
+		if (pojo.getLeggeCondono() != null)
+			datipratica.setLeggeCondono(pojo.getLeggeCondono());
 		datipratica.setNumeroPratica(pojo.getNumeroPratica());
 		datipratica.setNumeroProtocollo(pojo.getNumeroProtocollo());
 		datipratica.setIdUtente(BigDecimal.valueOf(Integer.parseInt(pojo
@@ -50,8 +52,7 @@ public class DatiPraticaService {
 		richiedente.setComuneNascita(pojo.getComuneNascita());
 		richiedente.setComuneResidenza(pojo.getComuneResidenza());
 		if (pojo.getDataNascita() != null && !"".equals(pojo.getDataNascita()))
-			richiedente.setDataNascita(Converter.convertData(pojo
-					.getDataNascita()));
+			richiedente.setDataNascita(pojo.getDataNascita());
 		richiedente.setEmail(pojo.getEmail());
 		richiedente.setIndirizzo(pojo.getIndirizzo());
 		richiedente.setNome(pojo.getNome());
@@ -87,11 +88,10 @@ public class DatiPraticaService {
 				.getRichiedente().getComuneNascita() : "");
 		target.setComuneResidenza(source.getRichiedente() != null ? source
 				.getRichiedente().getComuneResidenza() : "");
-		target.setDataDomanda(Converter.dateToString(source.getDataDomanda()));
-		target.setDataNascita(source.getRichiedente() != null ? Converter
-				.dateToString(source.getRichiedente().getDataNascita()) : null);
-		target.setDataProtocollo(Converter.dateToString(source
-				.getDataProtocollo()));
+		target.setDataDomanda(source.getDataDomanda());
+		target.setDataNascita(source.getRichiedente() != null ? source
+				.getRichiedente().getDataNascita() : null);
+		target.setDataProtocollo(source.getDataProtocollo());
 		target.setEmail(source.getRichiedente() != null ? source
 				.getRichiedente().getEmail() : "");
 		target.setIddatipratica(String.valueOf(source.getIddatipratica()));
@@ -103,8 +103,8 @@ public class DatiPraticaService {
 		target.setIsvalid(Converter.byteToBoolean(source.getIsvalid())
 				&& Converter
 						.byteToBoolean(source.getRichiedente().getIsvalid()));
-		target.setLeggeCondono(source.getRichiedente() != null ? source
-				.getLeggeCondono() : "");
+		if (source.getLeggeCondono() != null)
+			target.setLeggeCondono(source.getLeggeCondono());
 		target.setNome(source.getRichiedente() != null ? source
 				.getRichiedente().getNome() : "");
 		target.setNumeroPratica(source.getNumeroPratica());
