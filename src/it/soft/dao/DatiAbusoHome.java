@@ -1,6 +1,7 @@
 package it.soft.dao;
 
 import it.soft.domain.Datiabuso;
+import it.soft.domain.Datipratica;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -27,8 +28,7 @@ public class DatiAbusoHome {
 	private static HibernateTemplate hibernateTemplate;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
-		DatiAbusoHome.hibernateTemplate = new HibernateTemplate(
-				sessionFactory);
+		DatiAbusoHome.hibernateTemplate = new HibernateTemplate(sessionFactory);
 	}
 
 	public void persist(Datiabuso transientInstance) {
@@ -97,6 +97,18 @@ public class DatiAbusoHome {
 						.hasNext();) {
 					Datiabuso datiabuso2 = iterator.next();
 					sess.refresh(datiabuso2);
+					if (datiabuso2.getDestinazioneUso() != null)
+						sess.refresh(datiabuso2.getDestinazioneUso());
+					if (datiabuso2.getEpocaAbuso() != null)
+						sess.refresh(datiabuso2.getEpocaAbuso());
+					if (datiabuso2.getIdPratica() != null)
+						sess.refresh(datiabuso2.getIdPratica());
+					if (datiabuso2.getLocalizzazione() != null)
+						sess.refresh(datiabuso2.getLocalizzazione());
+					if (datiabuso2.getTipologiaAbuso() != null)
+						sess.refresh(datiabuso2.getTipologiaAbuso());
+					if (datiabuso2.getTipoOpera() != null)
+						sess.refresh(datiabuso2.getTipoOpera());
 					BeanUtils.copyProperties(datiabuso2, datiabuso);
 				}
 			}
@@ -118,5 +130,24 @@ public class DatiAbusoHome {
 			log.error("get failed", re);
 			throw re;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public Integer countProg(Datipratica idPratica) {
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(Datiabuso.class);
+			cr.add(Restrictions.eq("datiPratica", idPratica));
+			List<Datiabuso> results = cr.list();
+			if (results.isEmpty()) {
+				return 0;
+			}
+			return results.size();
+		} catch (RuntimeException re) {
+			log.error("count failed", re);
+		}
+		return 0;
 	}
 }

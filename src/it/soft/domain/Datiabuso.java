@@ -51,7 +51,7 @@ public class Datiabuso implements Serializable {
 	@Column(name = "esenzioni_pagamenti", length = 45)
 	private String esenzioniPagamenti;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "idPratica")
 	private Datipratica datiPratica;
 
@@ -99,6 +99,9 @@ public class Datiabuso implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_abuso")
 	private List<RelSoggettoAbuso> soggettis;
+	
+	@Column
+	private Integer progressivo;
 
 	public Datiabuso() {
 	}
@@ -277,6 +280,14 @@ public class Datiabuso implements Serializable {
 
 	public void setTipologiaAbuso(TipologiaAbuso tipologiaAbuso) {
 		this.tipologiaAbuso = tipologiaAbuso;
+	}
+
+	public Integer getProgressivo() {
+		return progressivo;
+	}
+
+	public void setProgressivo(Integer progressivo) {
+		this.progressivo = progressivo;
 	}
 
 }

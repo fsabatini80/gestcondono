@@ -97,7 +97,8 @@ public class DatiPraticaHome {
 						.hasNext();) {
 					Datipratica datipratica2 = iterator.next();
 					sess.refresh(datipratica2);
-					sess.refresh(datipratica2.getRichiedente());
+					if (datipratica2.getRichiedente() != null)
+						sess.refresh(datipratica2.getRichiedente());
 					BeanUtils.copyProperties(datipratica2, datipratica);
 				}
 			}

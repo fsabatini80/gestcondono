@@ -1,18 +1,23 @@
 package it.soft.web;
 
+import it.soft.dao.CaratteristicheHome;
 import it.soft.dao.ComuniHome;
 import it.soft.dao.DestinazioneUsoHome;
 import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
+import it.soft.dao.TipoAlloggioHome;
 import it.soft.dao.TipoOperaHome;
 import it.soft.dao.TipologiaAbusoHome;
 import it.soft.dao.UtentiHome;
+import it.soft.domain.CaratteristicheSpeciali;
 import it.soft.domain.Comune;
+import it.soft.domain.DatiAlloggio;
 import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.TipoOpera;
 import it.soft.domain.TipologiaAbuso;
+import it.soft.domain.TipologiaAlloggio;
 import it.soft.domain.TipologiaDestinazioneUso;
 import it.soft.domain.Utenti;
 import it.soft.service.DatiAbusoService;
@@ -53,6 +58,10 @@ public class PraticheController extends BaseController {
 	UtentiHome utentiHome;
 	@Autowired
 	ComuniHome comuniHome;
+	@Autowired
+	TipoAlloggioHome tipoAlloggioHome;
+	@Autowired
+	CaratteristicheHome caratteristicheHome;
 
 	@Autowired
 	DatiPraticaValidator validatorPratica;
@@ -72,6 +81,8 @@ public class PraticheController extends BaseController {
 	List<EpocaAbuso> epocaAbusos;
 	List<TipoOpera> tipoOperas;
 	List<TipologiaAbuso> tipologiaAbusos;
+	List<TipologiaAlloggio> tipologiaAlloggios;
+	List<CaratteristicheSpeciali> caratteristicheSpecialis;
 
 	@RequestMapping(value = "/pratiche", method = RequestMethod.GET)
 	public ModelAndView praticheHome(ModelMap model, DatiPraticaPojo pojo,
@@ -155,6 +166,10 @@ public class PraticheController extends BaseController {
 			initModelAbuso(model);
 			view = "form/formAbuso";
 		} else {
+			if (a.getProgressivo() == null)
+				a.setProgressivo(datiAbusoService.countProg(this.d
+						.getIddatipratica()));
+			pojo.setIdPratica(this.d.getIddatipratica());
 			datiAbusoService.saveDatiAbuso(pojo);
 		}
 		return new ModelAndView(view, model);
@@ -182,16 +197,17 @@ public class PraticheController extends BaseController {
 	public ModelAndView nuovoAlloggio(ModelMap model) throws Exception {
 
 		String view = "form/formAlloggio";
-		DatiPraticaPojo datiPraticaPojo = new DatiPraticaPojo();
-		initModel(model);
-		model.addAttribute("datiPraticaPojo", datiPraticaPojo);
+		DatiAlloggio datiAlloggio = new DatiAlloggio();
+		initModelAlloggio(model);
+		model.addAttribute("datiAlloggio", datiAlloggio);
 		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/modificaAlloggio", method = RequestMethod.GET)
 	public ModelAndView modificaAlloggio(ModelMap model) throws Exception {
+		String view = "form/formAlloggio";
 		model.addAttribute("datiPraticaPojo", this.d);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/salvaAlloggio", method = RequestMethod.GET)
@@ -228,7 +244,7 @@ public class PraticheController extends BaseController {
 
 	@RequestMapping(value = "/fabbricati", method = RequestMethod.GET)
 	public ModelAndView fabbricati(ModelMap model) throws Exception {
-		String view = "table/praticheList";
+		String view = "table/fabbricatiList";
 		List<Datipratica> list = datiPraticaService.findAll();
 		model.addAttribute("pratiche", list);
 		return new ModelAndView(view, model);
@@ -328,5 +344,15 @@ public class PraticheController extends BaseController {
 		model.addAttribute("epocaAbusos", epocaAbusos);
 		model.addAttribute("tipoOperas", tipoOperas);
 		model.addAttribute("tipologiaAbusos", tipologiaAbusos);
+	}
+
+	private void initModelAlloggio(ModelMap model) {
+		this.tipologiaDestinazioneUsos = destinazioneUsoHome.findAll();
+		this.tipologiaAlloggios = tipoAlloggioHome.findAll();
+		this.caratteristicheSpecialis = caratteristicheHome.findAll();
+		model.addAttribute("tipologiaDestinazioneUsos",
+				tipologiaDestinazioneUsos);
+		model.addAttribute("tipologiaAlloggios", tipologiaAlloggios);
+		model.addAttribute("caratteristicheSpecialis", caratteristicheSpecialis);
 	}
 }

@@ -1,40 +1,45 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the dati_fabbricati database table.
  * 
  */
 @Entity
-@Table(name="dati_fabbricati")
+@Table(name = "dati_fabbricati")
 public class DatiFabbricati implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="iddati_fabbricati", unique=true, nullable=false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "iddati_fabbricati", unique = true, nullable = false)
 	private int iddatiFabbricati;
 
-	@Column(length=45)
+	@Column(length = 45)
 	private String foglio;
 
-	@Column(name="id_alloggio")
-	private int idAlloggio;
+	@Column(name = "id_alloggio", nullable = false)
+	private Integer idAlloggio;
 
-	@Column(length=45)
+	@Column(length = 45)
 	private String particella;
 
-	@Column(length=45)
+	@Column(length = 45)
 	private String sezione;
 
-	@Column(length=45)
+	@Column(length = 45)
 	private String subalterno;
 
-    public DatiFabbricati() {
-    }
+	public DatiFabbricati() {
+	}
 
 	public int getIddatiFabbricati() {
 		return this.iddatiFabbricati;

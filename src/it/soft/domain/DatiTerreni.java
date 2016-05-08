@@ -21,8 +21,8 @@ public class DatiTerreni implements Serializable {
 	@Column(length=45)
 	private String foglio;
 
-	@Column(name="id_alloggio")
-	private int idAlloggio;
+	@Column(name="id_alloggio", nullable=false)
+	private Integer idAlloggio;
 
 	@Column(length=45)
 	private String particella;

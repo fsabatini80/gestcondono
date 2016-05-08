@@ -1,8 +1,14 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigInteger;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
@@ -22,8 +28,8 @@ public class DatiAlloggio implements Serializable {
 	@Column(name="caratteri_speciali", length=45)
 	private String caratteriSpeciali;
 
-	@Column(name="destinazione_user", length=45)
-	private String destinazioneUser;
+	@Column(name="destinazione_uso", length=45)
+	private String destinazioneUso;
 
 	@Column(name="id_abuso")
 	private BigInteger idAbuso;
@@ -59,12 +65,12 @@ public class DatiAlloggio implements Serializable {
 		this.caratteriSpeciali = caratteriSpeciali;
 	}
 
-	public String getDestinazioneUser() {
-		return this.destinazioneUser;
+	public String getDestinazioneUso() {
+		return this.destinazioneUso;
 	}
 
-	public void setDestinazioneUser(String destinazioneUser) {
-		this.destinazioneUser = destinazioneUser;
+	public void setDestinazioneUso(String destinazioneUso) {
+		this.destinazioneUso = destinazioneUso;
 	}
 
 	public BigInteger getIdAbuso() {
