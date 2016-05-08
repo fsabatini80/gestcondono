@@ -4,35 +4,53 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
+<jsp:include page="../tpl/header.jsp" />
 <table id="example10" class="display">
 	<thead>
 		<tr>
-			<th>Numero Pratica</th>
-			<th>Numero Protocollo</th>
-			<th>Codice fiscale</th>
-			<th>Data domanda</th>
-			<th>Legge condono</th>
+			<th></th>
+			<th>Tipo</th>
+			<th>Data protocollo</th>
+			<th>Numero protocollo</th>
+			<th>Allegato</th>
+			<th>Presente?</th>
+			<th>Valido?</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody align="center">
 		<tr>
+			<td><img src="img/sign_warning.png"></td>
+			<td>Domanda condono</td>
 			<td></td>
 			<td></td>
+			<td><img src="img/document_attachment.png"></td>
+			<td><img src="img/document_ok.png"></td>
+			<td><img src="img/document_forbidden.png"></td>
+			<td><img src="img/document_edit.png"><img
+				src="img/document_delete.png"></td>
+		</tr>
+		<tr>
+			<td><img src="img/sign_warning.png"></td>
+			<td>1° attestazione pagamento oblazione</td>
 			<td></td>
 			<td></td>
+			<td><img src="img/document_attachment.png"></td>
+			<td><img src="img/document_ok.png"></td>
+			<td><img src="img/document_ok.png"></td>
+			<td><img src="img/document_edit.png"><img
+				src="img/document_delete.png"></td>
+		</tr>
+		<tr>
+			<td><img src="img/sign_warning.png"></td>
+			<td>1° attestazione pagamento oblazione regionale</td>
 			<td></td>
-			<td><a
-				href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
-				title="modifica pratica"><img src="img/32/form_blue_edit.png"
-					title="modifica pratica"></a><a
-				href="<c:url value="visualizzaAbusi.htm?idpratica=${pratica.iddatipratica}" />"
-				title="visualizza abusi"><img src="img/32/clipboard.png"
-					title="visualizza abusi"></a> <a
-				href="<c:url value="insPraticawzd.htm" />"
-				title="visualizza versamenti"><img src="img/32/symbol_euro.png"
-					title="visualizza versamenti"></a></td>
+			<td></td>
+			<td><img src="img/document_attachment.png"></td>
+			<td><img src="img/document_forbidden.png"></td>
+			<td><img src="img/document_forbidden.png"></td>
+			<td><img src="img/document_edit.png"><img
+				src="img/document_delete.png"></td>
 		</tr>
 	</tbody>
 </table>

@@ -35,7 +35,7 @@
 			<td><a
 				href="<c:url value="modificaAlloggio.htm?idpratica=${pratica.iddatipratica}" />"
 				title="modifica alloggio"><img src="img/32/form_blue_edit.png"
-					title="modifica abuso"></a>
+					title="modifica alloggio"></a>
 			<a
 				href="<c:url value="fabbricati.htm?idpratica=${pratica.iddatipratica}" />"
 				title="visualizza fabbricati"><img src="img/32/form_blue_edit.png"

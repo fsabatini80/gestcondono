@@ -56,6 +56,8 @@
 				<value>it.soft.domain.RelSoggettoAbuso</value>
 				<value>it.soft.domain.DatiAlloggio</value>
 				<value>it.soft.domain.EpocaAbuso</value>
+				<value>it.soft.domain.TipologiaAlloggio</value>
+				<value>it.soft.domain.CaratteristicheSpeciali</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -99,6 +101,12 @@
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
 	<bean id="tipologiaAbusoHome" class="it.soft.dao.TipologiaAbusoHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="tipoAlloggioHome" class="it.soft.dao.TipoAlloggioHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="caratteristicheHome" class="it.soft.dao.CaratteristicheHome">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
 	<!-- END MAP DAO -->

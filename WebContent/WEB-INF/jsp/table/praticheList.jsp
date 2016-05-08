@@ -34,13 +34,13 @@
 				<td>${pratica.leggeCondono.leggeNumero}</td>
 				<td><a
 					href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
-					title="modifica pratica"><img src="img/32/form_blue_edit.png"
+					title="modifica pratica"><img src="img/24/form_blue_edit.png"
 						title="modifica pratica"></a><a
 					href="<c:url value="abusi.htm?idpratica=${pratica.iddatipratica}" />"
-					title="visualizza abusi"><img src="img/32/clipboard.png"
+					title="visualizza abusi"><img src="img/24/clipboard_next.png"
 						title="visualizza abusi"></a> <a
 					href="<c:url value="insPraticawzd.htm" />"
-					title="visualizza versamenti"><img src="img/32/symbol_euro.png"
+					title="visualizza versamenti"><img src="img/24/symbol_euro.png"
 						title="visualizza versamenti"></a></td>
 			</tr>
 		</c:forEach>

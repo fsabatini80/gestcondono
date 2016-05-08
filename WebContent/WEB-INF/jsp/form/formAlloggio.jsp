@@ -4,28 +4,38 @@
 <jsp:include page="../tpl/header.jsp" />
 <div>
 	<form:form method="GET" action="salvaAlloggio.htm"
-		commandName="datiPraticaPojo" cssClass="ui-widget">
+		commandName="datiAlloggio" cssClass="ui-widget">
 		<form:errors path="*" cssClass="errorblock" element="div" />
 		<table>
 			<tr>
 				<td>Tipologia alloggio :</td>
-				<td><input type="text" /></td>
+				<td><form:select path="tipologiaAlloggio">
+						<form:options items="${tipologiaAlloggios}"
+							itemLabel="descrizione" itemValue="idtipologiaAlloggio" />
+					</form:select></td>
 			</tr>
 			<tr>
 				<td>Destinazione uso :</td>
-				<td><input type="text" /></td>
+				<td><form:select path="destinazioneUso">
+						<form:options items="${tipologiaDestinazioneUsos}"
+							itemLabel="descrizioneTipologia"
+							itemValue="idtipologiaDestinazioneUso" />
+					</form:select></td>
 			</tr>
 			<tr>
 				<td>Superficie utile :
-				<td><input type="text" /></td>
+				<td><form:input path="superficieUtile" /></td>
 			</tr>
 			<tr>
 				<td>Superficie accessoria :</td>
-				<td><input type="text" /></td>
+				<td><form:input path="superficieAccessoria" /></td>
 			</tr>
 			<tr>
-				<td>Caratteri speciali :</td>
-				<td><input type="text" /></td>
+				<td>Caratteristiche speciali :</td>
+				<td><form:select path="caratteriSpeciali">
+						<form:options items="${caratteristicheSpecialis}"
+							itemLabel="descrizione" itemValue="idcaratteristicheSpeciali" />
+					</form:select></td>
 			</tr>
 		</table>
 		<form:button value="Salva" name="Salva">Salva</form:button>
