@@ -27,6 +27,7 @@ import it.soft.web.pojo.DatiPraticaPojo;
 import it.soft.web.validator.DatiAbusoValidator;
 import it.soft.web.validator.DatiPraticaValidator;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,8 +74,8 @@ public class PraticheController extends BaseController {
 	@Autowired
 	DatiAbusoService datiAbusoService;
 
-	DatiPraticaPojo d;
-	DatiAbusoPojo a;
+	DatiPraticaPojo praticaPojo;
+	DatiAbusoPojo abusoPojo;
 	List<String> comuni;
 	List<String> province;
 	List<TipologiaDestinazioneUso> tipologiaDestinazioneUsos;
@@ -110,7 +111,7 @@ public class PraticheController extends BaseController {
 
 		String view = "redirect:pratiche.htm";
 		validatorPratica.validate(pojo, errors);
-		this.d = pojo;
+		this.praticaPojo = pojo;
 		if (errors.hasFieldErrors()) {
 			initModel(model);
 			view = "form/formPratica";
@@ -130,8 +131,8 @@ public class PraticheController extends BaseController {
 			@RequestParam(value = "idpratica") String id, ModelMap model)
 			throws Exception {
 		initModel(model);
-		this.d = datiPraticaService.findById(id);
-		model.addAttribute("datiPraticaPojo", this.d);
+		this.praticaPojo = datiPraticaService.findById(id);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("form/formPratica", model);
 	}
 
@@ -139,8 +140,8 @@ public class PraticheController extends BaseController {
 	public ModelAndView abusi(@RequestParam(value = "idpratica") String id,
 			ModelMap model) throws Exception {
 		String view = "table/abusiList";
-		List<Datiabuso> list = datiAbusoService.findAll();
-		this.d = datiPraticaService.findById(id);
+		List<Datiabuso> list = datiAbusoService.findAll(id);
+		this.praticaPojo = datiPraticaService.findById(id);
 		model.addAttribute("abusi", list);
 		return new ModelAndView(view, model);
 	}
@@ -158,18 +159,18 @@ public class PraticheController extends BaseController {
 	public ModelAndView salvaAbuso(ModelMap model, DatiAbusoPojo pojo,
 			Errors errors) throws Exception {
 
-		String view = "redirect:abusi.htm?idpratica=".concat(this.d
+		String view = "redirect:abusi.htm?idpratica=".concat(this.praticaPojo
 				.getIddatipratica());
-		this.a = pojo;
+		this.abusoPojo = pojo;
 		datiAbusoValidator.validate(pojo, errors);
 		if (errors.hasFieldErrors()) {
 			initModelAbuso(model);
 			view = "form/formAbuso";
 		} else {
-			if (a.getProgressivo() == null)
-				a.setProgressivo(datiAbusoService.countProg(this.d
-						.getIddatipratica()));
-			pojo.setIdPratica(this.d.getIddatipratica());
+			if (abusoPojo.getProgressivo() == null)
+				abusoPojo.setProgressivo(datiAbusoService
+						.countProg(this.praticaPojo.getIddatipratica()));
+			pojo.setIdPratica(this.praticaPojo.getIddatipratica());
 			datiAbusoService.saveDatiAbuso(pojo);
 		}
 		return new ModelAndView(view, model);
@@ -179,17 +180,19 @@ public class PraticheController extends BaseController {
 	public ModelAndView modificaAbuso(
 			@RequestParam(value = "idabuso") String id, ModelMap model)
 			throws Exception {
-		this.a = datiAbusoService.findById(id);
-		model.addAttribute("datiAbusoPojo", this.a);
+		this.abusoPojo = datiAbusoService.findById(id);
+		model.addAttribute("datiAbusoPojo", this.abusoPojo);
 		initModelAbuso(model);
 		return new ModelAndView("form/formAbuso", model);
 	}
 
 	@RequestMapping(value = "/alloggi", method = RequestMethod.GET)
-	public ModelAndView alloggi(ModelMap model) throws Exception {
+	public ModelAndView alloggi(@RequestParam(value = "idabuso") String id,
+			ModelMap model) throws Exception {
 		String view = "table/alloggioList";
-		List<Datipratica> list = datiPraticaService.findAll();
-		model.addAttribute("pratiche", list);
+		this.abusoPojo = datiAbusoService.findById(id);
+		List<DatiAlloggio> list = datiAbusoService.findAlloggi(id);
+		model.addAttribute("alloggi", list);
 		return new ModelAndView(view, model);
 	}
 
@@ -204,16 +207,26 @@ public class PraticheController extends BaseController {
 	}
 
 	@RequestMapping(value = "/modificaAlloggio", method = RequestMethod.GET)
-	public ModelAndView modificaAlloggio(ModelMap model) throws Exception {
+	public ModelAndView modificaAlloggio(
+			@RequestParam(value = "idalloggio") String id, ModelMap model) throws Exception {
 		String view = "form/formAlloggio";
-		model.addAttribute("datiPraticaPojo", this.d);
+		initModelAlloggio(model);
+		DatiAlloggio datiAlloggio = datiAbusoService.findAlloggioById(id);
+		model.addAttribute("datiAlloggio", datiAlloggio);
 		return new ModelAndView(view, model);
 	}
 
-	@RequestMapping(value = "/salvaAlloggio", method = RequestMethod.GET)
-	public ModelAndView salvaAlloggio(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+	@RequestMapping(value = "/salvaAlloggio", method = RequestMethod.POST)
+	public ModelAndView salvaAlloggio(ModelMap model, DatiAlloggio datiAlloggio)
+			throws Exception {
+		String view = "redirect:alloggi.htm?idabuso=".concat(this.abusoPojo
+				.getIddatiabuso());
+		datiAlloggio.setIdAbuso(datiAbusoService
+				.findDatiAbusoById(this.abusoPojo.getIddatiabuso()));
+		datiAlloggio.setIdPratica(BigInteger.valueOf(Integer.valueOf(abusoPojo
+				.getDatiPratica())));
+		datiAbusoService.saveDatiAlloggio(datiAlloggio);
+		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/documenti", method = RequestMethod.GET)
@@ -226,19 +239,19 @@ public class PraticheController extends BaseController {
 
 	@RequestMapping(value = "/nuovoDocumento", method = RequestMethod.GET)
 	public ModelAndView nuovoDocumento(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
 	@RequestMapping(value = "/modificaDocumento", method = RequestMethod.GET)
 	public ModelAndView modificaDocumento(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
 	@RequestMapping(value = "/salvaDocumento", method = RequestMethod.GET)
 	public ModelAndView salvaDocumento(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
@@ -252,19 +265,19 @@ public class PraticheController extends BaseController {
 
 	@RequestMapping(value = "/nuovoFabbricato", method = RequestMethod.GET)
 	public ModelAndView nuovoFabbricato(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
 	@RequestMapping(value = "/modificaFabbricato", method = RequestMethod.GET)
 	public ModelAndView modificaFabbricato(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
 	@RequestMapping(value = "/salvaFabbricato", method = RequestMethod.GET)
 	public ModelAndView salvaFabbricato(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
@@ -278,19 +291,45 @@ public class PraticheController extends BaseController {
 
 	@RequestMapping(value = "/nuovoTerreno", method = RequestMethod.GET)
 	public ModelAndView nuovoTerreno(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
 	@RequestMapping(value = "/modificaTerreno", method = RequestMethod.GET)
 	public ModelAndView modificaTerreno(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
 	@RequestMapping(value = "/salvaTerreno", method = RequestMethod.GET)
 	public ModelAndView salvaTerreno(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.d);
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
+		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+	}
+
+	@RequestMapping(value = "/soggetti", method = RequestMethod.GET)
+	public ModelAndView soggetti(ModelMap model) throws Exception {
+		String view = "table/praticheList";
+		List<Datipratica> list = datiPraticaService.findAll();
+		model.addAttribute("pratiche", list);
+		return new ModelAndView(view, model);
+	}
+
+	@RequestMapping(value = "/nuovoSoggetto", method = RequestMethod.GET)
+	public ModelAndView nuovoSoggetto(ModelMap model) throws Exception {
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
+		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+	}
+
+	@RequestMapping(value = "/modificaSoggetto", method = RequestMethod.GET)
+	public ModelAndView modificaSoggetto(ModelMap model) throws Exception {
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
+		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+	}
+
+	@RequestMapping(value = "/salvaSoggetto", method = RequestMethod.GET)
+	public ModelAndView salvaSoggetto(ModelMap model) throws Exception {
+		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
@@ -335,9 +374,10 @@ public class PraticheController extends BaseController {
 
 	private void initModelAbuso(ModelMap model) {
 		this.tipologiaDestinazioneUsos = destinazioneUsoHome.findAll();
-		this.epocaAbusos = epocaAbusoHome.findAll(this.d.getLeggeCondono());
+		this.epocaAbusos = epocaAbusoHome.findAll(this.praticaPojo
+				.getLeggeCondono());
 		this.tipoOperas = tipoOperaHome.findAll();
-		this.tipologiaAbusos = tipologiaAbusoHome.findAll(this.d
+		this.tipologiaAbusos = tipologiaAbusoHome.findAll(this.praticaPojo
 				.getLeggeCondono());
 		model.addAttribute("tipologiaDestinazioneUsos",
 				tipologiaDestinazioneUsos);

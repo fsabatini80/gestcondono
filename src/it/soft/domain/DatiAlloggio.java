@@ -1,6 +1,7 @@
 package it.soft.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import javax.persistence.Column;
@@ -8,52 +9,57 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 
 /**
  * The persistent class for the dati_alloggio database table.
  * 
  */
 @Entity
-@Table(name="dati_alloggio")
+@Table(name = "dati_alloggio")
 public class DatiAlloggio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="iddati_alloggio", unique=true, nullable=false)
-	private String iddatiAlloggio;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "iddati_alloggio", unique = true, nullable = false)
+	private BigDecimal iddatiAlloggio;
 
-	@Column(name="caratteri_speciali", length=45)
+	@Column(name = "caratteri_speciali", length = 45)
 	private String caratteriSpeciali;
 
-	@Column(name="destinazione_uso", length=45)
-	private String destinazioneUso;
+	@OneToOne
+	@JoinColumn(name = "destinazione_uso")
+	private TipologiaDestinazioneUso destinazioneUso;
 
-	@Column(name="id_abuso")
-	private BigInteger idAbuso;
+	@ManyToOne
+	@JoinColumn(name = "id_abuso")
+	private Datiabuso idAbuso;
 
-	@Column(name="id_pratica")
+	@Column(name = "id_pratica")
 	private BigInteger idPratica;
 
-	@Column(name="superficie_accessoria", length=45)
+	@Column(name = "superficie_accessoria", length = 45)
 	private String superficieAccessoria;
 
-	@Column(name="superficie_utile", length=45)
+	@Column(name = "superficie_utile", length = 45)
 	private String superficieUtile;
 
-	@Column(name="tipologia_alloggio", length=45)
-	private String tipologiaAlloggio;
+	@OneToOne
+	@JoinColumn(name = "tipologia_alloggio")
+	private TipologiaAlloggio tipologiaAlloggio;
 
-    public DatiAlloggio() {
-    }
+	public DatiAlloggio() {
+	}
 
-	public String getIddatiAlloggio() {
+	public BigDecimal getIddatiAlloggio() {
 		return this.iddatiAlloggio;
 	}
 
-	public void setIddatiAlloggio(String iddatiAlloggio) {
+	public void setIddatiAlloggio(BigDecimal iddatiAlloggio) {
 		this.iddatiAlloggio = iddatiAlloggio;
 	}
 
@@ -65,19 +71,19 @@ public class DatiAlloggio implements Serializable {
 		this.caratteriSpeciali = caratteriSpeciali;
 	}
 
-	public String getDestinazioneUso() {
+	public TipologiaDestinazioneUso getDestinazioneUso() {
 		return this.destinazioneUso;
 	}
 
-	public void setDestinazioneUso(String destinazioneUso) {
+	public void setDestinazioneUso(TipologiaDestinazioneUso destinazioneUso) {
 		this.destinazioneUso = destinazioneUso;
 	}
 
-	public BigInteger getIdAbuso() {
+	public Datiabuso getIdAbuso() {
 		return this.idAbuso;
 	}
 
-	public void setIdAbuso(BigInteger idAbuso) {
+	public void setIdAbuso(Datiabuso idAbuso) {
 		this.idAbuso = idAbuso;
 	}
 
@@ -105,11 +111,11 @@ public class DatiAlloggio implements Serializable {
 		this.superficieUtile = superficieUtile;
 	}
 
-	public String getTipologiaAlloggio() {
+	public TipologiaAlloggio getTipologiaAlloggio() {
 		return this.tipologiaAlloggio;
 	}
 
-	public void setTipologiaAlloggio(String tipologiaAlloggio) {
+	public void setTipologiaAlloggio(TipologiaAlloggio tipologiaAlloggio) {
 		this.tipologiaAlloggio = tipologiaAlloggio;
 	}
 

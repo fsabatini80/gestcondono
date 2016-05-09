@@ -35,14 +35,14 @@
 					href="<c:url value="modificaAbuso.htm?idabuso=${abuso.iddatiabuso}" />"
 					title="modifica abuso"><img src="img/24/clipboard.png"
 						title="modifica abuso"></a> <a
-					href="<c:url value="alloggi.htm?idpratica=${abuso.iddatiabuso}" />"
+					href="<c:url value="alloggi.htm?idabuso=${abuso.iddatiabuso}" />"
 					title="visualizza alloggi"><img src="img/24/houses.png"
 						title="visualizza alloggi"></a> <a
-					href="<c:url value="documenti.htm?idpratica=${abuso.iddatiabuso}" />"
+					href="<c:url value="documenti.htm?idabuso=${abuso.iddatiabuso}" />"
 					title="visualizza documenti"><img
 						src="img/24/document_find.png" title="visualizza documenti"></a>
 					<a
-					href="<c:url value="documenti.htm?idpratica=${abuso.iddatiabuso}" />"
+					href="<c:url value="documenti.htm?idabuso=${abuso.iddatiabuso}" />"
 					title="visualizza soggetti abuso"><img
 						src="img/24/users3.png" title="visualizza soggetti abuso"></a></td>
 			</tr>

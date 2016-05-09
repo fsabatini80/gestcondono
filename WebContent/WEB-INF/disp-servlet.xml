@@ -109,6 +109,9 @@
 	<bean id="caratteristicheHome" class="it.soft.dao.CaratteristicheHome">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	<bean id="datiAlloggioHome" class="it.soft.dao.DatiAlloggioHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
 	<!-- END MAP DAO -->
 
 	<!-- BEGIN MAP viewResolver -->

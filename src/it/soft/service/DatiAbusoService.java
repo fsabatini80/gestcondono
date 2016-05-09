@@ -1,11 +1,14 @@
 package it.soft.service;
 
 import it.soft.dao.DatiAbusoHome;
+import it.soft.dao.DatiAlloggioHome;
 import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DestinazioneUsoHome;
 import it.soft.dao.EpocaAbusoHome;
+import it.soft.dao.TipoAlloggioHome;
 import it.soft.dao.TipoOperaHome;
 import it.soft.dao.TipologiaAbusoHome;
+import it.soft.domain.DatiAlloggio;
 import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
 import it.soft.web.pojo.DatiAbusoPojo;
@@ -31,6 +34,10 @@ public class DatiAbusoService {
 	TipologiaAbusoHome tipologiaAbusoHome;
 	@Autowired
 	DatiPraticaHome datiPraticaHome;
+	@Autowired
+	DatiAlloggioHome datiAlloggioHome;
+	@Autowired
+	TipoAlloggioHome tipoAlloggioHome;
 
 	public void saveDatiAbuso(DatiAbusoPojo pojo) {
 		Datiabuso datiabuso;
@@ -113,13 +120,47 @@ public class DatiAbusoService {
 		return target;
 	}
 
+	public Datiabuso findDatiAbusoById(String id) {
+		return datiAbusoHome.findById(BigDecimal.valueOf(Integer.parseInt(id)));
+	}
+
 	public List<Datiabuso> findAll() {
 		return datiAbusoHome.findAll();
+	}
+
+	public List<Datiabuso> findAll(String idPratica) {
+		BigDecimal idPratBD = BigDecimal.valueOf(Integer.valueOf(idPratica));
+		Datipratica datipratica = datiPraticaHome.findById(idPratBD);
+		return datiAbusoHome.findAll(datipratica);
 	}
 
 	public String countProg(String idPratica) {
 		BigDecimal idPratBD = BigDecimal.valueOf(Integer.valueOf(idPratica));
 		Datipratica datipratica = datiPraticaHome.findById(idPratBD);
 		return String.valueOf(datiAbusoHome.countProg(datipratica) + 1);
+	}
+
+	public void saveDatiAlloggio(DatiAlloggio datiAlloggio) {
+		if (datiAlloggio.getDestinazioneUso() != null)
+			datiAlloggio.setDestinazioneUso(destinazioneUsoHome
+					.findById(Integer.valueOf(datiAlloggio.getDestinazioneUso()
+							.getIdtipologiaDestinazioneUso())));
+		if (datiAlloggio.getTipologiaAlloggio() != null)
+			datiAlloggio.setTipologiaAlloggio(tipoAlloggioHome
+					.findById(datiAlloggio.getTipologiaAlloggio()
+							.getIdtipologiaAlloggio()));
+		datiAlloggioHome.persist(datiAlloggio);
+
+	}
+
+	public List<DatiAlloggio> findAlloggi(String id) {
+		BigDecimal idAbuso = BigDecimal.valueOf(Integer.valueOf(id));
+		Datiabuso datiabuso = datiAbusoHome.findById(idAbuso);
+		return datiAlloggioHome.findByIdAbuso(datiabuso);
+	}
+
+	public DatiAlloggio findAlloggioById(String id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

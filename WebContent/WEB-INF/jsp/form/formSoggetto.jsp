@@ -3,7 +3,7 @@
 <html>
 <jsp:include page="../tpl/header.jsp" />
 <div>
-	<form:form method="POST" action="salvaAlloggio.htm"
+	<form:form method="GET" action="salvaAlloggio.htm"
 		commandName="datiAlloggio" cssClass="ui-widget">
 		<form:errors path="*" cssClass="errorblock" element="div" />
 		<table>
@@ -33,8 +33,7 @@
 			<tr>
 				<td>Caratteristiche speciali :</td>
 				<td><form:checkboxes items="${caratteristicheSpecialis}"
-						path="caratteriSpeciali" delimiter="<br />"
-						itemLabel="descrizione" itemValue="idcaratteristicheSpeciali" /></td>
+						path="caratteriSpeciali" /></td>
 			</tr>
 		</table>
 		<form:button value="Salva" name="Salva">Salva</form:button>
