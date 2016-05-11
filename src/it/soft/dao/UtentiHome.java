@@ -49,9 +49,10 @@ public class UtentiHome {
 		log.debug("removing Utenti instance");
 		try {
 			org.hibernate.Session sess2 = hibernateTemplate.getSessionFactory()
-					.openSession();
+					.getCurrentSession();
 			sess2.beginTransaction();
-			sess2.delete(persistentInstance);
+			sess2.delete(hibernateTemplate.load(Utenti.class,
+					persistentInstance.getIdUtenti()));
 			sess2.getTransaction().commit();
 			log.debug("remove successful");
 		} catch (RuntimeException re) {

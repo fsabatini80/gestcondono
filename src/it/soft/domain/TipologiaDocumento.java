@@ -1,7 +1,15 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 
 /**
@@ -21,8 +29,9 @@ public class TipologiaDocumento implements Serializable {
 	@Column(length=120)
 	private String descrizione;
 
-	@Column(name="id_leggi_condono")
-	private int idLeggiCondono;
+	@OneToOne
+	@JoinColumn(name="id_leggi_condono")
+	private LeggiCondono idLeggiCondono;
 
 	private byte obbligatorio;
 
@@ -47,11 +56,11 @@ public class TipologiaDocumento implements Serializable {
 		this.descrizione = descrizione;
 	}
 
-	public int getIdLeggiCondono() {
+	public LeggiCondono getIdLeggiCondono() {
 		return this.idLeggiCondono;
 	}
 
-	public void setIdLeggiCondono(int idLeggiCondono) {
+	public void setIdLeggiCondono(LeggiCondono idLeggiCondono) {
 		this.idLeggiCondono = idLeggiCondono;
 	}
 

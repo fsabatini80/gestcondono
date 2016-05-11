@@ -12,22 +12,27 @@ import it.soft.dao.UtentiHome;
 import it.soft.domain.CaratteristicheSpeciali;
 import it.soft.domain.Comune;
 import it.soft.domain.DatiAlloggio;
+import it.soft.domain.DatiFabbricati;
+import it.soft.domain.DatiTerreni;
 import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
+import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.TipoOpera;
 import it.soft.domain.TipologiaAbuso;
 import it.soft.domain.TipologiaAlloggio;
 import it.soft.domain.TipologiaDestinazioneUso;
+import it.soft.domain.TipologiaDocumento;
 import it.soft.domain.Utenti;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
 import it.soft.web.pojo.DatiAbusoPojo;
+import it.soft.web.pojo.DatiAlloggioPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
+import it.soft.web.pojo.TipologiaDocumentoPojo;
 import it.soft.web.validator.DatiAbusoValidator;
 import it.soft.web.validator.DatiPraticaValidator;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +81,7 @@ public class PraticheController extends BaseController {
 
 	DatiPraticaPojo praticaPojo;
 	DatiAbusoPojo abusoPojo;
+	String idDatiAlloggio;
 	List<String> comuni;
 	List<String> province;
 	List<TipologiaDestinazioneUso> tipologiaDestinazioneUsos;
@@ -200,7 +206,7 @@ public class PraticheController extends BaseController {
 	public ModelAndView nuovoAlloggio(ModelMap model) throws Exception {
 
 		String view = "form/formAlloggio";
-		DatiAlloggio datiAlloggio = new DatiAlloggio();
+		DatiAlloggioPojo datiAlloggio = new DatiAlloggioPojo();
 		initModelAlloggio(model);
 		model.addAttribute("datiAlloggio", datiAlloggio);
 		return new ModelAndView(view, model);
@@ -208,91 +214,119 @@ public class PraticheController extends BaseController {
 
 	@RequestMapping(value = "/modificaAlloggio", method = RequestMethod.GET)
 	public ModelAndView modificaAlloggio(
-			@RequestParam(value = "idalloggio") String id, ModelMap model) throws Exception {
+			@RequestParam(value = "idalloggio") String id, ModelMap model)
+			throws Exception {
 		String view = "form/formAlloggio";
 		initModelAlloggio(model);
-		DatiAlloggio datiAlloggio = datiAbusoService.findAlloggioById(id);
+		DatiAlloggioPojo datiAlloggio = datiAbusoService.findAlloggioById(id);
 		model.addAttribute("datiAlloggio", datiAlloggio);
 		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/salvaAlloggio", method = RequestMethod.POST)
-	public ModelAndView salvaAlloggio(ModelMap model, DatiAlloggio datiAlloggio)
-			throws Exception {
+	public ModelAndView salvaAlloggio(ModelMap model,
+			DatiAlloggioPojo datiAlloggio) throws Exception {
 		String view = "redirect:alloggi.htm?idabuso=".concat(this.abusoPojo
 				.getIddatiabuso());
-		datiAlloggio.setIdAbuso(datiAbusoService
-				.findDatiAbusoById(this.abusoPojo.getIddatiabuso()));
-		datiAlloggio.setIdPratica(BigInteger.valueOf(Integer.valueOf(abusoPojo
-				.getDatiPratica())));
+		datiAlloggio.setIdAbuso(this.abusoPojo.getIddatiabuso());
+		datiAlloggio.setIdPratica(abusoPojo.getDatiPratica());
 		datiAbusoService.saveDatiAlloggio(datiAlloggio);
 		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/documenti", method = RequestMethod.GET)
-	public ModelAndView documenti(ModelMap model) throws Exception {
+	public ModelAndView documenti(ModelMap model,
+			@RequestParam(value = "idabuso") String id) throws Exception {
 		String view = "table/documentiList";
-		List<Datipratica> list = datiPraticaService.findAll();
-		model.addAttribute("pratiche", list);
+		this.abusoPojo = datiAbusoService.findById(id);
+		List<DocumentiAbuso> list = datiAbusoService.findAllDocById(id,
+				this.praticaPojo.getLeggeCondono());
+		model.addAttribute("documenti", list);
+		List<TipologiaDocumento> listAdd = datiAbusoService.findAllDocToAdd();
+		model.addAttribute("documentiAdd", listAdd);
+		model.addAttribute("tipologiaDocumentoPojo",
+				new TipologiaDocumentoPojo());
 		return new ModelAndView(view, model);
 	}
 
-	@RequestMapping(value = "/nuovoDocumento", method = RequestMethod.GET)
-	public ModelAndView nuovoDocumento(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+	@RequestMapping(value = "/nuovoDocumento", method = RequestMethod.POST)
+	public ModelAndView nuovoDocumento(ModelMap model,
+			TipologiaDocumentoPojo pojo) throws Exception {
+		String view = "redirect:documenti.htm?idabuso=".concat(this.abusoPojo
+				.getIddatiabuso());
+		datiAbusoService.addDocList(pojo.getDocToAdd(),
+				this.abusoPojo.getIddatiabuso());
+		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/modificaDocumento", method = RequestMethod.GET)
-	public ModelAndView modificaDocumento(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+	public ModelAndView modificaDocumento(ModelMap model,
+			@RequestParam(value = "iddocumento") String id) throws Exception {
+		String view = "redirect:documenti.htm?idabuso=".concat(this.abusoPojo
+				.getIddatiabuso());
+		DocumentiAbuso documentiAbuso = datiAbusoService.findDocById(id);
+		model.addAttribute("documentiAbuso", documentiAbuso);
+		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/salvaDocumento", method = RequestMethod.GET)
 	public ModelAndView salvaDocumento(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+		String view = "redirect:documenti.htm?idabuso=".concat(this.abusoPojo
+				.getIddatiabuso());
+		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/fabbricati", method = RequestMethod.GET)
-	public ModelAndView fabbricati(ModelMap model) throws Exception {
+	public ModelAndView fabbricati(
+			@RequestParam(value = "idalloggio") String id, ModelMap model)
+			throws Exception {
 		String view = "table/fabbricatiList";
-		List<Datipratica> list = datiPraticaService.findAll();
-		model.addAttribute("pratiche", list);
+		this.idDatiAlloggio = id;
+		List<DatiFabbricati> list = datiAbusoService.findAllFabbricatiById(id);
+		DatiFabbricati fabbricatoNew = new DatiFabbricati();
+		fabbricatoNew.setIdAlloggio(Integer.valueOf(id));
+		model.addAttribute("fabbricatoNew", fabbricatoNew);
+		model.addAttribute("fabbricati", list);
 		return new ModelAndView(view, model);
-	}
-
-	@RequestMapping(value = "/nuovoFabbricato", method = RequestMethod.GET)
-	public ModelAndView nuovoFabbricato(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
 	@RequestMapping(value = "/modificaFabbricato", method = RequestMethod.GET)
-	public ModelAndView modificaFabbricato(ModelMap model) throws Exception {
+	public ModelAndView modificaFabbricato(ModelMap model,
+			DatiFabbricati datiFabbricati) throws Exception {
 		model.addAttribute("datiPraticaPojo", this.praticaPojo);
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
-	@RequestMapping(value = "/salvaFabbricato", method = RequestMethod.GET)
-	public ModelAndView salvaFabbricato(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
-	}
-
-	@RequestMapping(value = "/terreni", method = RequestMethod.GET)
-	public ModelAndView terreni(ModelMap model) throws Exception {
-		String view = "table/praticheList";
-		List<Datipratica> list = datiPraticaService.findAll();
-		model.addAttribute("pratiche", list);
+	@RequestMapping(value = "/salvaFabbricato", method = RequestMethod.POST)
+	public ModelAndView salvaFabbricato(ModelMap model,
+			DatiFabbricati datiFabbricati) throws Exception {
+		String view = "redirect:fabbricati.htm?idalloggio=".concat(String
+				.valueOf(datiFabbricati.getIdAlloggio()));
+		datiAbusoService.saveFabbricato(datiFabbricati);
 		return new ModelAndView(view, model);
 	}
 
-	@RequestMapping(value = "/nuovoTerreno", method = RequestMethod.GET)
-	public ModelAndView nuovoTerreno(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+	@RequestMapping(value = "/removeFabbricato", method = RequestMethod.GET)
+	public ModelAndView removeFabbricato(ModelMap model,
+			DatiFabbricati datiFabbricati,
+			@RequestParam(value = "idfabbricato") String id) throws Exception {
+		String view = "redirect:fabbricati.htm?idalloggio="
+				.concat(this.idDatiAlloggio);
+		datiAbusoService.removeFabbricato(id);
+		return new ModelAndView(view, model);
+	}
+
+	@RequestMapping(value = "/terreni", method = RequestMethod.GET)
+	public ModelAndView terreni(@RequestParam(value = "idalloggio") String id,
+			ModelMap model) throws Exception {
+		String view = "table/terreniList";
+		this.idDatiAlloggio = id;
+		List<DatiTerreni> list = datiAbusoService.findAllTerreniById(id);
+		DatiTerreni terrenoNew = new DatiTerreni();
+		terrenoNew.setIdAlloggio(Integer.valueOf(id));
+		model.addAttribute("terrenoNew", terrenoNew);
+		model.addAttribute("terreni", list);
+		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/modificaTerreno", method = RequestMethod.GET)
@@ -301,10 +335,22 @@ public class PraticheController extends BaseController {
 		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
-	@RequestMapping(value = "/salvaTerreno", method = RequestMethod.GET)
-	public ModelAndView salvaTerreno(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
+	@RequestMapping(value = "/salvaTerreno", method = RequestMethod.POST)
+	public ModelAndView salvaTerreno(ModelMap model, DatiTerreni datiTerreni)
+			throws Exception {
+		String view = "redirect:terreni.htm?idalloggio="
+				.concat(this.idDatiAlloggio);
+		datiAbusoService.saveTerreno(datiTerreni);
+		return new ModelAndView(view, model);
+	}
+
+	@RequestMapping(value = "/removeTerreno", method = RequestMethod.GET)
+	public ModelAndView removeTerreno(ModelMap model, DatiTerreni datiTerreni,
+			@RequestParam(value = "idterreno") String id) throws Exception {
+		String view = "redirect:terreni.htm?idalloggio=".concat(String
+				.valueOf(datiTerreni.getIdAlloggio()));
+		datiAbusoService.removeTerreno(id);
+		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/soggetti", method = RequestMethod.GET)

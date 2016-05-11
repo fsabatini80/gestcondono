@@ -112,6 +112,18 @@
 	<bean id="datiAlloggioHome" class="it.soft.dao.DatiAlloggioHome">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	<bean id="datiFabbricatiHome" class="it.soft.dao.DatiFabbricatiHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="datiTerreniHome" class="it.soft.dao.DatiTerreniHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="documentiAbusoHome" class="it.soft.dao.DocumentiAbusoHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="tipologiaDocHome" class="it.soft.dao.TipologiaDocHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
 	<!-- END MAP DAO -->
 
 	<!-- BEGIN MAP viewResolver -->

@@ -2,18 +2,31 @@ package it.soft.service;
 
 import it.soft.dao.DatiAbusoHome;
 import it.soft.dao.DatiAlloggioHome;
+import it.soft.dao.DatiFabbricatiHome;
 import it.soft.dao.DatiPraticaHome;
+import it.soft.dao.DatiTerreniHome;
 import it.soft.dao.DestinazioneUsoHome;
+import it.soft.dao.DocumentiAbusoHome;
 import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.TipoAlloggioHome;
 import it.soft.dao.TipoOperaHome;
 import it.soft.dao.TipologiaAbusoHome;
+import it.soft.dao.TipologiaDocHome;
 import it.soft.domain.DatiAlloggio;
+import it.soft.domain.DatiFabbricati;
+import it.soft.domain.DatiTerreni;
 import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
+import it.soft.domain.DocumentiAbuso;
+import it.soft.domain.LeggiCondono;
+import it.soft.domain.TipologiaDocumento;
 import it.soft.web.pojo.DatiAbusoPojo;
+import it.soft.web.pojo.DatiAlloggioPojo;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +51,14 @@ public class DatiAbusoService {
 	DatiAlloggioHome datiAlloggioHome;
 	@Autowired
 	TipoAlloggioHome tipoAlloggioHome;
+	@Autowired
+	DatiTerreniHome datiTerreniHome;
+	@Autowired
+	DatiFabbricatiHome datiFabbricatiHome;
+	@Autowired
+	DocumentiAbusoHome documentiAbusoHome;
+	@Autowired
+	TipologiaDocHome tipologiaDocHome;
 
 	public void saveDatiAbuso(DatiAbusoPojo pojo) {
 		Datiabuso datiabuso;
@@ -140,15 +161,31 @@ public class DatiAbusoService {
 		return String.valueOf(datiAbusoHome.countProg(datipratica) + 1);
 	}
 
-	public void saveDatiAlloggio(DatiAlloggio datiAlloggio) {
-		if (datiAlloggio.getDestinazioneUso() != null)
+	public void saveDatiAlloggio(DatiAlloggioPojo pojo) {
+		DatiAlloggio datiAlloggio;
+		if (pojo.getIddatiAlloggio() != null)
+			datiAlloggio = datiAlloggioHome.findById(BigDecimal.valueOf(Integer
+					.valueOf(pojo.getIddatiAlloggio())));
+		else
+			datiAlloggio = new DatiAlloggio();
+
+		if (pojo.getDestinazioneUso() != null)
 			datiAlloggio.setDestinazioneUso(destinazioneUsoHome
-					.findById(Integer.valueOf(datiAlloggio.getDestinazioneUso()
-							.getIdtipologiaDestinazioneUso())));
-		if (datiAlloggio.getTipologiaAlloggio() != null)
-			datiAlloggio.setTipologiaAlloggio(tipoAlloggioHome
-					.findById(datiAlloggio.getTipologiaAlloggio()
-							.getIdtipologiaAlloggio()));
+					.findById(Integer.valueOf(pojo.getDestinazioneUso())));
+		if (pojo.getTipologiaAlloggio() != null)
+			datiAlloggio.setTipologiaAlloggio(tipoAlloggioHome.findById(Integer
+					.valueOf(pojo.getTipologiaAlloggio())));
+		if (pojo.getCaratteriSpeciali() != null) {
+			List<String> carSpecial = pojo.getCaratteriSpeciali();
+			datiAlloggio.setCaratteriSpeciali(Arrays.toString(carSpecial
+					.toArray()));
+		}
+		datiAlloggio.setIdAbuso(datiAbusoHome.findById(BigDecimal
+				.valueOf(Integer.valueOf(pojo.getIdAbuso()))));
+		datiAlloggio.setIdPratica(BigInteger.valueOf(Integer.valueOf(pojo
+				.getIdPratica())));
+		datiAlloggio.setSuperficieAccessoria(pojo.getSuperficieAccessoria());
+		datiAlloggio.setSuperficieUtile(pojo.getSuperficieUtile());
 		datiAlloggioHome.persist(datiAlloggio);
 
 	}
@@ -159,8 +196,123 @@ public class DatiAbusoService {
 		return datiAlloggioHome.findByIdAbuso(datiabuso);
 	}
 
-	public DatiAlloggio findAlloggioById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public DatiAlloggioPojo findAlloggioById(String id) {
+		BigDecimal idAlloggio = BigDecimal.valueOf(Integer.valueOf(id));
+		DatiAlloggioPojo pojo = new DatiAlloggioPojo();
+		DatiAlloggio datiAlloggio = datiAlloggioHome.findById(idAlloggio);
+		if (datiAlloggio.getTipologiaAlloggio() != null)
+			pojo.setTipologiaAlloggio(String.valueOf(datiAlloggio
+					.getTipologiaAlloggio().getIdtipologiaAlloggio()));
+		if (datiAlloggio.getDestinazioneUso() != null)
+			pojo.setDestinazioneUso(String.valueOf(datiAlloggio
+					.getDestinazioneUso().getIdtipologiaDestinazioneUso()));
+		if (datiAlloggio.getCaratteriSpeciali() != null) {
+			String s = datiAlloggio.getCaratteriSpeciali();
+			s = s.replace("[", "");
+			s = s.replace("]", "");
+			pojo.setCaratteriSpeciali(Arrays.asList(s));
+		}
+		if (datiAlloggio.getIdAbuso() != null) {
+			pojo.setIdAbuso(String.valueOf(datiAlloggio.getIdAbuso()));
+		}
+		pojo.setIddatiAlloggio(String.valueOf(datiAlloggio.getIddatiAlloggio()));
+		pojo.setIdPratica(String.valueOf(datiAlloggio.getIdPratica()));
+		pojo.setSuperficieAccessoria(datiAlloggio.getSuperficieAccessoria());
+		pojo.setSuperficieUtile(datiAlloggio.getSuperficieUtile());
+		return pojo;
+
 	}
+
+	public List<DatiTerreni> findAllTerreniById(String id) {
+		return datiTerreniHome.findAll(Integer.valueOf(id));
+	}
+
+	public void saveTerreno(DatiTerreni datiTerreni) {
+		datiTerreniHome.persist(datiTerreni);
+	}
+
+	public List<DatiFabbricati> findAllFabbricatiById(String id) {
+		return datiFabbricatiHome.findAll(Integer.valueOf(id));
+	}
+
+	public void saveFabbricato(DatiFabbricati datiFabbricati) {
+		datiFabbricatiHome.persist(datiFabbricati);
+	}
+
+	public void removeTerreno(String id) {
+		datiTerreniHome.remove(datiTerreniHome.findById(Integer.valueOf(id)));
+	}
+
+	public void removeFabbricato(String id) {
+		datiFabbricatiHome.remove(datiFabbricatiHome.findById(Integer
+				.valueOf(id)));
+	}
+
+	public List<DocumentiAbuso> findAllDocById(String id,
+			LeggiCondono leggiCondono) {
+		List<DocumentiAbuso> abusos;
+		Integer idAbuso = Integer.parseInt(id);
+		abusos = documentiAbusoHome.findAll(datiAbusoHome.findById(BigDecimal
+				.valueOf(idAbuso)));
+		if (abusos == null || abusos.isEmpty()) {
+			TipologiaDocumento documento = new TipologiaDocumento();
+			documento.setIdLeggiCondono(leggiCondono);
+			List<TipologiaDocumento> tipoDoc = tipologiaDocHome
+					.findAll(leggiCondono);
+			abusos = new ArrayList<DocumentiAbuso>();
+			for (TipologiaDocumento tipologiaDocumento : tipoDoc) {
+				DocumentiAbuso da = new DocumentiAbuso();
+				if (tipologiaDocumento.getObbligatorio() != (byte) 0) {
+					da.setIdTipoDocumento(tipologiaDocumento);
+					da.setIdAbuso(datiAbusoHome.findById(BigDecimal
+							.valueOf(idAbuso)));
+					da.setPresente((byte) 0);
+					da.setValido((byte) 0);
+					abusos.add(da);
+					documentiAbusoHome.persist(da);
+				}
+			}
+		}
+		return abusos;
+	}
+
+	public List<TipologiaDocumento> findAllDocToAdd() {
+		List<TipologiaDocumento> tipologiaDocumentos;
+
+		tipologiaDocumentos = tipologiaDocHome.findAll();
+		for (TipologiaDocumento tipologiaDocumento : tipologiaDocumentos) {
+			if (tipologiaDocumento.getObbligatorio() != 0)
+				tipologiaDocumentos.remove(tipologiaDocumento);
+		}
+		return tipologiaDocumentos;
+	}
+
+	public void addDocList(String[] array, String id) {
+		List<TipologiaDocumento> list = new ArrayList<TipologiaDocumento>();
+		for (int i = 0; i < array.length; i++) {
+			list.add(tipologiaDocHome.findById(Integer.valueOf(array[i])));
+		}
+		Integer idAbuso = Integer.parseInt(id);
+		for (TipologiaDocumento tipologiaDocumento : list) {
+			DocumentiAbuso da = new DocumentiAbuso();
+			if (tipologiaDocumento.getObbligatorio() == (byte) 0) {
+				da.setIdTipoDocumento(tipologiaDocumento);
+				da.setIdAbuso(datiAbusoHome.findById(BigDecimal
+						.valueOf(idAbuso)));
+				da.setPresente((byte) 0);
+				da.setValido((byte) 0);
+				documentiAbusoHome.persist(da);
+			}
+		}
+	}
+
+	public DocumentiAbuso findDocById(String id) {
+		Integer idInt = Integer.parseInt(id);
+		return documentiAbusoHome.findById(idInt);
+	}
+
+	public void saveDocById(DocumentiAbuso doc) {
+		documentiAbusoHome.persist(doc);
+	}
+
 }

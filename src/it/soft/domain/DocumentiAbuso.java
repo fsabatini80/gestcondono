@@ -1,47 +1,54 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.math.BigInteger;
-import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the documenti_abuso database table.
  * 
  */
 @Entity
-@Table(name="documenti_abuso")
+@Table(name = "documenti_abuso")
 public class DocumentiAbuso implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="iddocumenti_abuso", unique=true, nullable=false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "iddocumenti_abuso", unique = true, nullable = false)
 	private int iddocumentiAbuso;
 
-    @Lob()
+	@Lob()
 	private byte[] allegato;
 
-    @Temporal( TemporalType.DATE)
-	@Column(name="data_protocollo")
-	private Date dataProtocollo;
+	@Column(name = "data_protocollo")
+	private String dataProtocollo;
 
-	@Column(name="id_abuso")
-	private BigInteger idAbuso;
+	@OneToOne
+	@JoinColumn(name = "id_abuso")
+	private Datiabuso idAbuso;
 
-	@Column(name="id_tipo_documento")
-	private int idTipoDocumento;
+	@OneToOne
+	@JoinColumn(name = "id_tipo_documento")
+	private TipologiaDocumento idTipoDocumento;
 
-	@Column(name="numero_protocollo", length=45)
+	@Column(name = "numero_protocollo", length = 45)
 	private String numeroProtocollo;
 
 	private byte presente;
 
 	private byte valido;
 
-    public DocumentiAbuso() {
-    }
+	public DocumentiAbuso() {
+	}
 
 	public int getIddocumentiAbuso() {
 		return this.iddocumentiAbuso;
@@ -59,27 +66,27 @@ public class DocumentiAbuso implements Serializable {
 		this.allegato = allegato;
 	}
 
-	public Date getDataProtocollo() {
+	public String getDataProtocollo() {
 		return this.dataProtocollo;
 	}
 
-	public void setDataProtocollo(Date dataProtocollo) {
+	public void setDataProtocollo(String dataProtocollo) {
 		this.dataProtocollo = dataProtocollo;
 	}
 
-	public BigInteger getIdAbuso() {
+	public Datiabuso getIdAbuso() {
 		return this.idAbuso;
 	}
 
-	public void setIdAbuso(BigInteger idAbuso) {
+	public void setIdAbuso(Datiabuso idAbuso) {
 		this.idAbuso = idAbuso;
 	}
 
-	public int getIdTipoDocumento() {
+	public TipologiaDocumento getIdTipoDocumento() {
 		return this.idTipoDocumento;
 	}
 
-	public void setIdTipoDocumento(int idTipoDocumento) {
+	public void setIdTipoDocumento(TipologiaDocumento idTipoDocumento) {
 		this.idTipoDocumento = idTipoDocumento;
 	}
 
