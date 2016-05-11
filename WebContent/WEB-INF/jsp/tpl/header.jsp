@@ -89,6 +89,7 @@
 		$("#effect6").hide();
 		$("#effect7").hide();
 		$("#effect8").hide();
+		$("#effect9").hide();
 	});
 
 	// run the currently selected effect    

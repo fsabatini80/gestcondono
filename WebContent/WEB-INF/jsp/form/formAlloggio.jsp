@@ -12,7 +12,8 @@
 				<td><form:select path="tipologiaAlloggio">
 						<form:options items="${tipologiaAlloggios}"
 							itemLabel="descrizione" itemValue="idtipologiaAlloggio" />
-					</form:select></td>
+					</form:select>
+					<form:hidden path="iddatiAlloggio" /></td>
 			</tr>
 			<tr>
 				<td>Destinazione uso :</td>

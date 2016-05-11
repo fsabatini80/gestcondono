@@ -6,16 +6,19 @@
 	uri="http://www.springframework.org/security/tags"%>
 
 <jsp:include page="../tpl/header.jsp" />
-
+<h2
+	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
+	Terreni</h2>
 <img alt="aggiungi terreno" title="aggiungi terreno" src="img/add.png"
 	onclick="runEffect('#effect8')">
 <div id="effect8">
-	<form:form action="nuovoTerreno.htm" commandName="terrenoNew"
+	<form:form action="salvaTerreno.htm" commandName="terrenoNew"
 		method="POST">
 		<table>
 			<tr>
 				<td>Foglio :</td>
-				<td><form:input path="foglio" /></td>
+				<td><form:input path="foglio" /> <form:hidden
+						path="iddatiTerreni" /> <form:hidden path="idAlloggio" /></td>
 			</tr>
 			<tr>
 				<td>Particella :</td>
@@ -44,15 +47,22 @@
 				<th>Particella</th>
 				<th>Subalterno</th>
 				<th>Sezione</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody align="center">
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
+			<c:forEach items="${terreni}" var="terreno">
+				<tr>
+					<td>${terreno.foglio}</td>
+					<td>${terreno.particella}</td>
+					<td>${terreno.subalterno}</td>
+					<td>${terreno.sezione}</td>
+					<td><a
+						href="<c:url value="removeTerreno.htm?idterreno=${terreno.iddatiTerreni}" />">
+							<img title="rimuovi terreno" src="img/24/delete.png">
+					</a></td>
+				</tr>
+			</c:forEach>
 		</tbody>
 	</table>
 </div>

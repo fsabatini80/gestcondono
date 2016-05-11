@@ -6,7 +6,9 @@
 	uri="http://www.springframework.org/security/tags"%>
 <html>
 <jsp:include page="../tpl/header.jsp" />
-	
+<h2
+	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
+	Pratiche</h2>
 <div>
 	<a href="<c:url value="nuovaPratica.htm" />"
 		title="crea una nuova pratica"> <img
@@ -32,12 +34,12 @@
 				<td>${pratica.richiedente.cognome} ${pratica.richiedente.nome}</td>
 				<td>${pratica.dataDomanda}</td>
 				<td>${pratica.leggeCondono.leggeNumero}</td>
-				<td><a
+				<td width="200px"><a
 					href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
-					title="modifica pratica"><img src="img/24/form_blue_edit.png"
+					title="modifica pratica"><img src="img/24/edit.png"
 						title="modifica pratica"></a><a
 					href="<c:url value="abusi.htm?idpratica=${pratica.iddatipratica}" />"
-					title="visualizza abusi"><img src="img/24/clipboard_next.png"
+					title="visualizza abusi"><img src="img/24/find.png"
 						title="visualizza abusi"></a> <a
 					href="<c:url value="insPraticawzd.htm" />"
 					title="visualizza versamenti"><img src="img/24/symbol_euro.png"

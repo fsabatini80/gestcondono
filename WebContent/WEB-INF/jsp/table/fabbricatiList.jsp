@@ -6,16 +6,19 @@
 	uri="http://www.springframework.org/security/tags"%>
 
 <jsp:include page="../tpl/header.jsp" />
-
+<h2
+	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
+	Fabbricati</h2>
 <img alt="aggiungi fabbricato" title="aggiungi fabbricato"
 	src="img/add.png" onclick="runEffect('#effect7')">
 <div id="effect7">
-	<form:form action="nuovoFabbricato.htm" commandName="fabbricatoNew"
+	<form:form action="salvaFabbricato.htm" commandName="fabbricatoNew"
 		method="POST">
 		<table>
 			<tr>
 				<td>Foglio :</td>
-				<td><form:input path="foglio" /></td>
+				<td><form:input path="foglio" /> <form:hidden
+						path="iddatiFabbricati" /> <form:hidden path="idAlloggio" /></td>
 			</tr>
 			<tr>
 				<td>Particella :</td>
@@ -44,15 +47,22 @@
 				<th>Particella</th>
 				<th>Subalterno</th>
 				<th>Sezione</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody align="center">
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
+			<c:forEach items="${fabbricati}" var="fabbricato">
+				<tr>
+					<td>${fabbricato.foglio}</td>
+					<td>${fabbricato.subalterno}</td>
+					<td>${fabbricato.particella}</td>
+					<td>${fabbricato.sezione}</td>
+					<td><a
+						href="<c:url value="removeFabbricato.htm?idfabbricato=${fabbricato.iddatiFabbricati}" />">
+							<img title="rimuovi fabbricato" src="img/24/delete.png">
+					</a></td>
+				</tr>
+			</c:forEach>
 		</tbody>
 	</table>
 </div>

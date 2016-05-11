@@ -5,52 +5,66 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <jsp:include page="../tpl/header.jsp" />
-<table id="example10" class="display">
-	<thead>
-		<tr>
-			<th></th>
-			<th>Tipo</th>
-			<th>Data protocollo</th>
-			<th>Numero protocollo</th>
-			<th>Allegato</th>
-			<th>Presente?</th>
-			<th>Valido?</th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody align="center">
-		<tr>
-			<td><img src="img/sign_warning.png"></td>
-			<td>Domanda condono</td>
-			<td></td>
-			<td></td>
-			<td><img src="img/document_attachment.png"></td>
-			<td><img src="img/document_ok.png"></td>
-			<td><img src="img/document_forbidden.png"></td>
-			<td><img src="img/document_edit.png"><img
-				src="img/document_delete.png"></td>
-		</tr>
-		<tr>
-			<td><img src="img/sign_warning.png"></td>
-			<td>1° attestazione pagamento oblazione</td>
-			<td></td>
-			<td></td>
-			<td><img src="img/document_attachment.png"></td>
-			<td><img src="img/document_ok.png"></td>
-			<td><img src="img/document_ok.png"></td>
-			<td><img src="img/document_edit.png"><img
-				src="img/document_delete.png"></td>
-		</tr>
-		<tr>
-			<td><img src="img/sign_warning.png"></td>
-			<td>1° attestazione pagamento oblazione regionale</td>
-			<td></td>
-			<td></td>
-			<td><img src="img/document_attachment.png"></td>
-			<td><img src="img/document_forbidden.png"></td>
-			<td><img src="img/document_forbidden.png"></td>
-			<td><img src="img/document_edit.png"><img
-				src="img/document_delete.png"></td>
-		</tr>
-	</tbody>
-</table>
+<h2
+	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
+	Documenti</h2>
+<img alt="aggiungi documento" title="aggiungi documento"
+	src="img/add.png" onclick="runEffect('#effect9')">
+<div id="effect9">
+	<form:form action="nuovoDocumento.htm"
+		commandName="tipologiaDocumentoPojo" method="POST">
+		<table>
+			<tr>
+				<td>Documenti da aggiungere:</td>
+				<td><form:checkboxes items="${documentiAdd}"
+						itemLabel="descrizione" itemValue="idtipologiaDocumento"
+						path="docToAdd" delimiter="<br />" /></td>
+			</tr>
+			<tr>
+				<td><form:button name="aggiungi" value="aggiungi">aggiungi</form:button>
+				</td>
+			</tr>
+		</table>
+	</form:form>
+</div>
+<div>
+	<table id="example10" class="display">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Tipo</th>
+				<th>Data protocollo</th>
+				<th>Numero protocollo</th>
+				<th>Allegato</th>
+				<th>Presente?</th>
+				<th>Valido?</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody align="center">
+			<c:forEach items="${documenti}" var="doc">
+				<tr>
+					<td><c:if test="${doc.idTipoDocumento.obbligatorio > 0}">
+							<img src="img/sign_warning.png">
+						</c:if></td>
+					<td>${doc.idTipoDocumento.descrizione}</td>
+					<td>${doc.dataProtocollo}</td>
+					<td>${doc.numeroProtocollo}</td>
+					<td><img src="img/document_attachment.png"></td>
+					<td><c:if test="${doc.presente > 0}">
+							<img src="img/document_ok.png">
+						</c:if> <c:if test="${doc.presente == 0}">
+							<img src="img/document_forbidden.png">
+						</c:if></td>
+					<td><c:if test="${doc.valido > 0}">
+							<img src="img/document_ok.png">
+						</c:if> <c:if test="${doc.valido == 0}">
+							<img src="img/document_forbidden.png">
+						</c:if></td>
+					<td><img src="img/document_edit.png"><img
+						src="img/document_delete.png"></td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+</div>

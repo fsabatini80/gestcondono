@@ -7,7 +7,9 @@
 
 
 <jsp:include page="../tpl/header.jsp" />
-
+<h2
+	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
+	Alloggi</h2>
 <div>
 	<a href="<c:url value="nuovoAlloggio.htm" />" title="aggiungi alloggio">
 		<img title="aggiungi alloggio" src="img/add.png">
@@ -31,16 +33,16 @@
 				<td>${alloggio.destinazioneUso.descrizioneTipologia}</td>
 				<td>${alloggio.superficieUtile}</td>
 				<td>${alloggio.superficieAccessoria}</td>
-				<td><a
+				<td width="200px"><a
 					href="<c:url value="modificaAlloggio.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
-					title="modifica alloggio"><img src="img/32/form_blue_edit.png"
+					title="modifica alloggio"><img src="img/24/edit.png"
 						title="modifica alloggio"></a> <a
 					href="<c:url value="fabbricati.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
 					title="visualizza fabbricati"><img
-						src="img/32/form_blue_edit.png" title="visualizza fabbricati"></a>
+						src="img/24/find.png" title="visualizza fabbricati"></a>
 					<a
 					href="<c:url value="terreni.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
-					title="visualizza terreni"><img src="img/32/clipboard.png"
+					title="visualizza terreni"><img src="img/24/find.png"
 						title="visualizza terreni"></a></td>
 			</tr>
 		</c:forEach>

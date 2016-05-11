@@ -6,7 +6,9 @@
 	uri="http://www.springframework.org/security/tags"%>
 
 <jsp:include page="../tpl/header.jsp" />
-
+<h2
+	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
+	Abusi</h2>
 <div>
 	<a href="<c:url value="nuovoAbuso.htm" />" title="crea un nuovo abuso">
 		<img title="crea un nuovo abuso" src="img/add.png">
@@ -33,10 +35,10 @@
 				<td>${abuso.tipoOpera.descrizione}</td>
 				<td width="300px"><a
 					href="<c:url value="modificaAbuso.htm?idabuso=${abuso.iddatiabuso}" />"
-					title="modifica abuso"><img src="img/24/clipboard.png"
+					title="modifica abuso"><img src="img/24/edit.png"
 						title="modifica abuso"></a> <a
 					href="<c:url value="alloggi.htm?idabuso=${abuso.iddatiabuso}" />"
-					title="visualizza alloggi"><img src="img/24/houses.png"
+					title="visualizza alloggi"><img src="img/24/find.png"
 						title="visualizza alloggi"></a> <a
 					href="<c:url value="documenti.htm?idabuso=${abuso.iddatiabuso}" />"
 					title="visualizza documenti"><img
