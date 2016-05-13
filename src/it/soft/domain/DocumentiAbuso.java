@@ -43,9 +43,9 @@ public class DocumentiAbuso implements Serializable {
 	@Column(name = "numero_protocollo", length = 45)
 	private String numeroProtocollo;
 
-	private byte presente;
+	private boolean presente;
 
-	private byte valido;
+	private boolean valido;
 
 	public DocumentiAbuso() {
 	}
@@ -98,19 +98,19 @@ public class DocumentiAbuso implements Serializable {
 		this.numeroProtocollo = numeroProtocollo;
 	}
 
-	public byte getPresente() {
+	public boolean getPresente() {
 		return this.presente;
 	}
 
-	public void setPresente(byte presente) {
+	public void setPresente(boolean presente) {
 		this.presente = presente;
 	}
 
-	public byte getValido() {
+	public boolean getValido() {
 		return this.valido;
 	}
 
-	public void setValido(byte valido) {
+	public void setValido(boolean valido) {
 		this.valido = valido;
 	}
 

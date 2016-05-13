@@ -3,6 +3,7 @@ package it.soft.service;
 import it.soft.dao.DatiAbusoHome;
 import it.soft.dao.DatiAlloggioHome;
 import it.soft.dao.DatiFabbricatiHome;
+import it.soft.dao.DatiLocalizzazioneHome;
 import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DatiTerreniHome;
 import it.soft.dao.DestinazioneUsoHome;
@@ -14,6 +15,7 @@ import it.soft.dao.TipologiaAbusoHome;
 import it.soft.dao.TipologiaDocHome;
 import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiFabbricati;
+import it.soft.domain.DatiLocalizzazione;
 import it.soft.domain.DatiTerreni;
 import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
@@ -22,6 +24,7 @@ import it.soft.domain.LeggiCondono;
 import it.soft.domain.TipologiaDocumento;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiAlloggioPojo;
+import it.soft.web.pojo.DocumentiAbusoPojo;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -59,6 +62,8 @@ public class DatiAbusoService {
 	DocumentiAbusoHome documentiAbusoHome;
 	@Autowired
 	TipologiaDocHome tipologiaDocHome;
+	@Autowired
+	DatiLocalizzazioneHome datiLocalizzazioneHome;
 
 	public void saveDatiAbuso(DatiAbusoPojo pojo) {
 		Datiabuso datiabuso;
@@ -85,7 +90,23 @@ public class DatiAbusoService {
 		if (pojo.getIdPratica() != null && !"".equals(pojo.getIdPratica()))
 			datiabuso.setIdPratica(datiPraticaHome.findById(BigDecimal
 					.valueOf(Integer.valueOf(pojo.getIdPratica()))));
-		datiabuso.setLocalizzazione(pojo.getLocalizzazione());
+		if (pojo.getLocalizzazione() != null
+				&& !"".equals(pojo.getLocalizzazione()
+						.getIddatiLocalizzazione())
+				&& pojo.getLocalizzazione().getIddatiLocalizzazione() != null) {
+			DatiLocalizzazione loc = pojo.getLocalizzazione();
+			loc.setDatiabuso(datiabuso);
+			datiLocalizzazioneHome.persist(loc);
+			datiabuso.setLocalizzazione(datiLocalizzazioneHome.findById(loc
+					.getIddatiLocalizzazione()));
+		} else {
+			DatiLocalizzazione loc = pojo.getLocalizzazione();
+			// loc.setDatiabuso(datiabuso);
+			// creazione id con autoincrement
+			loc.setIddatiLocalizzazione(null);
+			datiLocalizzazioneHome.persist(loc);
+			datiabuso.setLocalizzazione(loc);
+		}
 		datiabuso.setNonresidenziale(pojo.getNonresidenziale());
 		datiabuso.setNonresidenzialeVuoto(pojo.getNonresidenzialeVuoto());
 		datiabuso.setNumeroAddetti(pojo.getNumeroAddetti());
@@ -124,7 +145,9 @@ public class DatiAbusoService {
 		if (source.getIdPratica() != null)
 			target.setIdPratica(String.valueOf(source.getIdPratica()
 					.getIddatipratica()));
-		target.setLocalizzazione(source.getLocalizzazione());
+		if (source.getLocalizzazione() != null)
+			target.setLocalizzazione(datiLocalizzazioneHome.findById((source
+					.getLocalizzazione().getIddatiLocalizzazione())));
 		target.setNonresidenziale(source.getNonresidenziale());
 		target.setNonresidenzialeVuoto(source.getNonresidenzialeVuoto());
 		target.setNumeroAddetti(source.getNumeroAddetti());
@@ -163,7 +186,8 @@ public class DatiAbusoService {
 
 	public void saveDatiAlloggio(DatiAlloggioPojo pojo) {
 		DatiAlloggio datiAlloggio;
-		if (pojo.getIddatiAlloggio() != null)
+		if (pojo.getIddatiAlloggio() != null
+				&& !"".equals(pojo.getIddatiAlloggio()))
 			datiAlloggio = datiAlloggioHome.findById(BigDecimal.valueOf(Integer
 					.valueOf(pojo.getIddatiAlloggio())));
 		else
@@ -243,7 +267,7 @@ public class DatiAbusoService {
 		datiTerreniHome.remove(datiTerreniHome.findById(Integer.valueOf(id)));
 	}
 
-	public void removeFabbricato(String id) {
+	public void removeFabbricato(String id, String idDatiAlloggio) {
 		datiFabbricatiHome.remove(datiFabbricatiHome.findById(Integer
 				.valueOf(id)));
 	}
@@ -266,8 +290,10 @@ public class DatiAbusoService {
 					da.setIdTipoDocumento(tipologiaDocumento);
 					da.setIdAbuso(datiAbusoHome.findById(BigDecimal
 							.valueOf(idAbuso)));
-					da.setPresente((byte) 0);
-					da.setValido((byte) 0);
+					// da.setPresente((byte) 0);
+					// da.setValido((byte) 0);
+					da.setPresente(false);
+					da.setValido(false);
 					abusos.add(da);
 					documentiAbusoHome.persist(da);
 				}
@@ -299,20 +325,55 @@ public class DatiAbusoService {
 				da.setIdTipoDocumento(tipologiaDocumento);
 				da.setIdAbuso(datiAbusoHome.findById(BigDecimal
 						.valueOf(idAbuso)));
-				da.setPresente((byte) 0);
-				da.setValido((byte) 0);
+				// da.setPresente((byte) 0);
+				// da.setValido((byte) 0);
+				da.setPresente(false);
+				da.setValido(false);
 				documentiAbusoHome.persist(da);
 			}
 		}
 	}
 
-	public DocumentiAbuso findDocById(String id) {
+	public DocumentiAbusoPojo findDocById(String id) {
 		Integer idInt = Integer.parseInt(id);
-		return documentiAbusoHome.findById(idInt);
+		DocumentiAbuso documentiAbuso = documentiAbusoHome.findById(idInt);
+		DocumentiAbusoPojo documentiAbusoPojo = new DocumentiAbusoPojo();
+		documentiAbusoPojo.setAllegato(documentiAbuso.getAllegato());
+		documentiAbusoPojo
+				.setDataProtocollo(documentiAbuso.getDataProtocollo());
+		if (documentiAbuso.getIdAbuso() != null)
+			documentiAbusoPojo.setIdAbuso(String.valueOf(documentiAbuso
+					.getIdAbuso().getIddatiabuso()));
+		documentiAbusoPojo.setIddocumentiAbuso(documentiAbuso
+				.getIddocumentiAbuso());
+		if (documentiAbuso.getIdTipoDocumento() != null)
+			documentiAbusoPojo.setIdTipoDocumento(String.valueOf(documentiAbuso
+					.getIdTipoDocumento().getIdtipologiaDocumento()));
+		documentiAbusoPojo.setNumeroProtocollo(documentiAbuso
+				.getNumeroProtocollo());
+		documentiAbusoPojo.setPresente(documentiAbuso.getPresente());
+		if (documentiAbuso.getIdTipoDocumento() != null)
+			documentiAbusoPojo.setTipo(documentiAbuso.getIdTipoDocumento()
+					.getDescrizione());
+		documentiAbusoPojo.setValido(documentiAbuso.getValido());
+		return documentiAbusoPojo;
 	}
 
-	public void saveDocById(DocumentiAbuso doc) {
-		documentiAbusoHome.persist(doc);
+	public void saveDocById(DocumentiAbusoPojo doc) {
+		DocumentiAbuso documentiAbuso = new DocumentiAbuso();
+		documentiAbuso.setAllegato(doc.getAllegato());
+		documentiAbuso.setDataProtocollo(doc.getDataProtocollo());
+		BigDecimal id = BigDecimal.valueOf(Integer.valueOf(doc.getIdAbuso()));
+		documentiAbuso.setIdAbuso(datiAbusoHome.findById(id));
+		documentiAbuso.setIddocumentiAbuso(doc.getIddocumentiAbuso());
+		Integer idTipoDocumento = Integer.valueOf(doc.getIdTipoDocumento());
+		documentiAbuso.setIdTipoDocumento(tipologiaDocHome
+				.findById(idTipoDocumento));
+		documentiAbuso.setNumeroProtocollo(doc.getNumeroProtocollo());
+		documentiAbuso.setPresente(doc.isPresente());
+		documentiAbuso.setValido(doc.isValido());
+
+		documentiAbusoHome.persist(documentiAbuso);
 	}
 
 }

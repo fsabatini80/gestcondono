@@ -35,7 +35,8 @@ public class DatiPraticaService {
 				&& !"".equals(pojo.getDataProtocollo()))
 			datipratica.setDataProtocollo(pojo.getDataProtocollo());
 		if (pojo.getLeggeCondono() != null)
-			datipratica.setLeggeCondono(pojo.getLeggeCondono());
+			datipratica.setLeggeCondono(leggiCondonoHome.findById(Integer
+					.valueOf(pojo.getLeggeCondono())));
 		datipratica.setNumeroPratica(pojo.getNumeroPratica());
 		datipratica.setNumeroProtocollo(pojo.getNumeroProtocollo());
 		datipratica.setIdUtente(BigDecimal.valueOf(Integer.parseInt(pojo
@@ -104,7 +105,8 @@ public class DatiPraticaService {
 				&& Converter
 						.byteToBoolean(source.getRichiedente().getIsvalid()));
 		if (source.getLeggeCondono() != null)
-			target.setLeggeCondono(source.getLeggeCondono());
+			target.setLeggeCondono(String.valueOf(source.getLeggeCondono()
+					.getIdleggiCondono()));
 		target.setNome(source.getRichiedente() != null ? source
 				.getRichiedente().getNome() : "");
 		target.setNumeroPratica(source.getNumeroPratica());

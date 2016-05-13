@@ -92,14 +92,14 @@ public class Datiabuso implements Serializable {
 	@Column(name = "volume_utile", length = 45)
 	private String volumeUtile;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "iddati_localizzazione")
 	private DatiLocalizzazione localizzazione;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_abuso")
 	private List<RelSoggettoAbuso> soggettis;
-	
+
 	@Column
 	private Integer progressivo;
 

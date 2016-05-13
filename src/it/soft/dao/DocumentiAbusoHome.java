@@ -121,7 +121,7 @@ public class DocumentiAbusoHome {
 			throw re;
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<DocumentiAbuso> findAll(Datiabuso iddocumentiAbuso) {
 		try {

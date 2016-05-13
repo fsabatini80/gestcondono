@@ -29,6 +29,7 @@ import it.soft.service.DatiPraticaService;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiAlloggioPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
+import it.soft.web.pojo.DocumentiAbusoPojo;
 import it.soft.web.pojo.TipologiaDocumentoPojo;
 import it.soft.web.validator.DatiAbusoValidator;
 import it.soft.web.validator.DatiPraticaValidator;
@@ -187,6 +188,8 @@ public class PraticheController extends BaseController {
 			@RequestParam(value = "idabuso") String id, ModelMap model)
 			throws Exception {
 		this.abusoPojo = datiAbusoService.findById(id);
+		this.praticaPojo = datiPraticaService.findById(this.abusoPojo
+				.getDatiPratica());
 		model.addAttribute("datiAbusoPojo", this.abusoPojo);
 		initModelAbuso(model);
 		return new ModelAndView("form/formAbuso", model);
@@ -240,7 +243,8 @@ public class PraticheController extends BaseController {
 		String view = "table/documentiList";
 		this.abusoPojo = datiAbusoService.findById(id);
 		List<DocumentiAbuso> list = datiAbusoService.findAllDocById(id,
-				this.praticaPojo.getLeggeCondono());
+				leggiCondonoHome.findById(Integer.valueOf(this.praticaPojo
+						.getLeggeCondono())));
 		model.addAttribute("documenti", list);
 		List<TipologiaDocumento> listAdd = datiAbusoService.findAllDocToAdd();
 		model.addAttribute("documentiAdd", listAdd);
@@ -262,17 +266,19 @@ public class PraticheController extends BaseController {
 	@RequestMapping(value = "/modificaDocumento", method = RequestMethod.GET)
 	public ModelAndView modificaDocumento(ModelMap model,
 			@RequestParam(value = "iddocumento") String id) throws Exception {
-		String view = "redirect:documenti.htm?idabuso=".concat(this.abusoPojo
-				.getIddatiabuso());
-		DocumentiAbuso documentiAbuso = datiAbusoService.findDocById(id);
+		String view = "form/formDocumento";
+		DocumentiAbusoPojo documentiAbuso = datiAbusoService.findDocById(id);
 		model.addAttribute("documentiAbuso", documentiAbuso);
 		return new ModelAndView(view, model);
 	}
 
-	@RequestMapping(value = "/salvaDocumento", method = RequestMethod.GET)
-	public ModelAndView salvaDocumento(ModelMap model) throws Exception {
+	@RequestMapping(value = "/salvaDocumento", method = RequestMethod.POST)
+	public ModelAndView salvaDocumento(ModelMap model,
+			DocumentiAbusoPojo documentiAbuso) throws Exception {
 		String view = "redirect:documenti.htm?idabuso=".concat(this.abusoPojo
 				.getIddatiabuso());
+		documentiAbuso.setIdAbuso(this.abusoPojo.getIddatiabuso());
+		datiAbusoService.saveDocById(documentiAbuso);
 		return new ModelAndView(view, model);
 	}
 
@@ -312,7 +318,7 @@ public class PraticheController extends BaseController {
 			@RequestParam(value = "idfabbricato") String id) throws Exception {
 		String view = "redirect:fabbricati.htm?idalloggio="
 				.concat(this.idDatiAlloggio);
-		datiAbusoService.removeFabbricato(id);
+		datiAbusoService.removeFabbricato(id,this.idDatiAlloggio);
 		return new ModelAndView(view, model);
 	}
 
@@ -420,11 +426,11 @@ public class PraticheController extends BaseController {
 
 	private void initModelAbuso(ModelMap model) {
 		this.tipologiaDestinazioneUsos = destinazioneUsoHome.findAll();
-		this.epocaAbusos = epocaAbusoHome.findAll(this.praticaPojo
-				.getLeggeCondono());
+		this.epocaAbusos = epocaAbusoHome.findAll(leggiCondonoHome
+				.findById(Integer.valueOf(this.praticaPojo.getLeggeCondono())));
 		this.tipoOperas = tipoOperaHome.findAll();
-		this.tipologiaAbusos = tipologiaAbusoHome.findAll(this.praticaPojo
-				.getLeggeCondono());
+		this.tipologiaAbusos = tipologiaAbusoHome.findAll(leggiCondonoHome
+				.findById(Integer.valueOf(this.praticaPojo.getLeggeCondono())));
 		model.addAttribute("tipologiaDestinazioneUsos",
 				tipologiaDestinazioneUsos);
 		model.addAttribute("epocaAbusos", epocaAbusos);

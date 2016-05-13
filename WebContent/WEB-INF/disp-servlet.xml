@@ -124,6 +124,9 @@
 	<bean id="tipologiaDocHome" class="it.soft.dao.TipologiaDocHome">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	<bean id="datiLocalizzazioneHome" class="it.soft.dao.DatiLocalizzazioneHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
 	<!-- END MAP DAO -->
 
 	<!-- BEGIN MAP viewResolver -->

@@ -44,24 +44,27 @@
 		<tbody align="center">
 			<c:forEach items="${documenti}" var="doc">
 				<tr>
-					<td><c:if test="${doc.idTipoDocumento.obbligatorio > 0}">
+					<td width="100px"><c:if
+							test="${doc.idTipoDocumento.obbligatorio > 0}">
 							<img src="img/sign_warning.png">
 						</c:if></td>
 					<td>${doc.idTipoDocumento.descrizione}</td>
 					<td>${doc.dataProtocollo}</td>
 					<td>${doc.numeroProtocollo}</td>
 					<td><img src="img/document_attachment.png"></td>
-					<td><c:if test="${doc.presente > 0}">
+					<td><c:if test="${doc.presente}">
 							<img src="img/document_ok.png">
-						</c:if> <c:if test="${doc.presente == 0}">
+						</c:if> <c:if test="${!doc.presente}">
 							<img src="img/document_forbidden.png">
 						</c:if></td>
-					<td><c:if test="${doc.valido > 0}">
+					<td><c:if test="${doc.valido}">
 							<img src="img/document_ok.png">
-						</c:if> <c:if test="${doc.valido == 0}">
+						</c:if> <c:if test="${!doc.valido}">
 							<img src="img/document_forbidden.png">
 						</c:if></td>
-					<td><img src="img/document_edit.png"><img
+					<td><a
+						href="<c:url value="modificaDocumento.htm?iddocumento=${doc.iddocumentiAbuso}" />"><img
+							src="img/document_edit.png"></a><img
 						src="img/document_delete.png"></td>
 				</tr>
 			</c:forEach>

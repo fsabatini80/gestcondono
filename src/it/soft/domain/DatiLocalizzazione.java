@@ -1,9 +1,16 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
 import java.math.BigInteger;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the dati_localizzazione database table.
@@ -17,7 +24,7 @@ public class DatiLocalizzazione implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "iddati_localizzazione", unique = true, nullable = false)
-	private String iddatiLocalizzazione;
+	private BigInteger iddatiLocalizzazione;
 
 	@Column(length = 45)
 	private String cap;
@@ -34,24 +41,24 @@ public class DatiLocalizzazione implements Serializable {
 	@Column(length = 45)
 	private String provincia;
 
-	@Column(name = "vincoli_tutela", length = 45)
+	@Column(name = "vincoli_tutela")
 	private String vincoliTutela;
 
-	@Column(name = "zona_urbanizzazione", length = 45)
+	@Column(name = "zona_urbanizzazione")
 	private String zonaUrbanizzazione;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "id_abuso")
 	private Datiabuso datiabuso;
 
 	public DatiLocalizzazione() {
 	}
 
-	public String getIddatiLocalizzazione() {
+	public BigInteger getIddatiLocalizzazione() {
 		return this.iddatiLocalizzazione;
 	}
 
-	public void setIddatiLocalizzazione(String iddatiLocalizzazione) {
+	public void setIddatiLocalizzazione(BigInteger iddatiLocalizzazione) {
 		this.iddatiLocalizzazione = iddatiLocalizzazione;
 	}
 

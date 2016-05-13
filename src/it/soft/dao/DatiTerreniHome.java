@@ -54,8 +54,12 @@ public class DatiTerreniHome {
 			org.hibernate.Session sess2 = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
 			sess2.beginTransaction();
-			sess2.delete(hibernateTemplate.load(DatiTerreni.class,
-					persistentInstance.getIddatiTerreni()));
+			try {
+				sess2.delete(persistentInstance);
+			} catch (RuntimeException e) {
+				sess2.delete(hibernateTemplate.load(DatiTerreni.class,
+						persistentInstance.getIddatiTerreni()));
+			}
 			sess2.getTransaction().commit();
 			log.debug("remove successful");
 		} catch (RuntimeException re) {

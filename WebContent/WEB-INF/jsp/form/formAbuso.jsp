@@ -109,26 +109,13 @@
 					</tr>
 				</table>
 			</div>
-			<h2>Soggetto abuso</h2>
-			<div id="accordionDatAbuso4">
-				<table>
-					<tr>
-						<td><form:checkbox path="soggettiAbuso" value="PROPRIETARIO" />PROPRIETARIO</td>
-						<td><form:checkbox path="soggettiAbuso" value="RICHIEDENTE" />RICHIEDENTE</td>
-						<td><form:checkbox path="soggettiAbuso" value="DELEGATO" />DELEGATO</td>
-						<td><form:checkbox path="soggettiAbuso" value="ALTRO" />ALTRO</td>
-						<td><form:checkbox path="soggettiAbuso" value="DECEDUTO" />DECEDUTO</td>
-						<td><form:checkbox path="soggettiAbuso"
-								value="COMPROPRIETARIO" />COMPROPRIETARIO</td>
-					</tr>
-				</table>
-			</div>
 			<h2>Localizzazione</h2>
 			<div id="accordionDatAbuso5">
 				<table>
 					<tr>
 						<td>Provincia :</td>
-						<td><form:input path="localizzazione.provincia" /></td>
+						<td><form:input path="localizzazione.provincia" />
+							<form:hidden path="localizzazione.iddatiLocalizzazione" /></td>
 					</tr>
 					<tr>
 						<td>Comune :</td>
