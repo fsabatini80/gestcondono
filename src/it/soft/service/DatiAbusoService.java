@@ -9,6 +9,7 @@ import it.soft.dao.DatiTerreniHome;
 import it.soft.dao.DestinazioneUsoHome;
 import it.soft.dao.DocumentiAbusoHome;
 import it.soft.dao.EpocaAbusoHome;
+import it.soft.dao.RelSoggettoAbusoHome;
 import it.soft.dao.TipoAlloggioHome;
 import it.soft.dao.TipoOperaHome;
 import it.soft.dao.TipologiaAbusoHome;
@@ -21,6 +22,7 @@ import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
 import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.LeggiCondono;
+import it.soft.domain.RelSoggettoAbuso;
 import it.soft.domain.TipologiaDocumento;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiAlloggioPojo;
@@ -64,6 +66,8 @@ public class DatiAbusoService {
 	TipologiaDocHome tipologiaDocHome;
 	@Autowired
 	DatiLocalizzazioneHome datiLocalizzazioneHome;
+	@Autowired
+	RelSoggettoAbusoHome relSoggettoAbusoHome;
 
 	public void saveDatiAbuso(DatiAbusoPojo pojo) {
 		Datiabuso datiabuso;
@@ -372,8 +376,24 @@ public class DatiAbusoService {
 		documentiAbuso.setNumeroProtocollo(doc.getNumeroProtocollo());
 		documentiAbuso.setPresente(doc.isPresente());
 		documentiAbuso.setValido(doc.isValido());
-
 		documentiAbusoHome.persist(documentiAbuso);
 	}
 
+	public List<RelSoggettoAbuso> findAllSoggettiById(String id) {
+		return relSoggettoAbusoHome.findAll(BigInteger.valueOf(Integer
+				.valueOf(id)));
+	}
+
+	public void saveSoggettoAbuso(RelSoggettoAbuso relSoggettoAbuso) {
+		relSoggettoAbusoHome.persist(relSoggettoAbuso);
+	}
+
+	public void removeSoggetto(String id) {
+		relSoggettoAbusoHome.remove(relSoggettoAbusoHome.findById(Integer
+				.valueOf(id)));
+	}
+
+	public RelSoggettoAbuso findSoggettoById(String id) {
+		return relSoggettoAbusoHome.findById(Integer.valueOf(id));
+	}
 }

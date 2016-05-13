@@ -2,9 +2,7 @@ package it.soft.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -96,9 +93,9 @@ public class Datiabuso implements Serializable {
 	@JoinColumn(name = "iddati_localizzazione")
 	private DatiLocalizzazione localizzazione;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_abuso")
-	private List<RelSoggettoAbuso> soggettis;
+	
+	@Column(name = "idsoggettoabuso")
+	private Integer idsoggettoAbuso;
 
 	@Column
 	private Integer progressivo;
@@ -266,12 +263,12 @@ public class Datiabuso implements Serializable {
 		this.localizzazione = localizzazione;
 	}
 
-	public List<RelSoggettoAbuso> getSoggettis() {
-		return soggettis;
+	public Integer getIdsoggettoAbuso() {
+		return idsoggettoAbuso;
 	}
 
-	public void setSoggettis(List<RelSoggettoAbuso> soggettis) {
-		this.soggettis = soggettis;
+	public void setIdsoggettoAbuso(Integer idsoggettoAbuso) {
+		this.idsoggettoAbuso = idsoggettoAbuso;
 	}
 
 	public TipologiaAbuso getTipologiaAbuso() {

@@ -5,6 +5,7 @@ import it.soft.dao.ComuniHome;
 import it.soft.dao.DestinazioneUsoHome;
 import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
+import it.soft.dao.SoggettiAbusoHome;
 import it.soft.dao.TipoAlloggioHome;
 import it.soft.dao.TipoOperaHome;
 import it.soft.dao.TipologiaAbusoHome;
@@ -18,6 +19,8 @@ import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
 import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.EpocaAbuso;
+import it.soft.domain.RelSoggettoAbuso;
+import it.soft.domain.SoggettiAbuso;
 import it.soft.domain.TipoOpera;
 import it.soft.domain.TipologiaAbuso;
 import it.soft.domain.TipologiaAlloggio;
@@ -34,6 +37,7 @@ import it.soft.web.pojo.TipologiaDocumentoPojo;
 import it.soft.web.validator.DatiAbusoValidator;
 import it.soft.web.validator.DatiPraticaValidator;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +73,8 @@ public class PraticheController extends BaseController {
 	TipoAlloggioHome tipoAlloggioHome;
 	@Autowired
 	CaratteristicheHome caratteristicheHome;
+	@Autowired
+	SoggettiAbusoHome soggettiAbusoHome;
 
 	@Autowired
 	DatiPraticaValidator validatorPratica;
@@ -91,6 +97,7 @@ public class PraticheController extends BaseController {
 	List<TipologiaAbuso> tipologiaAbusos;
 	List<TipologiaAlloggio> tipologiaAlloggios;
 	List<CaratteristicheSpeciali> caratteristicheSpecialis;
+	List<SoggettiAbuso> soggettiAbusos;
 
 	@RequestMapping(value = "/pratiche", method = RequestMethod.GET)
 	public ModelAndView praticheHome(ModelMap model, DatiPraticaPojo pojo,
@@ -282,6 +289,52 @@ public class PraticheController extends BaseController {
 		return new ModelAndView(view, model);
 	}
 
+	@RequestMapping(value = "/soggetti", method = RequestMethod.GET)
+	public ModelAndView soggetti(@RequestParam(value = "idabuso") String id,
+			ModelMap model) throws Exception {
+		String view = "table/soggettiList";
+		this.abusoPojo = datiAbusoService.findById(id);
+		initSoggetti(model);
+		List<RelSoggettoAbuso> list = datiAbusoService.findAllSoggettiById(id);
+		RelSoggettoAbuso soggettoNew = new RelSoggettoAbuso();
+		soggettoNew.setIdAbuso(BigInteger.valueOf(Integer.valueOf(id)));
+		model.addAttribute("soggettoNew", soggettoNew);
+		model.addAttribute("soggetti", list);
+		return new ModelAndView(view, model);
+	}
+
+	@RequestMapping(value = "/modificaSoggetto", method = RequestMethod.GET)
+	public ModelAndView modificaSoggetto(ModelMap model,
+			@RequestParam(value = "idsoggetto") String id) throws Exception {
+		String view = "form/formSoggetto";
+		this.abusoPojo = datiAbusoService.findById(id);
+		initSoggetti(model);
+		RelSoggettoAbuso soggettoNew = datiAbusoService.findSoggettoById(id);
+		soggettoNew.setIdAbuso(BigInteger.valueOf(Integer.valueOf(id)));
+		model.addAttribute("soggettoNew", soggettoNew);
+		return new ModelAndView(view, model);
+	}
+
+	@RequestMapping(value = "/salvaSoggetto", method = RequestMethod.POST)
+	public ModelAndView salvaSoggetto(ModelMap model,
+			RelSoggettoAbuso relSoggettoAbuso) throws Exception {
+		String view = "redirect:soggetti.htm?idabuso=".concat(this.abusoPojo
+				.getIddatiabuso());
+		relSoggettoAbuso.setIdAbuso(BigInteger.valueOf(Integer
+				.valueOf(this.abusoPojo.getIddatiabuso())));
+		datiAbusoService.saveSoggettoAbuso(relSoggettoAbuso);
+		return new ModelAndView(view, model);
+	}
+
+	@RequestMapping(value = "/removeSoggetto", method = RequestMethod.GET)
+	public ModelAndView removeSoggetto(ModelMap model,
+			@RequestParam(value = "idsoggetto") String id) throws Exception {
+		String view = "redirect:soggetti.htm?idabuso=".concat(this.abusoPojo
+				.getIddatiabuso());
+		datiAbusoService.removeSoggetto(id);
+		return new ModelAndView(view, model);
+	}
+
 	@RequestMapping(value = "/fabbricati", method = RequestMethod.GET)
 	public ModelAndView fabbricati(
 			@RequestParam(value = "idalloggio") String id, ModelMap model)
@@ -318,7 +371,7 @@ public class PraticheController extends BaseController {
 			@RequestParam(value = "idfabbricato") String id) throws Exception {
 		String view = "redirect:fabbricati.htm?idalloggio="
 				.concat(this.idDatiAlloggio);
-		datiAbusoService.removeFabbricato(id,this.idDatiAlloggio);
+		datiAbusoService.removeFabbricato(id, this.idDatiAlloggio);
 		return new ModelAndView(view, model);
 	}
 
@@ -357,32 +410,6 @@ public class PraticheController extends BaseController {
 				.valueOf(datiTerreni.getIdAlloggio()));
 		datiAbusoService.removeTerreno(id);
 		return new ModelAndView(view, model);
-	}
-
-	@RequestMapping(value = "/soggetti", method = RequestMethod.GET)
-	public ModelAndView soggetti(ModelMap model) throws Exception {
-		String view = "table/praticheList";
-		List<Datipratica> list = datiPraticaService.findAll();
-		model.addAttribute("pratiche", list);
-		return new ModelAndView(view, model);
-	}
-
-	@RequestMapping(value = "/nuovoSoggetto", method = RequestMethod.GET)
-	public ModelAndView nuovoSoggetto(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
-	}
-
-	@RequestMapping(value = "/modificaSoggetto", method = RequestMethod.GET)
-	public ModelAndView modificaSoggetto(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
-	}
-
-	@RequestMapping(value = "/salvaSoggetto", method = RequestMethod.GET)
-	public ModelAndView salvaSoggetto(ModelMap model) throws Exception {
-		model.addAttribute("datiPraticaPojo", this.praticaPojo);
-		return new ModelAndView("wizard/form/DatiNuovoAbusoForm", model);
 	}
 
 	/**
@@ -446,5 +473,10 @@ public class PraticheController extends BaseController {
 				tipologiaDestinazioneUsos);
 		model.addAttribute("tipologiaAlloggios", tipologiaAlloggios);
 		model.addAttribute("caratteristicheSpecialis", caratteristicheSpecialis);
+	}
+
+	private void initSoggetti(ModelMap model) {
+		this.soggettiAbusos = soggettiAbusoHome.findAll();
+		model.addAttribute("tiposoggetti", soggettiAbusos);
 	}
 }

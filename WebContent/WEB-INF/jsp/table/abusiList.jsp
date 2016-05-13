@@ -44,7 +44,7 @@
 					title="visualizza documenti"><img
 						src="img/24/document_find.png" title="visualizza documenti"></a>
 					<a
-					href="<c:url value="documenti.htm?idabuso=${abuso.iddatiabuso}" />"
+					href="<c:url value="soggetti.htm?idabuso=${abuso.iddatiabuso}" />"
 					title="visualizza soggetti abuso"><img
 						src="img/24/users3.png" title="visualizza soggetti abuso"></a></td>
 			</tr>

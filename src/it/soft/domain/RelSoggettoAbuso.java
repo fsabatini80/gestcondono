@@ -1,84 +1,96 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.math.BigInteger;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the rel_soggetto_abuso database table.
  * 
  */
 @Entity
-@Table(name="rel_soggetto_abuso")
+@Table(name = "rel_soggetto_abuso")
 public class RelSoggettoAbuso implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="idrel_soggetto_abuso", unique=true, nullable=false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "idrel_soggetto_abuso", unique = true, nullable = false)
 	private int idrelSoggettoAbuso;
 
-	@Column(length=45)
+	@Column(length = 45)
 	private String cap;
 
-	@Column(name="codice_fiscale", length=16)
+	@Column(name = "codice_fiscale", length = 16)
 	private String codiceFiscale;
 
-	@Column(length=45)
+	@Column(length = 45)
 	private String cognome;
+	
+	@Column(length = 45)
+	private String nome;
 
-	@Column(name="comune_estero_nas", length=45)
+	@Column(name = "comune_estero_nas", length = 45)
 	private String comuneEsteroNas;
 
-	@Column(name="comune_estero_res", length=45)
+	@Column(name = "comune_estero_res", length = 45)
 	private String comuneEsteroRes;
 
-	@Column(name="comune_nascita", length=45)
+	@Column(name = "comune_nascita", length = 45)
 	private String comuneNascita;
 
-	@Column(name="comune_residenza", length=45)
+	@Column(name = "comune_residenza", length = 45)
 	private String comuneResidenza;
 
-	@Column(name="data_nascita", length=10)
+	@Column(name = "data_nascita", length = 10)
 	private String dataNascita;
 
-	@Column(length=145)
+	@Column(length = 145)
 	private String email;
 
-	@Column(name="id_abuso")
-	private java.math.BigInteger idAbuso;
+	@Column(name = "id_abuso")
+	private BigInteger idAbuso;
 
-	@Column(name="id_soggetto")
-	private int idSoggetto;
+	@ManyToOne
+	@JoinColumn(name = "id_soggetto")
+	private SoggettiAbuso idSoggetto;
 
-	@Column(length=45)
+	@Column(length = 45)
 	private String indirizzo;
 
 	private byte isvalid;
 
-	@Column(name="partita_iva", length=11)
+	@Column(name = "partita_iva", length = 11)
 	private String partitaIva;
 
-	@Column(name="provincia_nascita", length=45)
+	@Column(name = "provincia_nascita", length = 45)
 	private String provinciaNascita;
 
-	@Column(name="provincia_residenza", length=45)
+	@Column(name = "provincia_residenza", length = 45)
 	private String provinciaResidenza;
 
-	@Column(name="ragione_sociale", length=45)
+	@Column(name = "ragione_sociale", length = 45)
 	private String ragioneSociale;
 
-	@Column(name="stato_estero_nas", length=45)
+	@Column(name = "stato_estero_nas", length = 45)
 	private String statoEsteroNas;
 
-	@Column(name="stato_estero_res", length=45)
+	@Column(name = "stato_estero_res", length = 45)
 	private String statoEsteroRes;
 
-	@Column(length=20)
+	@Column(length = 20)
 	private String telefono;
 
-    public RelSoggettoAbuso() {
-    }
+	public RelSoggettoAbuso() {
+	}
 
 	public int getIdrelSoggettoAbuso() {
 		return this.idrelSoggettoAbuso;
@@ -110,6 +122,14 @@ public class RelSoggettoAbuso implements Serializable {
 
 	public void setCognome(String cognome) {
 		this.cognome = cognome;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public String getComuneEsteroNas() {
@@ -168,11 +188,11 @@ public class RelSoggettoAbuso implements Serializable {
 		this.idAbuso = idAbuso;
 	}
 
-	public int getIdSoggetto() {
+	public SoggettiAbuso getIdSoggetto() {
 		return this.idSoggetto;
 	}
 
-	public void setIdSoggetto(int idSoggetto) {
+	public void setIdSoggetto(SoggettiAbuso idSoggetto) {
 		this.idSoggetto = idSoggetto;
 	}
 

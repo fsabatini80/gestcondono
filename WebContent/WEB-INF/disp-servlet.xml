@@ -127,6 +127,12 @@
 	<bean id="datiLocalizzazioneHome" class="it.soft.dao.DatiLocalizzazioneHome">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	<bean id="relSoggettoAbusoHome" class="it.soft.dao.RelSoggettoAbusoHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="soggettiAbusoHome" class="it.soft.dao.SoggettiAbusoHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
 	<!-- END MAP DAO -->
 
 	<!-- BEGIN MAP viewResolver -->
