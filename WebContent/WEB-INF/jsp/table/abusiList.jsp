@@ -23,6 +23,7 @@
 			<th>Epoca Abuso</th>
 			<th>Tipo Opera</th>
 			<th></th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody align="center">
@@ -45,8 +46,13 @@
 						src="img/24/document_find.png" title="visualizza documenti"></a>
 					<a
 					href="<c:url value="soggetti.htm?idabuso=${abuso.iddatiabuso}" />"
-					title="visualizza soggetti abuso"><img
-						src="img/24/users3.png" title="visualizza soggetti abuso"></a></td>
+					title="visualizza soggetti abuso"><img src="img/24/users3.png"
+						title="visualizza soggetti abuso"></a></td>
+				<td><a
+					href="<c:url value="stampaLettera.htm?idpratica=${abuso.datiPratica}&idabuso=${abuso.iddatiabuso}" />"
+					title="stampa lettera"> <img title="stampa lettera"
+						src="img/24/printer.png">
+				</a></td>
 			</tr>
 		</c:forEach>
 	</tbody>

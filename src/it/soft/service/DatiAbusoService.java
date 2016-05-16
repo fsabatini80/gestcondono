@@ -305,6 +305,14 @@ public class DatiAbusoService {
 		}
 		return abusos;
 	}
+	
+	public List<DocumentiAbuso> findAllDocById(String id) {
+		List<DocumentiAbuso> abusos;
+		Integer idAbuso = Integer.parseInt(id);
+		abusos = documentiAbusoHome.findAll(datiAbusoHome.findById(BigDecimal
+				.valueOf(idAbuso)));
+		return abusos;
+	}
 
 	public List<TipologiaDocumento> findAllDocToAdd() {
 		List<TipologiaDocumento> tipologiaDocumentos;
