@@ -101,8 +101,8 @@ public class DatiAbusoHome {
 						sess.refresh(datiabuso2.getDestinazioneUso());
 					if (datiabuso2.getEpocaAbuso() != null)
 						sess.refresh(datiabuso2.getEpocaAbuso());
-					if (datiabuso2.getIdPratica() != null)
-						sess.refresh(datiabuso2.getIdPratica());
+					if (datiabuso2.getDatiPratica() != null)
+						sess.refresh(datiabuso2.getDatiPratica());
 					if (datiabuso2.getLocalizzazione() != null)
 						sess.refresh(datiabuso2.getLocalizzazione());
 					if (datiabuso2.getTipologiaAbuso() != null)

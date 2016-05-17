@@ -1,13 +1,14 @@
 package it.soft.service;
 
-import it.soft.domain.Datiabuso;
 import it.soft.domain.DocumentiAbuso;
+import it.soft.domain.RelSoggettoAbuso;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
-import it.soft.web.pojo.DocumentiAbusoPojo;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.poi.xwpf.usermodel.BreakType;
@@ -25,51 +26,64 @@ public class WordService {
 	public XWPFDocument createDoc(XWPFDocument document,
 			DatiPraticaService praticaService, DatiAbusoService abusoService,
 			String idpratica, String idabuso) throws Exception {
-		// Write the Document in file system
-		FileOutputStream out = new FileOutputStream(new File(
-				"createparagraph.docx"));
 		DatiPraticaPojo praticaDB = praticaService.findById(idpratica);
 		DatiAbusoPojo abusoDB = abusoService.findById(idabuso);
-		WordService.createPage1(document, praticaDB, abusoDB);
-		List<DocumentiAbuso> daocumentiDB  = abusoService.findAllDocById(idpratica);
+		List<RelSoggettoAbuso> listaSoggetti = abusoService
+				.findAllSoggettiById(idabuso);
+		WordService.createPage1(document, praticaDB, abusoDB, listaSoggetti);
+		List<DocumentiAbuso> daocumentiDB = abusoService
+				.findAllDocById(idpratica);
 		WordService.createPage2(document, daocumentiDB);
-		document.write(out);
-		out.close();
-		System.out.println("createparagraph.docx written successfully");
+		System.out.println("create successfully");
+
+		scriviLocalTest(document);
+
 		return document;
 
 	}
 
+	private void scriviLocalTest(XWPFDocument document)
+			throws FileNotFoundException, IOException {
+		// Write the Document in file system
+		FileOutputStream out = new FileOutputStream(new File(
+				"C:/createparagraph.docx"));
+		document.write(out);
+		out.close();
+		System.out.println("create successfully");
+	}
+
 	public static XWPFDocument createPage1(XWPFDocument document,
-			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
+			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
+			List<RelSoggettoAbuso> listaSoggetti) {
 		// create header
 		XWPFParagraph paragraph = document.createParagraph();
 		createHeader(paragraph);
 
 		// create Protocollo e lista soggetti
 		XWPFParagraph paragraphProtocollo = document.createParagraph();
-		createListaSoggetti(paragraphProtocollo);
+		createListaSoggetti(paragraphProtocollo, praticaDB, abusoDB,
+				listaSoggetti);
 
 		XWPFParagraph paragraphggetto = document.createParagraph();
-		creaOggetto(paragraphggetto);
+		creaOggetto(paragraphggetto, praticaDB, abusoDB);
 
 		XWPFParagraph paragraphA = document.createParagraph();
 		creaPargraphA(paragraphA);
 
 		XWPFParagraph paragraphADati = document.createParagraph();
-		creaPargraphAdati(paragraphADati);
+		creaPargraphAdati(paragraphADati, praticaDB, abusoDB);
 
 		XWPFParagraph paragraphUbicazione = document.createParagraph();
 		creaParagraphUbicazione(paragraphUbicazione);
 
 		XWPFParagraph paragraphALocalizzazione = document.createParagraph();
-		creaParagraphALocalizzazione(paragraphALocalizzazione);
+		creaParagraphALocalizzazione(paragraphALocalizzazione, abusoDB);
 
 		XWPFParagraph paragraphDescAbuso = document.createParagraph();
 		creaParagraphDescAbuso(paragraphDescAbuso);
 
 		XWPFParagraph paragraphDescAbusoDB = document.createParagraph();
-		creaParagraphDescAbusoDB(paragraphDescAbusoDB);
+		creaParagraphDescAbusoDB(paragraphDescAbusoDB, abusoDB);
 
 		XWPFParagraph paragraphDatiCatastali = document.createParagraph();
 		creaParagraphDatiCatastali(paragraphDatiCatastali);
@@ -81,7 +95,7 @@ public class WordService {
 		creaParagraphDatiTecnici(paragraphDatiTecnici);
 
 		XWPFParagraph paragraphDatiTecniciTable = document.createParagraph();
-		creaParagraphDatiTecniciTable(paragraphDatiTecniciTable);
+		creaParagraphDatiTecniciTable(paragraphDatiTecniciTable, abusoDB);
 
 		XWPFParagraph paragraphInformativa = document.createParagraph();
 		creaParagraphInformativa(paragraphInformativa);
@@ -90,8 +104,38 @@ public class WordService {
 	}
 
 	private static void creaParagraphDatiTecniciTable(
-			XWPFParagraph paragraphDatiTecniciTable) {
-		// TODO Auto-generated method stub
+			XWPFParagraph paragraphDatiTecniciTable, DatiAbusoPojo abusoDB) {
+		XWPFRun p1 = paragraphDatiTecniciTable.createRun();
+		String testo1 = "Destinazione d'uso: " + abusoDB.getDestinazioneUso();
+		p1.setText(testo1);
+		p1.addBreak();
+		XWPFRun p2 = paragraphDatiTecniciTable.createRun();
+		String testo2 = "Superficie Utile Mq: " + abusoDB.getSuperficeUtile();
+		p2.setText(testo2);
+		p2.addBreak();
+		XWPFRun p3 = paragraphDatiTecniciTable.createRun();
+		String testo3 = "Non resid./accessori Mq"
+				+ abusoDB;
+		p3.setText(testo3);
+		p3.addBreak();
+		XWPFRun p4 = paragraphDatiTecniciTable.createRun();
+		String testo4 = "Mc VxP: " + abusoDB.getSuperficeTotale();
+		p4.setText(testo4);
+		p4.addBreak();
+		XWPFRun p5 = paragraphDatiTecniciTable.createRun();
+		String testo5 = "Tipologia: " + abusoDB.getTipologiaAbuso();
+		p5.setText(testo5);
+		p5.addBreak();
+		XWPFRun p6 = paragraphDatiTecniciTable.createRun();
+		//FIXME
+		String testo6 = "Epoca d'abuso: " + "";
+		p6.setText(testo6);
+		p6.addBreak();
+		XWPFRun p7 = paragraphDatiTecniciTable.createRun();
+		String testo7 = "Data ultimazione lavori: "
+				+ abusoDB.getDataUltimazioneLavori();
+		p7.setText(testo7);
+		p7.addBreak();
 
 	}
 
@@ -128,20 +172,17 @@ public class WordService {
 		tableRowTwo.getCell(2).setText("col three, row two");
 		tableRowTwo.getCell(3).setText("col four, row two");
 		tableRowTwo.getCell(4).setText("col five, row two");
-
-		XWPFRun paragraphAOneRun = paragraphDatiCatastaliTable.createRun();
-		paragraphAOneRun.addBreak();
-
 	}
 
 	private static void creaParagraphDatiCatastali(
 			XWPFParagraph paragraphDatiCatastali) {
+		// TODO
 	}
 
 	private static void creaParagraphDescAbusoDB(
-			XWPFParagraph paragraphDescAbusoDB) {
+			XWPFParagraph paragraphDescAbusoDB, DatiAbusoPojo abusoDB) {
 		XWPFRun paragraphAOneRunTwo = paragraphDescAbusoDB.createRun();
-		String testo = "Descrizione abuso: recuperato da DB";
+		String testo = abusoDB.getDescrizione();
 		paragraphAOneRunTwo.setText(testo);
 	}
 
@@ -153,9 +194,10 @@ public class WordService {
 	}
 
 	private static void creaParagraphALocalizzazione(
-			XWPFParagraph paragraphALocalizzazione) {
+			XWPFParagraph paragraphALocalizzazione, DatiAbusoPojo abusoDB) {
 		XWPFRun paragraphAOneRunTwo = paragraphALocalizzazione.createRun();
-		String testo = "Località , Indirizzo ";
+		String testo = "Località " + abusoDB.getLocalizzazione().getComune()
+				+ ", Indirizzo " + abusoDB.getLocalizzazione().getIndirizzo();
 		paragraphAOneRunTwo.setText(testo);
 	}
 
@@ -170,15 +212,16 @@ public class WordService {
 	private static void creaParagraphInformativa(
 			XWPFParagraph paragraphInformativa) {
 		XWPFRun paragraphAOneRunTwo = paragraphInformativa.createRun();
-		String testo = "Dall'istruttoria preliminare dell'istanza in oggetto, ai fini di poter completare le atività di disamina tecnico-amministrativo e procedere con il rilascio della Concessione in sanatoria la stessa, dovrà essere integrata con i documenti previsti dalle normative vigenti di cui al punto 1 e dalle attestazioni di versamento di cui al punto 2.";
+		String testo = "Dall'istruttoria preliminare dell'istanza in oggetto, ai fini di poter completare le attività di disamina tecnico-amministrativo e procedere con il rilascio della Concessione in sanatoria la stessa, dovrà essere integrata con i documenti previsti dalle normative vigenti di cui al punto 1 e dalle attestazioni di versamento di cui al punto 2.";
 		paragraphAOneRunTwo.setText(testo);
 	}
 
-	private static void creaPargraphAdati(XWPFParagraph paragraphA) {
+	private static void creaPargraphAdati(XWPFParagraph paragraphA,
+			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
 		XWPFRun paragraphAOneRunTwo = paragraphA.createRun();
-		String testo = "Numero interno: ";
-		testo += ", sottonumero: ";
-		testo += ", numero protocollo: ";
+		String testo = "Numero interno: " + praticaDB.getNumeroPratica();
+		testo += " , sottonumero: " + abusoDB.getProgressivo();
+		testo += " , numero protocollo: " + praticaDB.getNumeroProtocollo();
 		paragraphAOneRunTwo.setText(testo);
 	}
 
@@ -189,60 +232,68 @@ public class WordService {
 		paragraphAOneRunOne.setBold(true);
 	}
 
-	private static void creaOggetto(XWPFParagraph paragraphggetto) {
+	private static void creaOggetto(XWPFParagraph paragraphggetto,
+			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
 		XWPFRun paragOggetto = paragraphggetto.createRun();
-		String oggetto = "Oggetto: Avvio dell'attività di istruttoria della Istanza di Sanatoria Edilizia richiesta ai sensi della legge n.___";
-		oggetto += "presentata il __________";
-		oggetto += "con protocollo n. __________";
-		oggetto += "del ____";
-		oggetto += "sott___";
-		oggetto += "N° interno______";
-		oggetto += "richiesta da ";
-		oggetto += "residente in ";
+		String oggetto = "Oggetto: Avvio dell'attività di istruttoria della Istanza di Sanatoria Edilizia richiesta ai sensi della legge n."
+				+ praticaDB.getLeggeCondono();
+		oggetto += " presentata il " + praticaDB.getDataDomanda();
+		oggetto += " con protocollo n. " + praticaDB.getNumeroProtocollo();
+		oggetto += " del " + praticaDB.getDataProtocollo();
+		oggetto += " sott " + abusoDB.getProgressivo();
+		oggetto += " N° interno " + praticaDB.getNumeroPratica();
+		oggetto += " richiesta da " + praticaDB.getCognome() + " "
+				+ praticaDB.getNome();
+		oggetto += " residente in " + praticaDB.getIndirizzo();
 		paragOggetto.setText(oggetto);
 
 	}
 
-	private static void createListaSoggetti(XWPFParagraph paragraph) {
+	private static void createListaSoggetti(XWPFParagraph paragraph,
+			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
+			List<RelSoggettoAbuso> listaSoggetti) {
 		paragraph.setAlignment(ParagraphAlignment.RIGHT);
 		XWPFRun paragraphOneRunTwo = paragraph.createRun();
-		paragraphOneRunTwo.setText("Prot. N. xxxxx del XXXX");
+		String testo1 = "Prot. N. " + praticaDB.getNumeroProtocollo() + " del "
+				+ praticaDB.getDataProtocollo();
+		paragraphOneRunTwo.setText(testo1);
 		paragraphOneRunTwo.addBreak();
-		XWPFRun paragraphSoggettiNominativo = paragraph.createRun();
-		paragraphSoggettiNominativo.setText("Cognome e Nome: ");
-		paragraphSoggettiNominativo.addBreak();
-		XWPFRun paragraphSoggettiVia = paragraph.createRun();
-		paragraphSoggettiVia.setText("Indirizzo: ");
-		paragraphSoggettiVia.addBreak();
-		XWPFRun paragraphSoggettiCap = paragraph.createRun();
-		paragraphSoggettiCap.setText("Cap: ");
-		paragraphSoggettiCap.addBreak();
-		XWPFRun paragraphSoggettiComune = paragraph.createRun();
-		paragraphSoggettiComune.setText("Comune: ");
+		for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
+			XWPFRun paragraphSoggettiNominativo = paragraph.createRun();
+			paragraphSoggettiNominativo.setText("Cognome e Nome: "
+					+ relSoggettoAbuso.getCognome() + " "
+					+ relSoggettoAbuso.getNome());
+			paragraphSoggettiNominativo.addBreak();
+			XWPFRun paragraphSoggettiVia = paragraph.createRun();
+			paragraphSoggettiVia.setText("Indirizzo: "
+					+ relSoggettoAbuso.getIndirizzo());
+			paragraphSoggettiVia.addBreak();
+			XWPFRun paragraphSoggettiCap = paragraph.createRun();
+			paragraphSoggettiCap.setText("Cap: " + relSoggettoAbuso.getCap());
+			paragraphSoggettiCap.addBreak();
+			XWPFRun paragraphSoggettiComune = paragraph.createRun();
+			paragraphSoggettiComune.setText("Comune: "
+					+ relSoggettoAbuso.getComuneResidenza());
+		}
 	}
 
 	private static void createHeader(XWPFParagraph paragraph) {
-		// Set Bold an Italic
 		XWPFRun paragraphOneRunOne = paragraph.createRun();
 		paragraphOneRunOne.setBold(true);
-		// COMUNE
 		paragraphOneRunOne.setText("COMUNE DI GUIDONIA");
 		paragraphOneRunOne.addBreak();
-		// AREA
 		XWPFRun paragraphOneRunOne1 = paragraph.createRun();
 		paragraphOneRunOne1.setText("Area..........");
 		paragraphOneRunOne1.addBreak();
-		// Indirizzo ufficio
 		paragraphOneRunOne1.setText("Indirizzo uffici.........");
 		paragraphOneRunOne1.addBreak();
-		// Telefono
 		paragraphOneRunOne1.setText("telefono.........");
 		paragraphOneRunOne1.addBreak();
-		// Email
 		paragraphOneRunOne1.setText("email..........");
 	}
 
-	public static XWPFDocument createPage2(XWPFDocument document, List<DocumentiAbuso> daocumentiDB) {
+	public static XWPFDocument createPage2(XWPFDocument document,
+			List<DocumentiAbuso> daocumentiDB) {
 		XWPFParagraph paragraphDoc = document.createParagraph();
 		creaPargraphDOC(paragraphDoc);
 

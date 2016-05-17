@@ -151,11 +151,11 @@ public class Datiabuso implements Serializable {
 		this.esenzioniPagamenti = esenzioniPagamenti;
 	}
 
-	public Datipratica getIdPratica() {
+	public Datipratica getDatiPratica() {
 		return this.datiPratica;
 	}
 
-	public void setIdPratica(Datipratica datipratica) {
+	public void setDatiPratica(Datipratica datipratica) {
 		this.datiPratica = datipratica;
 	}
 

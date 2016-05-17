@@ -92,7 +92,7 @@ public class DatiAbusoService {
 					.valueOf(pojo.getEpocaAbuso())));
 		datiabuso.setEsenzioniPagamenti(pojo.getEsenzioniPagamenti());
 		if (pojo.getIdPratica() != null && !"".equals(pojo.getIdPratica()))
-			datiabuso.setIdPratica(datiPraticaHome.findById(BigDecimal
+			datiabuso.setDatiPratica(datiPraticaHome.findById(BigDecimal
 					.valueOf(Integer.valueOf(pojo.getIdPratica()))));
 		if (pojo.getLocalizzazione() != null
 				&& !"".equals(pojo.getLocalizzazione()
@@ -146,8 +146,8 @@ public class DatiAbusoService {
 			target.setEpocaAbuso(String.valueOf(source.getEpocaAbuso()
 					.getIdepocaAbuso()));
 		target.setEsenzioniPagamenti(source.getEsenzioniPagamenti());
-		if (source.getIdPratica() != null)
-			target.setIdPratica(String.valueOf(source.getIdPratica()
+		if (source.getDatiPratica() != null)
+			target.setIdPratica(String.valueOf(source.getDatiPratica()
 					.getIddatipratica()));
 		if (source.getLocalizzazione() != null)
 			target.setLocalizzazione(datiLocalizzazioneHome.findById((source
@@ -305,7 +305,7 @@ public class DatiAbusoService {
 		}
 		return abusos;
 	}
-	
+
 	public List<DocumentiAbuso> findAllDocById(String id) {
 		List<DocumentiAbuso> abusos;
 		Integer idAbuso = Integer.parseInt(id);

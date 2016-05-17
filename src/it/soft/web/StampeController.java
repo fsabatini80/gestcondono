@@ -4,6 +4,7 @@ import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
 import it.soft.service.WordService;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -24,17 +25,22 @@ public class StampeController extends BaseController {
 	DatiAbusoService datiAbusoService;
 
 	@RequestMapping(value = "/stampaLettera", method = RequestMethod.GET)
-	public byte[] stampaLettera(
+	public void stampaLettera(
 			@RequestParam(value = "idpratica") String idpratica,
-			@RequestParam(value = "idpratica") String idabuso,
-			HttpServletResponse response) throws Exception {
+			@RequestParam(value = "idabuso") String idabuso,
+			HttpServletResponse response) {
 		XWPFDocument document = new XWPFDocument();
-		response.setContentType("application/msword");
-		wservice.createDoc(document, datiPraticaService, datiAbusoService,
-				idpratica, idabuso);
-		response.getWriter().print(document);
-		response.flushBuffer();
-		return null;
+		response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+		try {
+			document = wservice.createDoc(document, datiPraticaService,
+					datiAbusoService, idpratica, idabuso);
+			ServletOutputStream out = response.getOutputStream();
+			document.write(out);
+			out.flush();
+			out.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
 }

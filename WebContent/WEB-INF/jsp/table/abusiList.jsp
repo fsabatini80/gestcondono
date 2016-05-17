@@ -49,7 +49,7 @@
 					title="visualizza soggetti abuso"><img src="img/24/users3.png"
 						title="visualizza soggetti abuso"></a></td>
 				<td><a
-					href="<c:url value="stampaLettera.htm?idpratica=${abuso.datiPratica}&idabuso=${abuso.iddatiabuso}" />"
+					href="<c:url value="stampaLettera.htm?idpratica=${abuso.datiPratica.iddatipratica}&idabuso=${abuso.iddatiabuso}" />"
 					title="stampa lettera"> <img title="stampa lettera"
 						src="img/24/printer.png">
 				</a></td>
