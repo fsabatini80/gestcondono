@@ -104,6 +104,7 @@ public class DatiLocalizzazioneHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return datiLocalizzazione;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

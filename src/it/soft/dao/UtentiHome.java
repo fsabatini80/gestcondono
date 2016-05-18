@@ -97,6 +97,7 @@ public class UtentiHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return utenti;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -124,6 +125,7 @@ public class UtentiHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return utenti;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

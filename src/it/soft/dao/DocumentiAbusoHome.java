@@ -43,6 +43,7 @@ public class DocumentiAbusoHome {
 				sess.saveOrUpdate(transientInstance);
 			sess.getTransaction().commit();
 			log.debug("persist successful");
+			sess.close();
 		} catch (RuntimeException re) {
 			log.error("persist failed", re);
 			throw re;
@@ -103,6 +104,7 @@ public class DocumentiAbusoHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return documentiAbuso;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -131,6 +133,7 @@ public class DocumentiAbusoHome {
 			Criteria cr = sess.createCriteria(DocumentiAbuso.class);
 			cr.add(Restrictions.eq("idAbuso", iddocumentiAbuso));
 			List<DocumentiAbuso> results = cr.list();
+			sess.close();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("count failed", re);

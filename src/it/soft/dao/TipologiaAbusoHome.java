@@ -51,6 +51,7 @@ public class TipologiaAbusoHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return tipologiaAbuso;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -81,6 +82,7 @@ public class TipologiaAbusoHome {
 			cr.add(Restrictions.eq("leggeCondono", leggiCondono));
 			List<TipologiaAbuso> results = cr.list();
 			log.debug("get successful");
+			sess.close();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

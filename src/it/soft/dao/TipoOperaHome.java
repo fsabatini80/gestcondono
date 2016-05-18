@@ -50,6 +50,7 @@ public class TipoOperaHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return tipoOpera;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

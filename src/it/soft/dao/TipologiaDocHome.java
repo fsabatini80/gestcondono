@@ -51,6 +51,7 @@ public class TipologiaDocHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return tipologiaDocumento;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -81,6 +82,7 @@ public class TipologiaDocHome {
 			cr.add(Restrictions.eq("idLeggiCondono", leggiCondono));
 			List<TipologiaDocumento> results = cr.list();
 			log.debug("get successful");
+			sess.close();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

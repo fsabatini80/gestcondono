@@ -45,6 +45,7 @@ public class SoggettiAbusoHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return soggettiAbuso;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

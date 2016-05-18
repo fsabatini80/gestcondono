@@ -103,6 +103,7 @@ public class DatiAlloggioHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return datiAlloggio;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

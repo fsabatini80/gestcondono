@@ -51,7 +51,6 @@ public class ComuniHome {
 			sess2.beginTransaction();
 			sess2.delete(persistentInstance);
 			sess2.getTransaction().commit();
-			sess2.close();
 			log.debug("remove successful");
 		} catch (RuntimeException re) {
 			log.error("remove failed", re);

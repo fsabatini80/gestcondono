@@ -113,6 +113,7 @@ public class DatiAbusoHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return datiabuso;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -141,6 +142,7 @@ public class DatiAbusoHome {
 			Criteria cr = sess.createCriteria(Datiabuso.class);
 			cr.add(Restrictions.eq("datiPratica", idPratica));
 			List<Datiabuso> results = cr.list();
+			sess.close();
 			if (results.isEmpty()) {
 				return 0;
 			}
@@ -160,6 +162,7 @@ public class DatiAbusoHome {
 			Criteria cr = sess.createCriteria(Datiabuso.class);
 			cr.add(Restrictions.eq("datiPratica", idPratica));
 			List<Datiabuso> results = cr.list();
+			sess.close();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("count failed", re);

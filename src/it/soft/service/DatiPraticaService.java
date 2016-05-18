@@ -3,6 +3,7 @@ package it.soft.service;
 import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.LeggiCondonoHome;
 import it.soft.domain.Datipratica;
+import it.soft.domain.LeggiCondono;
 import it.soft.domain.Richiedente;
 import it.soft.util.Converter;
 import it.soft.web.pojo.DatiPraticaPojo;
@@ -130,5 +131,12 @@ public class DatiPraticaService {
 
 	public List<Datipratica> findAll() {
 		return datiPraticaHome.findAll();
+	}
+
+	public List<Datipratica> findBy(String numeroPratica,
+			LeggiCondono leggeCondono, String dataDomanda,
+			String numeroProtocollo) {
+		return datiPraticaHome.findBy(numeroPratica, numeroProtocollo,
+				dataDomanda, leggeCondono);
 	}
 }

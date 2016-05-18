@@ -106,6 +106,7 @@ public class DatiFabbricatiHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return datiFabbricati;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -134,6 +135,7 @@ public class DatiFabbricatiHome {
 			Criteria cr = sess.createCriteria(DatiFabbricati.class);
 			cr.add(Restrictions.eq("idAlloggio", idAlloggio));
 			List<DatiFabbricati> results = cr.list();
+			sess.close();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("count failed", re);

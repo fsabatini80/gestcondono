@@ -50,6 +50,7 @@ public class EpocaAbusoHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return epocaAbuso;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -80,6 +81,7 @@ public class EpocaAbusoHome {
 			cr.add(Restrictions.eq("leggeCondono", leggiCondono));
 			List<EpocaAbuso> results = cr.list();
 			log.debug("get successful");
+			sess.close();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

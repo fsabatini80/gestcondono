@@ -50,6 +50,7 @@ public class DestinazioneUsoHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return tipologiaDestinazioneUso;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

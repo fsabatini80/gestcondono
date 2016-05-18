@@ -105,6 +105,7 @@ public class DatiTerreniHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return datiTerreni;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -133,6 +134,7 @@ public class DatiTerreniHome {
 			Criteria cr = sess.createCriteria(DatiTerreni.class);
 			cr.add(Restrictions.eq("idAlloggio", idAlloggio));
 			List<DatiTerreni> results = cr.list();
+			sess.close();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("count failed", re);

@@ -104,6 +104,7 @@ public class DatiPraticaHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return datipratica;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -143,6 +144,7 @@ public class DatiPraticaHome {
 				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
 			List<Datipratica> results = cr.list();
 			log.debug("get successful");
+			sess.close();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

@@ -38,6 +38,7 @@ public class LeggiCondonoHome {
 			@SuppressWarnings("unchecked")
 			List<LeggiCondono> l = criteria.list();
 			log.debug("get successful");
+			sess.close();
 			return l.get(0);
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -56,6 +57,7 @@ public class LeggiCondonoHome {
 			Criteria cr = sess.createCriteria(LeggiCondono.class);
 			list = cr.list();
 			log.debug("get successful");
+			sess.close();
 			return list;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

@@ -52,6 +52,7 @@ public class CaratteristicheHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return caratteristicheSpeciali;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

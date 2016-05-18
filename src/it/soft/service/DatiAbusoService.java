@@ -294,8 +294,6 @@ public class DatiAbusoService {
 					da.setIdTipoDocumento(tipologiaDocumento);
 					da.setIdAbuso(datiAbusoHome.findById(BigDecimal
 							.valueOf(idAbuso)));
-					// da.setPresente((byte) 0);
-					// da.setValido((byte) 0);
 					da.setPresente(false);
 					da.setValido(false);
 					abusos.add(da);
@@ -337,8 +335,6 @@ public class DatiAbusoService {
 				da.setIdTipoDocumento(tipologiaDocumento);
 				da.setIdAbuso(datiAbusoHome.findById(BigDecimal
 						.valueOf(idAbuso)));
-				// da.setPresente((byte) 0);
-				// da.setValido((byte) 0);
 				da.setPresente(false);
 				da.setValido(false);
 				documentiAbusoHome.persist(da);

@@ -51,6 +51,7 @@ public class TipoAlloggioHome {
 				}
 			}
 			log.debug("get successful");
+			sess.close();
 			return tipologiaAlloggio;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
