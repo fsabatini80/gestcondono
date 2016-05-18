@@ -1,6 +1,7 @@
 package it.soft.dao;
 
 import it.soft.domain.Datipratica;
+import it.soft.domain.LeggiCondono;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -121,4 +122,32 @@ public class DatiPraticaHome {
 			throw re;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<Datipratica> findBy(String numeroPratica,
+			String numeroProtocollo, String dataDomanda,
+			LeggiCondono leggeCondono) {
+		log.debug("getting Datipratica instance with id: " + leggeCondono);
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(Datipratica.class);
+			if (numeroPratica != null && !"".equals(numeroPratica))
+				cr.add(Restrictions.eq("numeroPratica", numeroPratica));
+			if (numeroProtocollo != null && !"".equals(numeroProtocollo))
+				cr.add(Restrictions.eq("numeroProtocollo", numeroProtocollo));
+			if (dataDomanda != null && !"".equals(dataDomanda))
+				cr.add(Restrictions.eq("dataDomanda", dataDomanda));
+			if (leggeCondono != null && !"".equals(leggeCondono))
+				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
+			List<Datipratica> results = cr.list();
+			log.debug("get successful");
+			return results;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
+
 }
