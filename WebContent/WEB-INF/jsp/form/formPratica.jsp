@@ -89,7 +89,7 @@
 					<td><form:input path="comuneNascita" /></td>
 				</tr>
 				<tr class="ui-widget-content">
-					<td>Stato estero nasicita</td>
+					<td>Stato estero nascita</td>
 					<td><form:input path="statoEsteroNas" /></td>
 				</tr>
 				<tr class="ui-widget-content">

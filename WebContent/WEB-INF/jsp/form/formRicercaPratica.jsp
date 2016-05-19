@@ -12,14 +12,14 @@
 			<tr>
 				<td>Numero Pratica:</td>
 				<td><form:input path="numeroPratica" /></td>
+			</tr>
+			<tr>
 				<td>Numero Protocollo:</td>
 				<td><form:input path="numeroProtocollo" /></td>
 			</tr>
 			<tr>
-				<td>Nominativo:
-				<td><form:input path="nominativo" /></td>
 				<td>Data domanda :</td>
-				<td><form:input path="dataDomanda" /></td>
+				<td><form:input path="dataDomanda" id="datepicker" /></td>
 			</tr>
 			<tr>
 				<td>Legge condono:</td>

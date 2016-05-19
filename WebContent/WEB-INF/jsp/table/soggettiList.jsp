@@ -132,3 +132,7 @@
 		</tbody>
 	</table>
 </div>
+<div>
+	<a href="<c:url value="abusi.htm?idpratica=${idpratica}" />" title="INDIETRO">
+		INDIETRO </a>
+</div>

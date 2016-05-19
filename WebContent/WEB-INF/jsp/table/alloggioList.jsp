@@ -15,36 +15,40 @@
 		<img title="aggiungi alloggio" src="img/add.png">
 	</a>
 </div>
-
-<table id="example6" class="display">
-	<thead>
-		<tr>
-			<th>Tipologia alloggio</th>
-			<th>Destinazione uso</th>
-			<th>Superficie utile</th>
-			<th>Superficie accessoria</th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody align="center">
-		<c:forEach var="alloggio" items="${alloggi}">
+<div>
+	<table id="example6" class="display">
+		<thead>
 			<tr>
-				<td>${alloggio.tipologiaAlloggio.descrizione}</td>
-				<td>${alloggio.destinazioneUso.descrizioneTipologia}</td>
-				<td>${alloggio.superficieUtile}</td>
-				<td>${alloggio.superficieAccessoria}</td>
-				<td width="200px"><a
-					href="<c:url value="modificaAlloggio.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
-					title="modifica alloggio"><img src="img/24/edit.png"
-						title="modifica alloggio"></a> <a
-					href="<c:url value="fabbricati.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
-					title="visualizza fabbricati"><img
-						src="img/24/find.png" title="visualizza fabbricati"></a>
-					<a
-					href="<c:url value="terreni.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
-					title="visualizza terreni"><img src="img/24/find.png"
-						title="visualizza terreni"></a></td>
+				<th>Tipologia alloggio</th>
+				<th>Destinazione uso</th>
+				<th>Superficie utile</th>
+				<th>Superficie accessoria</th>
+				<th></th>
 			</tr>
-		</c:forEach>
-	</tbody>
-</table>
+		</thead>
+		<tbody align="center">
+			<c:forEach var="alloggio" items="${alloggi}">
+				<tr>
+					<td>${alloggio.tipologiaAlloggio.descrizione}</td>
+					<td>${alloggio.destinazioneUso.descrizioneTipologia}</td>
+					<td>${alloggio.superficieUtile}</td>
+					<td>${alloggio.superficieAccessoria}</td>
+					<td width="200px"><a
+						href="<c:url value="modificaAlloggio.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
+						title="modifica alloggio"><img src="img/24/edit.png"
+							title="modifica alloggio"></a> <a
+						href="<c:url value="fabbricati.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
+						title="visualizza fabbricati"><img src="img/24/find.png"
+							title="visualizza fabbricati"></a> <a
+						href="<c:url value="terreni.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
+						title="visualizza terreni"><img src="img/24/find.png"
+							title="visualizza terreni"></a></td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+</div>
+<div>
+	<a href="<c:url value="abusi.htm?idpratica=${idpratica}" />" title="INDIETRO">
+		INDIETRO </a>
+</div>

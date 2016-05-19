@@ -66,3 +66,7 @@
 		</tbody>
 	</table>
 </div>
+<div>
+	<a href="<c:url value="alloggi.htm?idabuso=${idabuso}" />"
+		title="INDIETRO"> INDIETRO </a>
+</div>

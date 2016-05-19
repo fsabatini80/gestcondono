@@ -14,46 +14,53 @@
 		<img title="crea un nuovo abuso" src="img/add.png">
 	</a>
 </div>
-<table id="example10" class="display">
-	<thead>
-		<tr>
-			<th>N. Prog.</th>
-			<th>Descrizione</th>
-			<th>Destinazione Uso</th>
-			<th>Epoca Abuso</th>
-			<th>Tipo Opera</th>
-			<th></th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody align="center">
-		<c:forEach var="abuso" items="${abusi}">
+<div>
+	<table id="example10" class="display">
+		<thead>
 			<tr>
-				<td>${abuso.progressivo}</td>
-				<td>${abuso.descrizione}</td>
-				<td>${abuso.destinazioneUso.descrizioneTipologia}</td>
-				<td>da ${abuso.epocaAbuso.epocaDa} a ${abuso.epocaAbuso.epocaA}</td>
-				<td>${abuso.tipoOpera.descrizione}</td>
-				<td width="300px"><a
-					href="<c:url value="modificaAbuso.htm?idabuso=${abuso.iddatiabuso}" />"
-					title="modifica abuso"><img src="img/24/edit.png"
-						title="modifica abuso"></a> <a
-					href="<c:url value="alloggi.htm?idabuso=${abuso.iddatiabuso}" />"
-					title="visualizza alloggi"><img src="img/24/find.png"
-						title="visualizza alloggi"></a> <a
-					href="<c:url value="documenti.htm?idabuso=${abuso.iddatiabuso}" />"
-					title="visualizza documenti"><img
-						src="img/24/document_find.png" title="visualizza documenti"></a>
-					<a
-					href="<c:url value="soggetti.htm?idabuso=${abuso.iddatiabuso}" />"
-					title="visualizza soggetti abuso"><img src="img/24/users3.png"
-						title="visualizza soggetti abuso"></a></td>
-				<td><a
-					href="<c:url value="stampaLettera.htm?idpratica=${abuso.datiPratica.iddatipratica}&idabuso=${abuso.iddatiabuso}" />"
-					title="stampa lettera"> <img title="stampa lettera"
-						src="img/24/printer.png">
-				</a></td>
+				<th>N. Prog.</th>
+				<th>Descrizione</th>
+				<th>Destinazione Uso</th>
+				<th>Epoca Abuso</th>
+				<th>Tipo Opera</th>
+				<th></th>
+				<th></th>
 			</tr>
-		</c:forEach>
-	</tbody>
-</table>
+		</thead>
+		<tbody align="center">
+			<c:forEach var="abuso" items="${abusi}">
+				<tr>
+					<td>${abuso.progressivo}</td>
+					<td>${abuso.descrizione}</td>
+					<td>${abuso.destinazioneUso.descrizioneTipologia}</td>
+					<td>da ${abuso.epocaAbuso.epocaDa} a
+						${abuso.epocaAbuso.epocaA}</td>
+					<td>${abuso.tipoOpera.descrizione}</td>
+					<td width="300px"><a
+						href="<c:url value="modificaAbuso.htm?idabuso=${abuso.iddatiabuso}" />"
+						title="modifica abuso"><img src="img/24/edit.png"
+							title="modifica abuso"></a> <a
+						href="<c:url value="alloggi.htm?idabuso=${abuso.iddatiabuso}" />"
+						title="visualizza alloggi"><img src="img/24/find.png"
+							title="visualizza alloggi"></a> <a
+						href="<c:url value="documenti.htm?idabuso=${abuso.iddatiabuso}" />"
+						title="visualizza documenti"><img
+							src="img/24/document_find.png" title="visualizza documenti"></a>
+						<a
+						href="<c:url value="soggetti.htm?idabuso=${abuso.iddatiabuso}" />"
+						title="visualizza soggetti abuso"><img src="img/24/users3.png"
+							title="visualizza soggetti abuso"></a></td>
+					<td><a
+						href="<c:url value="stampaLettera.htm?idpratica=${abuso.datiPratica.iddatipratica}&idabuso=${abuso.iddatiabuso}" />"
+						title="stampa lettera"> <img title="stampa lettera"
+							src="img/24/printer.png">
+					</a></td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+</div>
+<div>
+	<a href="<c:url value="pratica.htm?idpratica=${idpratica}" />"
+		title="INDIETRO"> INDIETRO </a>
+</div>
