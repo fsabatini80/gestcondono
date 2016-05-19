@@ -14,7 +14,7 @@
 			</tr>
 			<tr class="ui-widget-content">
 				<td>Data Protocollo :
-				<td><form:input path="dataProtocollo" /></td>
+				<td><form:input path="dataProtocollo" id="datepicker" /></td>
 			</tr>
 			<tr class="ui-widget-content">
 				<td>Tipo :

@@ -43,7 +43,6 @@ public class DocumentiAbusoHome {
 				sess.saveOrUpdate(transientInstance);
 			sess.getTransaction().commit();
 			log.debug("persist successful");
-			sess.close();
 		} catch (RuntimeException re) {
 			log.error("persist failed", re);
 			throw re;
