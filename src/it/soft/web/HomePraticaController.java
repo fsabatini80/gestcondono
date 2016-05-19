@@ -46,7 +46,7 @@ public class HomePraticaController extends BaseController {
 		String view = "table/praticheList";
 		LeggiCondono condono = null;
 		if (pojo.getLeggeCondono() != null
-				&& !"".equals(pojo.getLeggeCondono()))
+				&& !"0".equals(pojo.getLeggeCondono()))
 			condono = leggiCondonoHome.findById(Integer.valueOf(pojo
 					.getLeggeCondono()));
 		List<Datipratica> list = datiPraticaService.findBy(

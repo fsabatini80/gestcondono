@@ -181,7 +181,8 @@ public class PraticheController extends BaseController {
 			initModelAbuso(model);
 			view = "form/formAbuso";
 		} else {
-			if (abusoPojo.getProgressivo() == null)
+			if (abusoPojo.getProgressivo() == null
+					|| "".equals(abusoPojo.getProgressivo()))
 				abusoPojo.setProgressivo(datiAbusoService
 						.countProg(this.praticaPojo.getIddatipratica()));
 			pojo.setIdPratica(this.praticaPojo.getIddatipratica());

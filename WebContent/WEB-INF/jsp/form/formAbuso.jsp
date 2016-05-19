@@ -14,7 +14,8 @@
 					<tr>
 						<td>Descrizione:</td>
 						<td><form:textarea path="descrizione" rows="5" cols="40" />
-							<form:hidden path="iddatiabuso" /></td>
+							<form:hidden path="iddatiabuso" />
+							<form:hidden path="progressivo" /></td>
 					</tr>
 					<tr>
 						<td>Destinazione d'uso*:</td>
@@ -27,16 +28,15 @@
 					<tr>
 						<td>Tipologia*:</td>
 						<td><form:select path="tipologiaAbuso">
-								<form:options items="${tipologiaAbusos}" itemLabel="descrizione"
-									itemValue="idtipologiaAbuso" />
+								<form:options items="${tipologiaAbusos}"
+									itemLabel="idtipologiaAbuso" itemValue="idtipologiaAbuso" />
 							</form:select></td>
 					</tr>
 					<tr>
 						<td>Epoca abuso*:</td>
-						<td><form:select path="epocaAbuso">
-								<form:options items="${epocaAbusos}" itemLabel="epocaDa"
-									itemValue="idepocaAbuso" />
-							</form:select></td>
+						<td><form:radiobuttons items="${epocaAbusos}"
+								itemLabel="epocaDa" itemValue="idepocaAbuso" path="epocaAbuso"
+								delimiter="<br />" /></td>
 					</tr>
 					<tr>
 						<td>Data ultimazione lavori*:</td>
@@ -114,8 +114,8 @@
 				<table>
 					<tr>
 						<td>Provincia :</td>
-						<td><form:input path="localizzazione.provincia" />
-							<form:hidden path="localizzazione.iddatiLocalizzazione" /></td>
+						<td><form:input path="localizzazione.provincia" /> <form:hidden
+								path="localizzazione.iddatiLocalizzazione" /></td>
 					</tr>
 					<tr>
 						<td>Comune :</td>

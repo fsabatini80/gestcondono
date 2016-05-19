@@ -50,12 +50,11 @@
 			<table>
 				<tr class="ui-widget-content">
 					<td>Provincia di residenza :</td>
-					<td><form:select path="provinciaResidenza"
-							items="${provinceList}" /></td>
+					<td><form:input path="provinciaResidenza" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Comune di Residenza :</td>
-					<td><form:select path="comuneResidenza" items="${comuniList}" /></td>
+					<td><form:input path="comuneResidenza" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Cap :</td>
@@ -63,11 +62,11 @@
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Stato estero residenza :</td>
-					<td><form:select path="statoEsteroNas" items="${provinceList}" /></td>
+					<td><form:input path="statoEsteroRes" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Comune estero residenza :</td>
-					<td><form:select path="comuneEsteroRes" items="${comuniList}" /></td>
+					<td><form:input path="comuneEsteroRes" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Cognome :</td>
@@ -83,20 +82,19 @@
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Provincia di nasicita</td>
-					<td><form:select path="provinciaNascita"
-							items="${provinceList}" /></td>
+					<td><form:input path="provinciaNascita" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Comune di nascita</td>
-					<td><form:select path="comuneNascita" items="${comuniList}" /></td>
+					<td><form:input path="comuneNascita" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Stato estero nasicita</td>
-					<td><form:select path="statoEsteroNas" items="${provinceList}" /></td>
+					<td><form:input path="statoEsteroNas" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Comune estero nascita</td>
-					<td><form:select path="comuneEsteroNas" items="${comuniList}" /></td>
+					<td><form:input path="comuneEsteroNas" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Ragione sociale</td>
