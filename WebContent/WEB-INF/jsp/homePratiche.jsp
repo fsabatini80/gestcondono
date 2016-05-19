@@ -12,13 +12,13 @@
 	<a href="<c:url value="nuovaPratica.htm" />"
 		title="crea una nuova pratica"> <img
 		title="crea una nuova pratica" src="img/add.png">
-	</a>
+	Inserisci una nuova pratica</a>
 </div>
 <div>
 	<a href="<c:url value="ricercaPratica.htm" />"
 		title="cerca pratica"> <img
 		title="cerca pratica" src="img/find.png">
-	</a>
+	Cerca tra le pratiche</a>
 </div>
 
 
