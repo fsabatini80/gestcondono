@@ -2,6 +2,7 @@ package it.soft.web;
 
 import it.soft.dao.CaratteristicheHome;
 import it.soft.dao.ComuniHome;
+import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DestinazioneUsoHome;
 import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
@@ -11,7 +12,6 @@ import it.soft.dao.TipoOperaHome;
 import it.soft.dao.TipologiaAbusoHome;
 import it.soft.dao.UtentiHome;
 import it.soft.domain.CaratteristicheSpeciali;
-import it.soft.domain.Comune;
 import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiFabbricati;
 import it.soft.domain.DatiTerreni;
@@ -37,6 +37,7 @@ import it.soft.web.pojo.TipologiaDocumentoPojo;
 import it.soft.web.validator.DatiAbusoValidator;
 import it.soft.web.validator.DatiPraticaValidator;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class PraticheController extends BaseController {
 
+	@Autowired
+	DatiPraticaHome datiPraticaHome;
 	@Autowired
 	LeggiCondonoHome leggiCondonoHome;
 	@Autowired
@@ -109,6 +112,19 @@ public class PraticheController extends BaseController {
 		return new ModelAndView(view, model);
 	}
 
+	@RequestMapping(value = "/pratica", method = RequestMethod.GET)
+	public ModelAndView pratica(@RequestParam(value = "idpratica") String id,
+			ModelMap model) throws Exception {
+
+		String view = "table/praticheList";
+		Datipratica source = datiPraticaHome.findById(BigDecimal
+				.valueOf(Integer.parseInt(id)));
+		List<Datipratica> list = new ArrayList<Datipratica>();
+		list.add(source);
+		model.addAttribute("pratiche", list);
+		return new ModelAndView(view, model);
+	}
+
 	@RequestMapping(value = "/nuovaPratica", method = RequestMethod.GET)
 	public ModelAndView nuovaPratica(ModelMap model) throws Exception {
 
@@ -157,6 +173,7 @@ public class PraticheController extends BaseController {
 		List<Datiabuso> list = datiAbusoService.findAll(id);
 		this.praticaPojo = datiPraticaService.findById(id);
 		model.addAttribute("abusi", list);
+		model.addAttribute("idpratica", this.praticaPojo.getIddatipratica());
 		return new ModelAndView(view, model);
 	}
 
@@ -210,6 +227,7 @@ public class PraticheController extends BaseController {
 		this.abusoPojo = datiAbusoService.findById(id);
 		List<DatiAlloggio> list = datiAbusoService.findAlloggi(id);
 		model.addAttribute("alloggi", list);
+		model.addAttribute("idpratica", this.abusoPojo.getDatiPratica());
 		return new ModelAndView(view, model);
 	}
 
@@ -258,6 +276,7 @@ public class PraticheController extends BaseController {
 		model.addAttribute("documentiAdd", listAdd);
 		model.addAttribute("tipologiaDocumentoPojo",
 				new TipologiaDocumentoPojo());
+		model.addAttribute("idpratica", this.abusoPojo.getDatiPratica());
 		return new ModelAndView(view, model);
 	}
 
@@ -301,6 +320,7 @@ public class PraticheController extends BaseController {
 		soggettoNew.setIdAbuso(BigInteger.valueOf(Integer.valueOf(id)));
 		model.addAttribute("soggettoNew", soggettoNew);
 		model.addAttribute("soggetti", list);
+		model.addAttribute("idpratica", this.abusoPojo.getDatiPratica());
 		return new ModelAndView(view, model);
 	}
 
@@ -347,6 +367,7 @@ public class PraticheController extends BaseController {
 		fabbricatoNew.setIdAlloggio(Integer.valueOf(id));
 		model.addAttribute("fabbricatoNew", fabbricatoNew);
 		model.addAttribute("fabbricati", list);
+		model.addAttribute("idabuso", this.abusoPojo.getIddatiabuso());
 		return new ModelAndView(view, model);
 	}
 
@@ -386,6 +407,7 @@ public class PraticheController extends BaseController {
 		terrenoNew.setIdAlloggio(Integer.valueOf(id));
 		model.addAttribute("terrenoNew", terrenoNew);
 		model.addAttribute("terreni", list);
+		model.addAttribute("idabuso", this.abusoPojo.getIddatiabuso());
 		return new ModelAndView(view, model);
 	}
 
@@ -419,38 +441,38 @@ public class PraticheController extends BaseController {
 	 * @param model
 	 */
 	private void initModel(ModelMap model) {
-		if (!model.containsAttribute("comuniList"))
-			model.addAttribute("comuniList", getComuni());
-		if (!model.containsAttribute("provinceList"))
-			model.addAttribute("provinceList", getProvince());
+		// if (!model.containsAttribute("comuniList"))
+		// model.addAttribute("comuniList", getComuni());
+		// if (!model.containsAttribute("provinceList"))
+		// model.addAttribute("provinceList", getProvince());
 		if (!model.containsAttribute("leggiList"))
 			model.addAttribute("leggiList", leggiCondonoHome.findAll());
 	}
 
-	private List<String> getComuni() {
-		if (comuni != null)
-			return comuni;
-		comuni = new ArrayList<String>();
-		comuni.add("");
-		List<Comune> list = comuniHome.findAll();
-		for (Comune comune : list) {
-			comuni.add(comune.getComune());
-		}
-		return comuni;
-	}
-
-	private List<String> getProvince() {
-		if (province != null)
-			return province;
-		province = new ArrayList<String>();
-		province.add("");
-		List<Comune> list = comuniHome.findAll();
-		for (Comune comune : list) {
-			if (!province.contains(comune.getProvincia()))
-				province.add(comune.getProvincia());
-		}
-		return province;
-	}
+	// private List<String> getComuni() {
+	// if (comuni != null)
+	// return comuni;
+	// comuni = new ArrayList<String>();
+	// comuni.add("");
+	// List<Comune> list = comuniHome.findAll();
+	// for (Comune comune : list) {
+	// comuni.add(comune.getComune());
+	// }
+	// return comuni;
+	// }
+	//
+	// private List<String> getProvince() {
+	// if (province != null)
+	// return province;
+	// province = new ArrayList<String>();
+	// province.add("");
+	// List<Comune> list = comuniHome.findAll();
+	// for (Comune comune : list) {
+	// if (!province.contains(comune.getProvincia()))
+	// province.add(comune.getProvincia());
+	// }
+	// return province;
+	// }
 
 	private void initModelAbuso(ModelMap model) {
 		this.tipologiaDestinazioneUsos = destinazioneUsoHome.findAll();
