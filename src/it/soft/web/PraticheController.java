@@ -328,10 +328,11 @@ public class PraticheController extends BaseController {
 	public ModelAndView modificaSoggetto(ModelMap model,
 			@RequestParam(value = "idsoggetto") String id) throws Exception {
 		String view = "form/formSoggetto";
-		this.abusoPojo = datiAbusoService.findById(id);
+		//this.abusoPojo = datiAbusoService.findById(id);
 		initSoggetti(model);
 		RelSoggettoAbuso soggettoNew = datiAbusoService.findSoggettoById(id);
-		soggettoNew.setIdAbuso(BigInteger.valueOf(Integer.valueOf(id)));
+		soggettoNew.setIdAbuso(BigInteger.valueOf(Integer
+				.valueOf(this.abusoPojo.getIddatiabuso())));
 		model.addAttribute("soggettoNew", soggettoNew);
 		return new ModelAndView(view, model);
 	}

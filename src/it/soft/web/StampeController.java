@@ -39,7 +39,6 @@ public class StampeController extends BaseController {
 			out.flush();
 			out.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

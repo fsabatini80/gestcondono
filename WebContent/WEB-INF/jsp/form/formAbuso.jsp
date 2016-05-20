@@ -35,7 +35,7 @@
 					<tr>
 						<td>Epoca abuso*:</td>
 						<td><form:radiobuttons items="${epocaAbusos}"
-								itemLabel="epocaDa" itemValue="idepocaAbuso" path="epocaAbuso"
+								 itemValue="idepocaAbuso" path="epocaAbuso"
 								delimiter="<br />" /></td>
 					</tr>
 					<tr>

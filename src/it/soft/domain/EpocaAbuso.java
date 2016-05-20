@@ -70,4 +70,10 @@ public class EpocaAbuso implements Serializable {
 		this.leggeCondono = leggeCondono;
 	}
 
+	@Override
+	public String toString() {
+		String string = "Da ".concat(epocaDa).concat(" a ").concat(epocaA);
+		return string;
+	}
+
 }
