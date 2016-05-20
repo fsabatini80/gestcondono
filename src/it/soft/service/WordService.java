@@ -5,6 +5,7 @@ import it.soft.dao.DatiAlloggioHome;
 import it.soft.dao.DatiFabbricatiHome;
 import it.soft.dao.DatiTerreniHome;
 import it.soft.dao.DestinazioneUsoHome;
+import it.soft.dao.EpocaAbusoHome;
 import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiFabbricati;
 import it.soft.domain.DatiTerreni;
@@ -27,6 +28,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,8 @@ public class WordService {
 	DatiAlloggioHome datiAlloggioHome;
 	@Autowired
 	DatiAbusoHome datiAbusoHome;
+	@Autowired
+	EpocaAbusoHome epocaAbusoHome;
 
 	public XWPFDocument createDoc(XWPFDocument document,
 			DatiPraticaService praticaService, DatiAbusoService abusoService,
@@ -57,7 +61,7 @@ public class WordService {
 						.valueOf(Integer.valueOf(idabuso))));
 		createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 		List<DocumentiAbuso> daocumentiDB = abusoService
-				.findAllDocById(idpratica);
+				.findAllDocById(idabuso);
 		createPage2(document, daocumentiDB);
 		System.out.println("create successfully");
 
@@ -123,7 +127,8 @@ public class WordService {
 		creaParagraphDatiTecnici(paragraphDatiTecnici);
 
 		XWPFParagraph paragraphDatiTecniciTable = document.createParagraph();
-		creaParagraphDatiTecniciTable(paragraphDatiTecniciTable, abusoDB);
+		creaParagraphDatiTecniciTable(paragraphDatiTecniciTable, abusoDB,
+				praticaDB);
 
 		XWPFParagraph paragraphInformativa = document.createParagraph();
 		creaParagraphInformativa(paragraphInformativa);
@@ -132,7 +137,8 @@ public class WordService {
 	}
 
 	private void creaParagraphDatiTecniciTable(
-			XWPFParagraph paragraphDatiTecniciTable, DatiAbusoPojo abusoDB) {
+			XWPFParagraph paragraphDatiTecniciTable, DatiAbusoPojo abusoDB,
+			DatiPraticaPojo praticaDB) {
 		XWPFRun p1 = paragraphDatiTecniciTable.createRun();
 		String testo1 = "Destinazione d'uso: ";
 		if (abusoDB.getDestinazioneUso() != null
@@ -162,8 +168,8 @@ public class WordService {
 		p5.setText(testo5);
 		p5.addBreak();
 		XWPFRun p6 = paragraphDatiTecniciTable.createRun();
-		// FIXME
-		String testo6 = "Epoca d'abuso: " + "";
+		String testo6 = "Epoca d'abuso: ".concat(epocaAbusoHome.findById(
+				Integer.valueOf(abusoDB.getEpocaAbuso())).toString());
 		p6.setText(testo6);
 		p6.addBreak();
 		XWPFRun p7 = paragraphDatiTecniciTable.createRun();
@@ -188,16 +194,17 @@ public class WordService {
 
 		List<DatiFabbricati> listFabbric = datiFabbricatiHome
 				.findAll(idalloggio.intValue());
+		// create table
+		XWPFTable table = document.createTable();
+		// create first row
+		XWPFTableRow tableRowOne = table.getRow(0);
+		addTableCellCenter(tableRowOne.getCell(0), "SEZIONE");
+		addTableCellCenter(tableRowOne.addNewTableCell(), "FOGLIO");
+		addTableCellCenter(tableRowOne.addNewTableCell(), "PARTICELLA");
+		addTableCellCenter(tableRowOne.addNewTableCell(), "SUBALTERNO");
+		addTableCellCenter(tableRowOne.addNewTableCell(), "ZONA");
+
 		for (DatiFabbricati datiFabbricati : listFabbric) {
-			// create table
-			XWPFTable table = document.createTable();
-			// create first row
-			XWPFTableRow tableRowOne = table.getRow(0);
-			tableRowOne.getCell(0).setText("SEZIONE");
-			tableRowOne.addNewTableCell().setText("FOGLIO");
-			tableRowOne.addNewTableCell().setText("PARTICELLA");
-			tableRowOne.addNewTableCell().setText("SUBALTERNO");
-			tableRowOne.addNewTableCell().setText("ZONA");
 			XWPFTableRow tableRowTwo = table.createRow();
 			tableRowTwo.getCell(0).setText(datiFabbricati.getSezione());
 			tableRowTwo.getCell(1).setText(datiFabbricati.getFoglio());
@@ -209,14 +216,6 @@ public class WordService {
 				.intValue());
 		for (DatiTerreni datiTerreni : listTerreni) {
 			// create table
-			XWPFTable table = document.createTable();
-			// create first row
-			XWPFTableRow tableRowOne = table.getRow(0);
-			tableRowOne.getCell(0).setText("SEZIONE");
-			tableRowOne.addNewTableCell().setText("FOGLIO");
-			tableRowOne.addNewTableCell().setText("PARTICELLA");
-			tableRowOne.addNewTableCell().setText("SUBALTERNO");
-			tableRowOne.addNewTableCell().setText("ZONA");
 			XWPFTableRow tableRowTwo = table.createRow();
 			tableRowTwo.getCell(0).setText(datiTerreni.getSezione());
 			tableRowTwo.getCell(1).setText(datiTerreni.getFoglio());
@@ -225,6 +224,14 @@ public class WordService {
 			// tableRowTwo.getCell(4).setText(datiFabbricati.get);
 		}
 
+	}
+
+	private void addTableCellCenter(XWPFTableCell tableCell, String testo) {
+		XWPFParagraph parCell = tableCell.addParagraph();
+		parCell.setAlignment(ParagraphAlignment.CENTER);
+		XWPFRun run = parCell.createRun();
+		run.setText(testo);
+		tableCell.addParagraph(parCell);
 	}
 
 	private void creaParagraphDatiCatastali(XWPFParagraph paragraphDatiCatastali) {
@@ -273,8 +280,8 @@ public class WordService {
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
 		XWPFRun paragraphAOneRunTwo = paragraphA.createRun();
 		String testo = "Numero interno: " + praticaDB.getNumeroPratica();
-		testo += " , sottonumero: " + abusoDB.getProgressivo();
-		testo += " , numero protocollo: " + praticaDB.getNumeroProtocollo();
+		testo += ", sottonumero: " + abusoDB.getProgressivo();
+		testo += ", numero protocollo: " + praticaDB.getNumeroProtocollo();
 		paragraphAOneRunTwo.setText(testo);
 	}
 
@@ -311,6 +318,7 @@ public class WordService {
 				+ praticaDB.getDataProtocollo();
 		paragraphOneRunTwo.setText(testo1);
 		paragraphOneRunTwo.addBreak();
+		paragraphOneRunTwo.addBreak();
 		for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
 			XWPFRun paragraphSoggettiNominativo = paragraph.createRun();
 			paragraphSoggettiNominativo.setText("Cognome e Nome: "
@@ -327,6 +335,8 @@ public class WordService {
 			XWPFRun paragraphSoggettiComune = paragraph.createRun();
 			paragraphSoggettiComune.setText("Comune: "
 					+ relSoggettoAbuso.getComuneResidenza());
+			paragraphSoggettiComune.addBreak();
+			paragraphSoggettiComune.addBreak();
 		}
 	}
 
@@ -351,7 +361,7 @@ public class WordService {
 		creaPargraphDOC(paragraphDoc);
 
 		XWPFParagraph paragraphDocTable = document.createParagraph();
-		creaPargraphDOCTable(paragraphDocTable);
+		creaPargraphDOCTable(paragraphDocTable, daocumentiDB);
 
 		XWPFParagraph paragraphInfoDoc = document.createParagraph();
 		creaPargraphINOFDOC(paragraphInfoDoc);
@@ -405,9 +415,15 @@ public class WordService {
 
 	}
 
-	private void creaPargraphDOCTable(XWPFParagraph paragraphDocTable) {
-		// TODO Auto-generated method stub
-
+	private void creaPargraphDOCTable(XWPFParagraph paragraphDocTable,
+			List<DocumentiAbuso> daocumentiDB) {
+		XWPFRun paragraphAOneRunOne = paragraphDocTable.createRun();
+		paragraphAOneRunOne.setBold(true);
+		for (DocumentiAbuso documentiAbuso : daocumentiDB) {
+			paragraphAOneRunOne.setText(" - ".concat(documentiAbuso
+					.getIdTipoDocumento().getDescrizione()));
+			paragraphAOneRunOne.addBreak();
+		}
 	}
 
 	private void creaPargraphDOC(XWPFParagraph paragraphDoc) {
