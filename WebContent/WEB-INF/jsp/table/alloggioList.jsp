@@ -23,7 +23,9 @@
 				<th>Destinazione uso</th>
 				<th>Superficie utile</th>
 				<th>Superficie accessoria</th>
-				<th></th>
+				<th>mod.</th>
+				<th>vis. fabbricati</th>
+				<th>vis. terreni</th>
 			</tr>
 		</thead>
 		<tbody align="center">
@@ -36,10 +38,12 @@
 					<td width="200px"><a
 						href="<c:url value="modificaAlloggio.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
 						title="modifica alloggio"><img src="img/24/edit.png"
-							title="modifica alloggio"></a> <a
+							title="modifica alloggio"></a></td>
+					<td><a
 						href="<c:url value="fabbricati.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
 						title="visualizza fabbricati"><img src="img/24/find.png"
-							title="visualizza fabbricati"></a> <a
+							title="visualizza fabbricati"></a></td>
+					<td><a
 						href="<c:url value="terreni.htm?idalloggio=${alloggio.iddatiAlloggio}" />"
 						title="visualizza terreni"><img src="img/24/find.png"
 							title="visualizza terreni"></a></td>
@@ -49,6 +53,6 @@
 	</table>
 </div>
 <div>
-	<a href="<c:url value="abusi.htm?idpratica=${idpratica}" />" title="INDIETRO">
-		INDIETRO </a>
+	<a href="<c:url value="abusi.htm?idpratica=${idpratica}" />"
+		title="INDIETRO"> INDIETRO </a>
 </div>

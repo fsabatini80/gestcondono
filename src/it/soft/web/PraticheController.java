@@ -139,7 +139,7 @@ public class PraticheController extends BaseController {
 	public ModelAndView salvaPratica(ModelMap model, DatiPraticaPojo pojo,
 			Errors errors) throws Exception {
 
-		String view = "redirect:pratiche.htm";
+		String view = "redirect:pratica.htm?idpratica=";
 		validatorPratica.validate(pojo, errors);
 		this.praticaPojo = pojo;
 		if (errors.hasFieldErrors()) {
@@ -152,6 +152,7 @@ public class PraticheController extends BaseController {
 			Utenti utenti = utentiHome.findByUser(name);
 			pojo.setIdutente(String.valueOf(utenti.getIdUtenti()));
 			datiPraticaService.saveDatiPratica(pojo);
+			view = view.concat(pojo.getIddatipratica());
 		}
 		return new ModelAndView(view, model);
 	}

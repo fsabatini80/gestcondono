@@ -69,6 +69,9 @@ public class DatiPraticaService {
 		richiedente.setDatipratica(datipratica);
 		datipratica.setRichiedente(richiedente);
 		datiPraticaHome.persist(datipratica);
+		if (pojo.getIddatipratica() == null
+				|| "".equals(pojo.getIddatipratica().trim()))
+			pojo.setIddatipratica(datipratica.getIddatipratica().toString());
 
 	}
 

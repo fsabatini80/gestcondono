@@ -23,8 +23,11 @@
 				<th>Destinazione Uso</th>
 				<th>Epoca Abuso</th>
 				<th>Tipo Opera</th>
-				<th></th>
-				<th></th>
+				<th>mod.</th>
+				<th>vis. alloggi</th>
+				<th>vis. doc.</th>
+				<th>vis. sogg.</th>
+				<th>stampa lettera</th>
 			</tr>
 		</thead>
 		<tbody align="center">
@@ -36,17 +39,19 @@
 					<td>da ${abuso.epocaAbuso.epocaDa} a
 						${abuso.epocaAbuso.epocaA}</td>
 					<td>${abuso.tipoOpera.descrizione}</td>
-					<td width="300px"><a
+					<td><a
 						href="<c:url value="modificaAbuso.htm?idabuso=${abuso.iddatiabuso}" />"
 						title="modifica abuso"><img src="img/24/edit.png"
-							title="modifica abuso"></a> <a
+							title="modifica abuso"></a></td>
+					<td><a
 						href="<c:url value="alloggi.htm?idabuso=${abuso.iddatiabuso}" />"
 						title="visualizza alloggi"><img src="img/24/find.png"
-							title="visualizza alloggi"></a> <a
+							title="visualizza alloggi"></a></td>
+					<td><a
 						href="<c:url value="documenti.htm?idabuso=${abuso.iddatiabuso}" />"
 						title="visualizza documenti"><img
-							src="img/24/document_find.png" title="visualizza documenti"></a>
-						<a
+							src="img/24/document_find.png" title="visualizza documenti"></a></td>
+					<td><a
 						href="<c:url value="soggetti.htm?idabuso=${abuso.iddatiabuso}" />"
 						title="visualizza soggetti abuso"><img src="img/24/users3.png"
 							title="visualizza soggetti abuso"></a></td>

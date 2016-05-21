@@ -63,12 +63,54 @@ public class WordService {
 		List<DocumentiAbuso> daocumentiDB = abusoService
 				.findAllDocById(idabuso);
 		createPage2(document, daocumentiDB);
+		createPage3(document);
 		System.out.println("create successfully");
 
 		scriviLocalTest(document);
 
 		return document;
 
+	}
+
+	private void createPage3(XWPFDocument document) {
+		
+		document.createParagraph().createRun().addBreak(BreakType.PAGE);
+		addTextBoldBreak(document.createParagraph().createRun(), "2)ATTESTAZIONI DI VERSAMENTO");
+		//OBLAZIONE
+		addTextBold(document.createParagraph().createRun(), "OBLAZIONE:");
+		addTextBold(document.createParagraph().createRun(), "Autodetermina =");
+		addTextBold(document.createParagraph().createRun(), "Importo versato =");
+		addTextBold(document.createParagraph().createRun(), "Importo calcolato =");
+		addTextBoldBreak(document.createParagraph().createRun(), "Importo da versare a saldo comprensivo degli interessi dovuti =");
+		//OBLAZIONE REGIONALE
+		addTextBold(document.createParagraph().createRun(), "OBLAZIONE REGIONALE:");
+		addTextBold(document.createParagraph().createRun(), "Autodetermina =");
+		addTextBold(document.createParagraph().createRun(), "Importo versato =");
+		addTextBold(document.createParagraph().createRun(), "Importo calcolato =");
+		addTextBoldBreak(document.createParagraph().createRun(), "Importo da versare a saldo comprensivo degli interessi dovuti =");
+		//ONERI CONCESSORI
+		addTextBold(document.createParagraph().createRun(), "ONERI CONCESSORI:");
+		addTextBold(document.createParagraph().createRun(), "Importo versato =");
+		addTextBold(document.createParagraph().createRun(), "Importo calcolato =");
+		addTextBoldBreak(document.createParagraph().createRun(), "Importo da versare a saldo =");
+		//DIRITTI DI SEGRETERIA
+		addTextBold(document.createParagraph().createRun(), "DIRITTI DI SEGRETERIA:");
+		addTextBold(document.createParagraph().createRun(), "Diritti di istruttoria =");
+		addTextBold(document.createParagraph().createRun(), "Diritti rilascio permesso di costruire =");
+		addTextBold(document.createParagraph().createRun(), "Diritti istruttoria pareri sui vincoli =");
+		addTextBold(document.createParagraph().createRun(), "Agibilità =");
+		addTextBoldBreak(document.createParagraph().createRun(), "Importo da versare =");
+		//TOTALE VERSAMENTI E RIEPILOGO
+		addTextBold(document.createParagraph().createRun(), "Totale da versare al comune di ");
+		addTextSimple(document.createParagraph().createRun(), "Il versamento va effettuato a favore di:");
+		addTextSimple(document.createParagraph().createRun(), "TESORERIA COMUNALE");
+		addTextBold(document.createParagraph().createRun(), "IBAN:");
+		addTextBold(document.createParagraph().createRun(), "Totale da versare al ministero LLPP =");
+		addTextBoldBreak(document.createParagraph().createRun(), "Totale da versare alla Regione Lazio =");
+		//NOTE INFORMATIVE
+		addTextSimpleBreak(document.createParagraph().createRun(), "I versamenti delle somme dovute a saldo al cui causale dovrà riportare il numero di pratica e il numero di protocollo di cui al punto A della presente nota, dovranno essere effettuati entro e non oltre 60 gg. dal ricevimento della presente.");
+		addTextBold(document.createParagraph().createRun(), "NOTA BENE:");
+		addTextBold(document.createParagraph().createRun(), "In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.");
 	}
 
 	private void scriviLocalTest(XWPFDocument document)
@@ -85,61 +127,41 @@ public class WordService {
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
 			List<RelSoggettoAbuso> listaSoggetti, List<DatiAlloggio> alloggi) {
 		// create header
-		XWPFParagraph paragraph = document.createParagraph();
-		createHeader(paragraph);
-
+		createHeader(document.createParagraph());
 		// create Protocollo e lista soggetti
-		XWPFParagraph paragraphProtocollo = document.createParagraph();
-		createListaSoggetti(paragraphProtocollo, praticaDB, abusoDB,
+		createListaSoggetti(document.createParagraph(), praticaDB, abusoDB,
 				listaSoggetti);
-
-		XWPFParagraph paragraphggetto = document.createParagraph();
-		creaOggetto(paragraphggetto, praticaDB, abusoDB);
-
+		creaOggetto(document.createParagraph(), praticaDB, abusoDB);
 		XWPFParagraph paragraphA = document.createParagraph();
-		creaPargraphA(paragraphA);
-
-		XWPFParagraph paragraphADati = document.createParagraph();
-		creaPargraphADB(paragraphADati, praticaDB, abusoDB);
-
-		XWPFParagraph paragraphUbicazione = document.createParagraph();
-		creaParagraphUbicazione(paragraphUbicazione);
-
-		XWPFParagraph paragraphALocalizzazione = document.createParagraph();
-		creaParagraphUbicazioneDB(paragraphALocalizzazione, abusoDB);
-
-		XWPFParagraph paragraphDescAbuso = document.createParagraph();
-		creaParagraphDescAbuso(paragraphDescAbuso);
-
-		XWPFParagraph paragraphDescAbusoDB = document.createParagraph();
-		creaParagraphDescAbusoDB(paragraphDescAbusoDB, abusoDB);
-
-		XWPFParagraph paragraphDatiCatastali = document.createParagraph();
-		creaParagraphDatiCatastali(paragraphDatiCatastali);
-
+		paragraphA.setAlignment(ParagraphAlignment.CENTER);
+		addTextBold(paragraphA.createRun(),
+				"A) AVVIO ISTRUTTORIA DELLA PRATICA");
+		creaPargraphADB(document.createParagraph(), praticaDB, abusoDB);
+		addTextBold(document.createParagraph().createRun(),
+				"Ubicazione dell'abuso:");
+		addTextSimple(document.createParagraph().createRun(), "Località "
+				+ abusoDB.getLocalizzazione().getComune() + ", Indirizzo "
+				+ abusoDB.getLocalizzazione().getIndirizzo());
+		addTextBold(document.createParagraph().createRun(),
+				"Descrizione abuso: ");
+		addTextSimple(document.createParagraph().createRun(),
+				abusoDB.getDescrizione());
+		addTextBold(document.createParagraph().createRun(), "Dati Catastali:");
 		XWPFParagraph paragraphDatiCatastaliTable = document.createParagraph();
 		for (DatiAlloggio datiAlloggio : alloggi) {
 			creaParagraphDatiCatastaliDB(paragraphDatiCatastaliTable,
 					datiAlloggio.getIddatiAlloggio(), document);
 		}
-
-		XWPFParagraph paragraphDatiTecnici = document.createParagraph();
-		creaParagraphDatiTecnici(paragraphDatiTecnici);
-
-		XWPFParagraph paragraphDatiTecniciTable = document.createParagraph();
-		creaParagraphDatiTecniciTable(paragraphDatiTecniciTable, abusoDB,
+		addTextBold(document.createParagraph().createRun(), "Dati Tecnici: ");
+		creaParagraphDatiTecniciTable(document.createParagraph(), abusoDB,
 				praticaDB);
-
-		XWPFParagraph paragraphInformativa = document.createParagraph();
-		creaParagraphInformativa(paragraphInformativa);
-
+		addTextSimple(document.createParagraph().createRun(), "Dall'istruttoria preliminare dell'istanza in oggetto, ai fini di poter completare le attività di disamina tecnico-amministrativo e procedere con il rilascio della Concessione in sanatoria la stessa, dovrà essere integrata con i documenti previsti dalle normative vigenti di cui al punto 1 e dalle attestazioni di versamento di cui al punto 2.");
 		return document;
 	}
 
 	private void creaParagraphDatiTecniciTable(
 			XWPFParagraph paragraphDatiTecniciTable, DatiAbusoPojo abusoDB,
 			DatiPraticaPojo praticaDB) {
-		XWPFRun p1 = paragraphDatiTecniciTable.createRun();
 		String testo1 = "Destinazione d'uso: ";
 		if (abusoDB.getDestinazioneUso() != null
 				&& !"".equals(abusoDB.getDestinazioneUso().trim())) {
@@ -147,45 +169,23 @@ public class WordService {
 					.valueOf(abusoDB.getDestinazioneUso()));
 			testo1.concat(s.getDescrizioneTipologia());
 		}
-
-		p1.setText(testo1);
-		p1.addBreak();
-		XWPFRun p2 = paragraphDatiTecniciTable.createRun();
-		String testo2 = "Superficie Utile Mq: " + abusoDB.getSuperficeUtile();
-		p2.setText(testo2);
-		p2.addBreak();
-		XWPFRun p3 = paragraphDatiTecniciTable.createRun();
-		String testo3 = "Non resid./accessori Mq: "
-				+ abusoDB.getSuperficeUtile();
-		p3.setText(testo3);
-		p3.addBreak();
-		XWPFRun p4 = paragraphDatiTecniciTable.createRun();
-		String testo4 = "Mc VxP: " + abusoDB.getSuperficeTotale();
-		p4.setText(testo4);
-		p4.addBreak();
-		XWPFRun p5 = paragraphDatiTecniciTable.createRun();
-		String testo5 = "Tipologia: " + abusoDB.getTipologiaAbuso();
-		p5.setText(testo5);
-		p5.addBreak();
-		XWPFRun p6 = paragraphDatiTecniciTable.createRun();
-		String testo6 = "Epoca d'abuso: ".concat(epocaAbusoHome.findById(
-				Integer.valueOf(abusoDB.getEpocaAbuso())).toString());
-		p6.setText(testo6);
-		p6.addBreak();
-		XWPFRun p7 = paragraphDatiTecniciTable.createRun();
-		String testo7 = "Data ultimazione lavori: "
-				+ abusoDB.getDataUltimazioneLavori();
-		p7.setText(testo7);
-		p7.addBreak();
-
-	}
-
-	private void creaParagraphDatiTecnici(XWPFParagraph paragraphDatiTecnici) {
-		XWPFRun paragraphAOneRunTwo = paragraphDatiTecnici.createRun();
-		String testo = "Dati Tecnici:";
-		paragraphAOneRunTwo.setText(testo);
-		paragraphAOneRunTwo.setBold(true);
-
+		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(), testo1);
+		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
+				"Superficie Utile Mq: " + abusoDB.getSuperficeUtile());
+		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
+				"Non resid./accessori Mq: " + abusoDB.getSuperficeUtile());
+		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(), "Mc VxP: "
+				+ abusoDB.getSuperficeTotale());
+		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(), "Tipologia: "
+				+ abusoDB.getTipologiaAbuso());
+		addTextSimpleBreak(
+				paragraphDatiTecniciTable.createRun(),
+				"Epoca d'abuso: ".concat(epocaAbusoHome.findById(
+						Integer.valueOf(abusoDB.getEpocaAbuso())).toString()));
+		addTextSimpleBreak(
+				paragraphDatiTecniciTable.createRun(),
+				"Data ultimazione lavori: "
+						+ abusoDB.getDataUltimazioneLavori());
 	}
 
 	private void creaParagraphDatiCatastaliDB(
@@ -234,67 +234,36 @@ public class WordService {
 		tableCell.addParagraph(parCell);
 	}
 
-	private void creaParagraphDatiCatastali(XWPFParagraph paragraphDatiCatastali) {
-		XWPFRun paragraphAOneRunTwo = paragraphDatiCatastali.createRun();
-		String testo = "Dati Catastali:";
-		paragraphAOneRunTwo.setText(testo);
-		paragraphAOneRunTwo.setBold(true);
+	private void addTextBold(XWPFRun run, String testo) {
+		run.setText(testo);
+		run.setBold(true);
+	}
+	
+	private void addTextBoldBreak(XWPFRun run, String testo) {
+		run.setText(testo);
+		run.setBold(true);
+		run.addBreak();
 	}
 
-	private void creaParagraphDescAbusoDB(XWPFParagraph paragraphDescAbusoDB,
-			DatiAbusoPojo abusoDB) {
-		XWPFRun paragraphAOneRunTwo = paragraphDescAbusoDB.createRun();
-		String testo = abusoDB.getDescrizione();
-		paragraphAOneRunTwo.setText(testo);
+	private void addTextSimple(XWPFRun run, String testo) {
+		run.setText(testo);
 	}
 
-	private void creaParagraphDescAbuso(XWPFParagraph paragraphDescAbuso) {
-		XWPFRun paragraphAOneRunTwo = paragraphDescAbuso.createRun();
-		String testo = "Descrizione abuso:";
-		paragraphAOneRunTwo.setText(testo);
-		paragraphAOneRunTwo.setBold(true);
-	}
-
-	private void creaParagraphUbicazioneDB(
-			XWPFParagraph paragraphALocalizzazione, DatiAbusoPojo abusoDB) {
-		XWPFRun paragraphAOneRunTwo = paragraphALocalizzazione.createRun();
-		String testo = "Località " + abusoDB.getLocalizzazione().getComune()
-				+ ", Indirizzo " + abusoDB.getLocalizzazione().getIndirizzo();
-		paragraphAOneRunTwo.setText(testo);
-	}
-
-	private void creaParagraphUbicazione(XWPFParagraph paragraphUbicazione) {
-		XWPFRun paragraphAOneRunTwo = paragraphUbicazione.createRun();
-		String testo = "Ubicazione dell'abuso:";
-		paragraphAOneRunTwo.setText(testo);
-		paragraphAOneRunTwo.setBold(true);
-	}
-
-	private void creaParagraphInformativa(XWPFParagraph paragraphInformativa) {
-		XWPFRun paragraphAOneRunTwo = paragraphInformativa.createRun();
-		String testo = "Dall'istruttoria preliminare dell'istanza in oggetto, ai fini di poter completare le attività di disamina tecnico-amministrativo e procedere con il rilascio della Concessione in sanatoria la stessa, dovrà essere integrata con i documenti previsti dalle normative vigenti di cui al punto 1 e dalle attestazioni di versamento di cui al punto 2.";
-		paragraphAOneRunTwo.setText(testo);
+	private void addTextSimpleBreak(XWPFRun run, String testo) {
+		run.setText(testo);
+		run.addBreak();
 	}
 
 	private void creaPargraphADB(XWPFParagraph paragraphA,
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
-		XWPFRun paragraphAOneRunTwo = paragraphA.createRun();
 		String testo = "Numero interno: " + praticaDB.getNumeroPratica();
 		testo += ", sottonumero: " + abusoDB.getProgressivo();
 		testo += ", numero protocollo: " + praticaDB.getNumeroProtocollo();
-		paragraphAOneRunTwo.setText(testo);
-	}
-
-	private void creaPargraphA(XWPFParagraph paragraphA) {
-		paragraphA.setAlignment(ParagraphAlignment.CENTER);
-		XWPFRun paragraphAOneRunOne = paragraphA.createRun();
-		paragraphAOneRunOne.setText("A) AVVIO ISTRUTTORIA DELLA PRATICA");
-		paragraphAOneRunOne.setBold(true);
+		addTextSimple(paragraphA.createRun(), testo);
 	}
 
 	private void creaOggetto(XWPFParagraph paragraphggetto,
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
-		XWPFRun paragOggetto = paragraphggetto.createRun();
 		String oggetto = "Oggetto: Avvio dell'attività di istruttoria della Istanza di Sanatoria Edilizia richiesta ai sensi della legge n."
 				+ praticaDB.getLeggeCondono();
 		oggetto += " presentata il " + praticaDB.getDataDomanda();
@@ -305,8 +274,7 @@ public class WordService {
 		oggetto += " richiesta da " + praticaDB.getCognome() + " "
 				+ praticaDB.getNome();
 		oggetto += " residente in " + praticaDB.getIndirizzo();
-		paragOggetto.setText(oggetto);
-
+		addTextSimple(paragraphggetto.createRun(), oggetto);
 	}
 
 	private void createListaSoggetti(XWPFParagraph paragraph,
@@ -320,23 +288,17 @@ public class WordService {
 		paragraphOneRunTwo.addBreak();
 		paragraphOneRunTwo.addBreak();
 		for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
-			XWPFRun paragraphSoggettiNominativo = paragraph.createRun();
-			paragraphSoggettiNominativo.setText("Cognome e Nome: "
-					+ relSoggettoAbuso.getCognome() + " "
-					+ relSoggettoAbuso.getNome());
-			paragraphSoggettiNominativo.addBreak();
-			XWPFRun paragraphSoggettiVia = paragraph.createRun();
-			paragraphSoggettiVia.setText("Indirizzo: "
+			addTextSimpleBreak(paragraph.createRun(),
+					"Cognome e Nome: " + relSoggettoAbuso.getCognome() + " "
+							+ relSoggettoAbuso.getNome());
+			addTextSimpleBreak(paragraph.createRun(), "Indirizzo: "
 					+ relSoggettoAbuso.getIndirizzo());
-			paragraphSoggettiVia.addBreak();
-			XWPFRun paragraphSoggettiCap = paragraph.createRun();
-			paragraphSoggettiCap.setText("Cap: " + relSoggettoAbuso.getCap());
-			paragraphSoggettiCap.addBreak();
-			XWPFRun paragraphSoggettiComune = paragraph.createRun();
-			paragraphSoggettiComune.setText("Comune: "
+			addTextSimpleBreak(paragraph.createRun(), "Cap: "
+					+ relSoggettoAbuso.getCap());
+			addTextSimpleBreak(paragraph.createRun(), "Comune: "
 					+ relSoggettoAbuso.getComuneResidenza());
-			paragraphSoggettiComune.addBreak();
-			paragraphSoggettiComune.addBreak();
+			paragraph.createRun().addBreak();
+			paragraph.createRun().addBreak();
 		}
 	}
 
@@ -355,63 +317,25 @@ public class WordService {
 		paragraphOneRunOne1.setText("email..........");
 	}
 
+
 	public XWPFDocument createPage2(XWPFDocument document,
 			List<DocumentiAbuso> daocumentiDB) {
-		XWPFParagraph paragraphDoc = document.createParagraph();
-		creaPargraphDOC(paragraphDoc);
-
-		XWPFParagraph paragraphDocTable = document.createParagraph();
-		creaPargraphDOCTable(paragraphDocTable, daocumentiDB);
-
-		XWPFParagraph paragraphInfoDoc = document.createParagraph();
-		creaPargraphINOFDOC(paragraphInfoDoc);
-
+		creaPargraphDOC(document.createParagraph());
+		creaPargraphDOCTable(document.createParagraph(), daocumentiDB);
+		creaPargraphINOFDOC(document.createParagraph());
 		return document;
 	}
 
 	private void creaPargraphINOFDOC(XWPFParagraph paragraphInfoDoc) {
 
-		XWPFRun paragraphOne = paragraphInfoDoc.createRun();
-		String testo = "La documentazione richiesta che dovrà riportare ";
-		paragraphOne.setText(testo);
-
-		XWPFRun paragraphTwo = paragraphInfoDoc.createRun();
-		String testoBold1 = "il numero di pratica e il numero di protocollo di cui al punto A";
-		paragraphTwo.setText(testoBold1);
-		paragraphTwo.setBold(true);
-
-		XWPFRun paragraphThree = paragraphInfoDoc.createRun();
-		String testo2 = " della presente nota, dovrà pervenire ";
-		paragraphThree.setText(testo2);
-
-		XWPFRun paragraphFour = paragraphInfoDoc.createRun();
-		String testoBoldUl1 = "entro e non oltre 90 gg. dal ricevimento della presente. ";
-		paragraphFour.setText(testoBoldUl1);
-		paragraphFour.setBold(true);
-
-		XWPFRun paragraphFive = paragraphInfoDoc.createRun();
-		String testo3 = "Si fa presente che tutta la modulistica necessaria è reperibile presso il sito web del all'indirizzo";
-		paragraphFive.setText(testo3);
-		paragraphFive.addBreak();
-
-		XWPFRun paragraphSix = paragraphInfoDoc.createRun();
-		String testoBold2 = "NOTA BENE:";
-		paragraphSix.setText(testoBold2);
-		paragraphSix.setBold(true);
-		paragraphSix.addBreak();
-
-		XWPFRun paragraphSeven = paragraphInfoDoc.createRun();
-		String testoBold3 = "In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'";
-		paragraphSeven.setText(testoBold3);
-		paragraphSeven.setBold(true);
-		paragraphSeven.addBreak();
-		paragraphSeven.addBreak();
-
-		XWPFRun paragraphEithg = paragraphInfoDoc.createRun();
-		String testoBold4 = "Qualora il destinatario della presente non sia a conoscenza della pratica in oggetto è cortesemente pregato di darne segnalazione all'Area Urbanistica ed Assetto del";
-		paragraphEithg.setText(testoBold4);
-		paragraphEithg.setBold(true);
-		paragraphEithg.addBreak();
+		addTextSimple(paragraphInfoDoc.createRun(), "La documentazione richiesta che dovrà riportare ");
+		addTextBold(paragraphInfoDoc.createRun(), "il numero di pratica e il numero di protocollo di cui al punto A");
+		addTextSimple(paragraphInfoDoc.createRun(), " della presente nota, dovrà pervenire ");
+		addTextBold(paragraphInfoDoc.createRun(), "entro e non oltre 90 gg. dal ricevimento della presente. ");
+		addTextSimpleBreak(paragraphInfoDoc.createRun(), "Si fa presente che tutta la modulistica necessaria è reperibile presso il sito web del all'indirizzo");
+		addTextBoldBreak(paragraphInfoDoc.createRun(), "NOTA BENE:");
+		addTextBoldBreak(paragraphInfoDoc.createRun(), "In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'");
+		addTextBoldBreak(paragraphInfoDoc.createRun(), "Qualora il destinatario della presente non sia a conoscenza della pratica in oggetto è cortesemente pregato di darne segnalazione all'Area Urbanistica ed Assetto del");
 
 	}
 
@@ -430,7 +354,6 @@ public class WordService {
 		paragraphDoc.setAlignment(ParagraphAlignment.CENTER);
 		XWPFRun paragraphAOneRunOne = paragraphDoc.createRun();
 		paragraphAOneRunOne.addBreak(BreakType.PAGE);
-		paragraphAOneRunOne.setText("1) DOCUMENTI DA INTEGRARE");
-		paragraphAOneRunOne.setBold(true);
+		addTextBold(paragraphAOneRunOne, "1) DOCUMENTI DA INTEGRARE");
 	}
 }
