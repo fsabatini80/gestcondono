@@ -39,7 +39,8 @@
 						href="<c:url value="abusi.htm?idpratica=${pratica.iddatipratica}" />"
 						title="visualizza abusi"><img src="img/24/find.png"
 							title="visualizza abusi"></a></td>
-					<td><a href="<c:url value="insPraticawzd.htm" />"
+					<td><a
+						href="<c:url value="versamenti.htm?idpratica=${pratica.iddatipratica}" />"
 						title="visualizza versamenti"><img
 							src="img/24/symbol_euro.png" title="visualizza versamenti"></a></td>
 				</tr>

@@ -18,7 +18,7 @@
 			<th>TOTALE</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody align="center">
 		<tr>
 			<td>Domande presenti in archivio</td>
 			<td>n.</td>

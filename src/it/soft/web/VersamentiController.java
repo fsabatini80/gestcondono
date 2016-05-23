@@ -12,28 +12,24 @@ import it.soft.dao.TipoOperaHome;
 import it.soft.dao.TipologiaAbusoHome;
 import it.soft.dao.UtentiHome;
 import it.soft.domain.CaratteristicheSpeciali;
-import it.soft.domain.Datipratica;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.SoggettiAbuso;
 import it.soft.domain.TipoOpera;
 import it.soft.domain.TipologiaAbuso;
 import it.soft.domain.TipologiaAlloggio;
 import it.soft.domain.TipologiaDestinazioneUso;
-import it.soft.domain.Utenti;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
+import it.soft.web.pojo.DatiVersamentiPojo;
 import it.soft.web.validator.DatiAbusoValidator;
 import it.soft.web.validator.DatiPraticaValidator;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.Errors;
@@ -79,7 +75,8 @@ public class VersamentiController extends BaseController {
 	DatiAbusoService datiAbusoService;
 
 	DatiPraticaPojo praticaPojo;
-	DatiAbusoPojo abusoPojo;
+	DatiVersamentiPojo datiVersamentiPojo;
+	DatiAbusoPojo abusoPojo; 
 	String idDatiAlloggio;
 	List<String> comuni;
 	List<String> province;
@@ -95,47 +92,45 @@ public class VersamentiController extends BaseController {
 	public ModelAndView versamenti(@RequestParam(value = "idpratica") String id,
 			ModelMap model) throws Exception {
 
-		String view = "table/praticheList";
-		Datipratica source = datiPraticaHome.findById(BigDecimal
-				.valueOf(Integer.parseInt(id)));
-		List<Datipratica> list = new ArrayList<Datipratica>();
-		list.add(source);
-		model.addAttribute("pratiche", list);
+		String view = "table/versamentiList";
+		//ricerca versamenti
+		// Datipratica source = datiPraticaHome.findById(BigDecimal
+		// .valueOf(Integer.parseInt(id)));
+		List<DatiVersamentiPojo> list = new ArrayList<DatiVersamentiPojo>();
+//		list.add(source);
+		model.addAttribute("versamenti", list);
+		model.addAttribute("idpratica", id);
 		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/nuovoVersamento", method = RequestMethod.GET)
 	public ModelAndView nuovaVersamento(ModelMap model) throws Exception {
 
-		String view = "form/formPratica";
-		DatiPraticaPojo datiPraticaPojo = new DatiPraticaPojo();
-		model.addAttribute("datiPraticaPojo", datiPraticaPojo);
+		String view = "form/formVersamento";
+		DatiVersamentiPojo pojo = new DatiVersamentiPojo();
+		model.addAttribute("pojo", pojo);
 		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/salvaVersamento", method = RequestMethod.POST)
-	public ModelAndView salvaPratica(ModelMap model, DatiPraticaPojo pojo,
+	public ModelAndView salvaVersamento(ModelMap model, DatiVersamentiPojo pojo,
 			Errors errors) throws Exception {
 
-		String view = "redirect:pratica.htm?idpratica=";
+		String view = "redirect:versamenti.htm?idpratica=";
 		validatorPratica.validate(pojo, errors);
-		this.praticaPojo = pojo;
+//		this.praticaPojo = pojo;
+		this.datiVersamentiPojo = pojo;
+		
 		if (errors.hasFieldErrors()) {
 			view = "form/formPratica";
 		} else {
-			User user = (User) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal();
-			String name = user.getUsername();
-			Utenti utenti = utentiHome.findByUser(name);
-			pojo.setIdutente(String.valueOf(utenti.getIdUtenti()));
-			datiPraticaService.saveDatiPratica(pojo);
 			view = view.concat(pojo.getIddatipratica());
 		}
 		return new ModelAndView(view, model);
 	}
 
 	@RequestMapping(value = "/modificaVersamento", method = RequestMethod.GET)
-	public ModelAndView modificaPratica(
+	public ModelAndView modificaVersamento(
 			@RequestParam(value = "idpratica") String id, ModelMap model)
 			throws Exception {
 		this.praticaPojo = datiPraticaService.findById(id);
