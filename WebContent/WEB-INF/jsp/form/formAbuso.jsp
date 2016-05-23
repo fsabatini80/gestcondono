@@ -29,7 +29,7 @@
 						<td>Tipologia*:</td>
 						<td><form:select path="tipologiaAbuso">
 								<form:options items="${tipologiaAbusos}"
-									itemLabel="idtipologiaAbuso" itemValue="idtipologiaAbuso" />
+									itemLabel="idtipologiaAbuso" itemValue="descrizioneBreve" />
 							</form:select></td>
 					</tr>
 					<tr>

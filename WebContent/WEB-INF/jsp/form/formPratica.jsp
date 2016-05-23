@@ -7,7 +7,7 @@
 
 	<form:form action="salvaPratica.htm" commandName="datiPraticaPojo"
 		cssClass="ui-widget">
-		<form:errors path="*" cssClass="errorblock" element="div" />
+		<!-- form:errors path="*" cssClass="ui-state-error" element="div" /> -->
 		<h2
 			class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Dati
 			della Pratica</h2>
@@ -24,22 +24,22 @@
 						<form:options items="${leggiList}" itemLabel="leggeNumero"
 							itemValue="idleggiCondono" />
 					</form:select></td>
-				<td><form:errors path="leggeCondono" cssClass="error" /></td>
+				<td><form:errors path="leggeCondono" cssClass="ui-state-error" /></td>
 			</tr>
 			<tr>
 				<td>Numero protocollo *:</td>
 				<td><form:input path="numeroProtocollo" /></td>
-				<td><form:errors path="numeroProtocollo" cssClass="error" /></td>
+				<td><form:errors path="numeroProtocollo" cssClass="ui-state-error" /></td>
 			</tr>
 			<tr>
 				<td>Data protocollo *:</td>
 				<td><form:input path="dataProtocollo" id="datepicker" /></td>
-				<td><form:errors path="dataProtocollo" cssClass="error" /></td>
+				<td><form:errors path="dataProtocollo" cssClass="ui-state-error" /></td>
 			</tr>
 			<tr>
-				<td>Data presentazione domanda :</td>
+				<td>Data presentazione domanda *:</td>
 				<td><form:input path="dataDomanda" id="datepicker2" /></td>
-				<td><form:errors path="dataDomanda" cssClass="error" /></td>
+				<td><form:errors path="dataDomanda" cssClass="ui-state-error" /></td>
 			</tr>
 		</table>
 
