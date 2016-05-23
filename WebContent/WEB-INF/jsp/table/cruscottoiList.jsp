@@ -5,7 +5,9 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<table id="example5" class="display">
+<jsp:include page="../tpl/header.jsp" />
+
+<table id="example4" class="display">
 	<thead>
 		<tr>
 			<th>DESCRIZIONE</th>
@@ -50,4 +52,5 @@
 			<td>${abusiTot}</td>
 		</tr>
 	</tbody>
+</table>
 </table>

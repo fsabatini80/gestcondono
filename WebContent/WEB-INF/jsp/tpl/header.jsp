@@ -148,14 +148,8 @@
 	<br />
 	<div id="barraMenu" class="ui-widget-header">
 		<a href="<c:url value="home.htm" />">Home</a> <a
-			href="<c:url value="homePratica.htm" />"> Pratiche</a> <a
-			href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
-			title="modifica pratica">Scadenze</a> <a
-			href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
-			title="modifica pratica">Solleciti</a> <a
-			href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
-			title="modifica pratica">Stampe</a> <a
-			href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
-			title="modifica pratica">Cruscotto</a>
+			href="<c:url value="homePratica.htm" />"> Pratiche</a> <a href="#">Scadenze</a>
+		<a href="#">Solleciti</a> <a href="#">Stampe</a> <a
+			href="<c:url value="cruscotto.htm" />" title="cruscotto">Cruscotto</a>
 	</div>
 	<br />
