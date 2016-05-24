@@ -8,7 +8,6 @@ import it.soft.web.pojo.DatiPraticaPojo;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,36 +46,36 @@ public class DatiPraticaValidator implements Validator {
 				&& !"0".equals(pojo.getLeggeCondono())
 				&& pojo.getDataDomanda() != null
 				&& !"".equals(pojo.getDataDomanda())) {
-			String dataDomandaString = pojo.getDataDomanda();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-			try {
-				Date dataDomanda = dateFormat.parse(dataDomandaString);
-				GregorianCalendar dataDomandaG = new GregorianCalendar();
-				dataDomandaG.setTime(dataDomanda);
-				List<EpocaAbuso> epocaDB = epocaAbusoHome
-						.findAll(leggiCondonoHome.findById(Integer.valueOf(pojo
-								.getLeggeCondono())));
-				GregorianCalendar dataDaG = new GregorianCalendar();
-				GregorianCalendar dataAG = new GregorianCalendar();
-				boolean rangeValid = false;
-				for (EpocaAbuso epocaAbuso : epocaDB) {
-					String da = epocaAbuso.getEpocaDa();
-					String a = epocaAbuso.getEpocaA();
-					Date dataDa = dateFormat.parse(da);
-					Date dataA = dateFormat.parse(a);
-					dataDaG.setTime(dataDa);
-					dataAG.setTime(dataA);
-					if (dataDomandaG.after(dataDaG)
-							&& dataDomandaG.before(dataAG))
-						rangeValid = true;
-				}
-				if (!rangeValid)
-					arg1.rejectValue("dataDomanda", "date.legge.not.valid");
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
+			validaDataDomanda(arg1, pojo);
 		}
 
+	}
+
+	private void validaDataDomanda(Errors arg1, DatiPraticaPojo pojo) {
+		String dataDomandaString = pojo.getDataDomanda();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		try {
+			Date dataDomanda = dateFormat.parse(dataDomandaString);
+			List<EpocaAbuso> epocaDB = epocaAbusoHome.findAll(leggiCondonoHome
+					.findById(Integer.valueOf(pojo.getLeggeCondono())));
+			boolean rangeValid = false;
+			for (EpocaAbuso epocaAbuso : epocaDB) {
+				rangeValid = validDateForRange(dataDomanda,
+						dateFormat.parse(epocaAbuso.getEpocaDa()),
+						dateFormat.parse(epocaAbuso.getEpocaA()), rangeValid);
+			}
+			if (!rangeValid)
+				arg1.rejectValue("dataDomanda", "date.legge.not.valid");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	private boolean validDateForRange(Date data, Date dataafter,
+			Date databefore, boolean rangeValid) {
+		if (data.after(dataafter) && data.before(databefore))
+			rangeValid = true;
+		return rangeValid;
 	}
 
 }

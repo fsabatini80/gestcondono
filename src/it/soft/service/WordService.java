@@ -15,11 +15,8 @@ import it.soft.domain.TipologiaDestinazioneUso;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import org.apache.poi.xwpf.usermodel.BreakType;
@@ -52,76 +49,111 @@ public class WordService {
 	public XWPFDocument createDoc(XWPFDocument document,
 			DatiPraticaService praticaService, DatiAbusoService abusoService,
 			String idpratica, String idabuso) throws Exception {
+
 		DatiPraticaPojo praticaDB = praticaService.findById(idpratica);
 		DatiAbusoPojo abusoDB = abusoService.findById(idabuso);
+
 		List<RelSoggettoAbuso> listaSoggetti = abusoService
 				.findAllSoggettiById(idabuso);
 		List<DatiAlloggio> alloggi = datiAlloggioHome
 				.findByIdAbuso(datiAbusoHome.findById(BigDecimal
 						.valueOf(Integer.valueOf(idabuso))));
-		createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 		List<DocumentiAbuso> daocumentiDB = abusoService
 				.findAllDocById(idabuso);
+		createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 		createPage2(document, daocumentiDB);
 		createPage3(document);
 		System.out.println("create successfully");
 
-		scriviLocalTest(document);
+		// scriviLocalTest(document);
 
 		return document;
 
 	}
 
 	private void createPage3(XWPFDocument document) {
-		
+
 		document.createParagraph().createRun().addBreak(BreakType.PAGE);
-		addTextBoldBreak(document.createParagraph().createRun(), "2)ATTESTAZIONI DI VERSAMENTO");
-		//OBLAZIONE
+		addTextBoldBreakCenter(document.createParagraph().createRun(),
+				"2) ATTESTAZIONI DI VERSAMENTO");
+		// OBLAZIONE
 		addTextBold(document.createParagraph().createRun(), "OBLAZIONE:");
-		addTextBold(document.createParagraph().createRun(), "Autodetermina =");
-		addTextBold(document.createParagraph().createRun(), "Importo versato =");
-		addTextBold(document.createParagraph().createRun(), "Importo calcolato =");
-		addTextBoldBreak(document.createParagraph().createRun(), "Importo da versare a saldo comprensivo degli interessi dovuti =");
-		//OBLAZIONE REGIONALE
-		addTextBold(document.createParagraph().createRun(), "OBLAZIONE REGIONALE:");
-		addTextBold(document.createParagraph().createRun(), "Autodetermina =");
-		addTextBold(document.createParagraph().createRun(), "Importo versato =");
-		addTextBold(document.createParagraph().createRun(), "Importo calcolato =");
-		addTextBoldBreak(document.createParagraph().createRun(), "Importo da versare a saldo comprensivo degli interessi dovuti =");
-		//ONERI CONCESSORI
+		addTextBold(document.createParagraph().createRun(), "Autodetermina =€");
+		addTextBold(document.createParagraph().createRun(),
+				"Importo versato =€");
+		addTextBold(document.createParagraph().createRun(),
+				"Importo calcolato =€");
+		addTextBoldBreak(document.createParagraph().createRun(),
+				"Importo da versare a saldo comprensivo degli interessi dovuti =€");
+		// OBLAZIONE REGIONALE
+		addTextBold(document.createParagraph().createRun(),
+				"OBLAZIONE REGIONALE:");
+		addTextBold(document.createParagraph().createRun(), "Autodetermina =€");
+		addTextBold(document.createParagraph().createRun(),
+				"Importo versato =€");
+		addTextBold(document.createParagraph().createRun(),
+				"Importo calcolato =€");
+		addTextBoldBreak(document.createParagraph().createRun(),
+				"Importo da versare a saldo comprensivo degli interessi dovuti =€");
+		// ONERI CONCESSORI
 		addTextBold(document.createParagraph().createRun(), "ONERI CONCESSORI:");
-		addTextBold(document.createParagraph().createRun(), "Importo versato =");
-		addTextBold(document.createParagraph().createRun(), "Importo calcolato =");
-		addTextBoldBreak(document.createParagraph().createRun(), "Importo da versare a saldo =");
-		//DIRITTI DI SEGRETERIA
-		addTextBold(document.createParagraph().createRun(), "DIRITTI DI SEGRETERIA:");
-		addTextBold(document.createParagraph().createRun(), "Diritti di istruttoria =");
-		addTextBold(document.createParagraph().createRun(), "Diritti rilascio permesso di costruire =");
-		addTextBold(document.createParagraph().createRun(), "Diritti istruttoria pareri sui vincoli =");
-		addTextBold(document.createParagraph().createRun(), "Agibilità =");
-		addTextBoldBreak(document.createParagraph().createRun(), "Importo da versare =");
-		//TOTALE VERSAMENTI E RIEPILOGO
-		addTextBold(document.createParagraph().createRun(), "Totale da versare al comune di ");
-		addTextSimple(document.createParagraph().createRun(), "Il versamento va effettuato a favore di:");
-		addTextSimple(document.createParagraph().createRun(), "TESORERIA COMUNALE");
+		addTextBold(document.createParagraph().createRun(),
+				"Importo versato =€");
+		addTextBold(document.createParagraph().createRun(),
+				"Importo calcolato =€");
+		addTextBoldBreak(document.createParagraph().createRun(),
+				"Importo da versare a saldo =€");
+		// DIRITTI DI SEGRETERIA
+		addTextBold(document.createParagraph().createRun(),
+				"DIRITTI DI SEGRETERIA:");
+		addTextBold(document.createParagraph().createRun(),
+				"Diritti di istruttoria =€");
+		addTextBold(document.createParagraph().createRun(),
+				"Diritti rilascio permesso di costruire =€");
+		addTextBold(document.createParagraph().createRun(),
+				"Diritti istruttoria pareri sui vincoli =€");
+		addTextBold(document.createParagraph().createRun(), "Agibilità =€");
+		addTextBoldBreak(document.createParagraph().createRun(),
+				"Importo da versare =€");
+		// TOTALE VERSAMENTI E RIEPILOGO
+		addTextBold(document.createParagraph().createRun(),
+				"Totale da versare al comune di ");
+		addTextSimple(document.createParagraph().createRun(),
+				"Il versamento va effettuato a favore di:");
+		addTextSimple(document.createParagraph().createRun(),
+				"TESORERIA COMUNALE");
 		addTextBold(document.createParagraph().createRun(), "IBAN:");
-		addTextBold(document.createParagraph().createRun(), "Totale da versare al ministero LLPP =");
-		addTextBoldBreak(document.createParagraph().createRun(), "Totale da versare alla Regione Lazio =");
-		//NOTE INFORMATIVE
-		addTextSimpleBreak(document.createParagraph().createRun(), "I versamenti delle somme dovute a saldo al cui causale dovrà riportare il numero di pratica e il numero di protocollo di cui al punto A della presente nota, dovranno essere effettuati entro e non oltre 60 gg. dal ricevimento della presente.");
+		addTextBold(document.createParagraph().createRun(),
+				"Totale da versare al ministero LLPP =");
+		addTextBoldBreak(document.createParagraph().createRun(),
+				"Totale da versare alla Regione Lazio =");
+		// NOTE INFORMATIVE
+		addTextSimpleBreak(
+				document.createParagraph().createRun(),
+				"I versamenti delle somme dovute a saldo al cui causale dovrà riportare il numero di pratica e il numero di protocollo di cui al punto A della presente nota, dovranno essere effettuati entro e non oltre 60 gg. dal ricevimento della presente.");
 		addTextBold(document.createParagraph().createRun(), "NOTA BENE:");
-		addTextBold(document.createParagraph().createRun(), "In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.");
+		addTextBold(
+				document.createParagraph().createRun(),
+				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.");
 	}
 
-	private void scriviLocalTest(XWPFDocument document)
-			throws FileNotFoundException, IOException {
-		// Write the Document in file system
-		FileOutputStream out = new FileOutputStream(new File(
-				"C:/createparagraph.docx"));
-		document.write(out);
-		out.close();
-		System.out.println("create successfully");
+	@SuppressWarnings("deprecation")
+	private void addTextBoldBreakCenter(XWPFRun run, String testo) {
+		run.getParagraph().setAlignment(ParagraphAlignment.CENTER);
+		run.setText(testo);
+		run.setBold(true);
+		run.addBreak();
 	}
+
+	// private void scriviLocalTest(XWPFDocument document)
+	// throws FileNotFoundException, IOException {
+	// // Write the Document in file system
+	// FileOutputStream out = new FileOutputStream(new File(
+	// "C:/createparagraph.docx"));
+	// document.write(out);
+	// out.close();
+	// System.out.println("create successfully");
+	// }
 
 	public XWPFDocument createPage1(XWPFDocument document,
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
@@ -136,26 +168,32 @@ public class WordService {
 		paragraphA.setAlignment(ParagraphAlignment.CENTER);
 		addTextBold(paragraphA.createRun(),
 				"A) AVVIO ISTRUTTORIA DELLA PRATICA");
+		document.createParagraph().createRun().addBreak();
 		creaPargraphADB(document.createParagraph(), praticaDB, abusoDB);
+		document.createParagraph().createRun().addBreak();
 		addTextBold(document.createParagraph().createRun(),
 				"Ubicazione dell'abuso:");
 		addTextSimple(document.createParagraph().createRun(), "Località "
 				+ abusoDB.getLocalizzazione().getComune() + ", Indirizzo "
 				+ abusoDB.getLocalizzazione().getIndirizzo());
+		document.createParagraph().createRun().addBreak();
 		addTextBold(document.createParagraph().createRun(),
 				"Descrizione abuso: ");
 		addTextSimple(document.createParagraph().createRun(),
 				abusoDB.getDescrizione());
+		document.createParagraph().createRun().addBreak();
 		addTextBold(document.createParagraph().createRun(), "Dati Catastali:");
-		XWPFParagraph paragraphDatiCatastaliTable = document.createParagraph();
+		XWPFTable tableHeader = createHeaderTableDatiCatastali(document);
 		for (DatiAlloggio datiAlloggio : alloggi) {
-			creaParagraphDatiCatastaliDB(paragraphDatiCatastaliTable,
-					datiAlloggio.getIddatiAlloggio(), document);
+			creaParagraphDatiCatastaliDB(datiAlloggio.getIddatiAlloggio(), document, tableHeader);
 		}
+		document.createParagraph().createRun().addBreak();
 		addTextBold(document.createParagraph().createRun(), "Dati Tecnici: ");
 		creaParagraphDatiTecniciTable(document.createParagraph(), abusoDB,
 				praticaDB);
-		addTextSimple(document.createParagraph().createRun(), "Dall'istruttoria preliminare dell'istanza in oggetto, ai fini di poter completare le attività di disamina tecnico-amministrativo e procedere con il rilascio della Concessione in sanatoria la stessa, dovrà essere integrata con i documenti previsti dalle normative vigenti di cui al punto 1 e dalle attestazioni di versamento di cui al punto 2.");
+		addTextSimple(
+				document.createParagraph().createRun(),
+				"Dall'istruttoria preliminare dell'istanza in oggetto, ai fini di poter completare le attività di disamina tecnico-amministrativo e procedere con il rilascio della Concessione in sanatoria la stessa, dovrà essere integrata con i documenti previsti dalle normative vigenti di cui al punto 1 e dalle attestazioni di versamento di cui al punto 2.");
 		return document;
 	}
 
@@ -188,12 +226,7 @@ public class WordService {
 						+ abusoDB.getDataUltimazioneLavori());
 	}
 
-	private void creaParagraphDatiCatastaliDB(
-			XWPFParagraph paragraphDatiCatastaliTable, BigDecimal idalloggio,
-			XWPFDocument document) {
-
-		List<DatiFabbricati> listFabbric = datiFabbricatiHome
-				.findAll(idalloggio.intValue());
+	private XWPFTable createHeaderTableDatiCatastali(XWPFDocument document) {
 		// create table
 		XWPFTable table = document.createTable();
 		// create first row
@@ -203,7 +236,14 @@ public class WordService {
 		addTableCellCenter(tableRowOne.addNewTableCell(), "PARTICELLA");
 		addTableCellCenter(tableRowOne.addNewTableCell(), "SUBALTERNO");
 		addTableCellCenter(tableRowOne.addNewTableCell(), "ZONA");
+		return table;
+	}
 
+	private void creaParagraphDatiCatastaliDB(BigDecimal idalloggio,
+			XWPFDocument document, XWPFTable table) {
+
+		List<DatiFabbricati> listFabbric = datiFabbricatiHome
+				.findAll(idalloggio.intValue());
 		for (DatiFabbricati datiFabbricati : listFabbric) {
 			XWPFTableRow tableRowTwo = table.createRow();
 			tableRowTwo.getCell(0).setText(datiFabbricati.getSezione());
@@ -224,6 +264,17 @@ public class WordService {
 			// tableRowTwo.getCell(4).setText(datiFabbricati.get);
 		}
 
+		for (int x = 0; x < table.getNumberOfRows(); x++) {
+			XWPFTableRow row = table.getRow(x);
+			int numberOfCell = row.getTableCells().size();
+			for (int y = 0; y < numberOfCell; y++) {
+				XWPFTableCell cell = row.getCell(y);
+
+				cell.getCTTc().addNewTcPr().addNewTcW()
+						.setW(BigInteger.valueOf(2000));
+			}
+		}
+
 	}
 
 	private void addTableCellCenter(XWPFTableCell tableCell, String testo) {
@@ -238,7 +289,7 @@ public class WordService {
 		run.setText(testo);
 		run.setBold(true);
 	}
-	
+
 	private void addTextBoldBreak(XWPFRun run, String testo) {
 		run.setText(testo);
 		run.setBold(true);
@@ -265,7 +316,7 @@ public class WordService {
 	private void creaOggetto(XWPFParagraph paragraphggetto,
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
 		String oggetto = "Oggetto: Avvio dell'attività di istruttoria della Istanza di Sanatoria Edilizia richiesta ai sensi della legge n."
-				+ praticaDB.getLeggeCondono();
+				.concat(praticaDB.getLeggeCondono());
 		oggetto += " presentata il " + praticaDB.getDataDomanda();
 		oggetto += " con protocollo n. " + praticaDB.getNumeroProtocollo();
 		oggetto += " del " + praticaDB.getDataProtocollo();
@@ -317,10 +368,11 @@ public class WordService {
 		paragraphOneRunOne1.setText("email..........");
 	}
 
-
 	public XWPFDocument createPage2(XWPFDocument document,
 			List<DocumentiAbuso> daocumentiDB) {
-		creaPargraphDOC(document.createParagraph());
+		document.createParagraph().createRun().addBreak(BreakType.PAGE);
+		addTextBoldBreakCenter(document.createParagraph().createRun(),
+				"1) DOCUMENTI DA INTEGRARE");
 		creaPargraphDOCTable(document.createParagraph(), daocumentiDB);
 		creaPargraphINOFDOC(document.createParagraph());
 		return document;
@@ -328,14 +380,24 @@ public class WordService {
 
 	private void creaPargraphINOFDOC(XWPFParagraph paragraphInfoDoc) {
 
-		addTextSimple(paragraphInfoDoc.createRun(), "La documentazione richiesta che dovrà riportare ");
-		addTextBold(paragraphInfoDoc.createRun(), "il numero di pratica e il numero di protocollo di cui al punto A");
-		addTextSimple(paragraphInfoDoc.createRun(), " della presente nota, dovrà pervenire ");
-		addTextBold(paragraphInfoDoc.createRun(), "entro e non oltre 90 gg. dal ricevimento della presente. ");
-		addTextSimpleBreak(paragraphInfoDoc.createRun(), "Si fa presente che tutta la modulistica necessaria è reperibile presso il sito web del all'indirizzo");
+		addTextSimple(paragraphInfoDoc.createRun(),
+				"La documentazione richiesta che dovrà riportare ");
+		addTextBold(paragraphInfoDoc.createRun(),
+				"il numero di pratica e il numero di protocollo di cui al punto A");
+		addTextSimple(paragraphInfoDoc.createRun(),
+				" della presente nota, dovrà pervenire ");
+		addTextBold(paragraphInfoDoc.createRun(),
+				"entro e non oltre 90 gg. dal ricevimento della presente. ");
+		addTextSimpleBreak(
+				paragraphInfoDoc.createRun(),
+				"Si fa presente che tutta la modulistica necessaria è reperibile presso il sito web del all'indirizzo");
 		addTextBoldBreak(paragraphInfoDoc.createRun(), "NOTA BENE:");
-		addTextBoldBreak(paragraphInfoDoc.createRun(), "In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'");
-		addTextBoldBreak(paragraphInfoDoc.createRun(), "Qualora il destinatario della presente non sia a conoscenza della pratica in oggetto è cortesemente pregato di darne segnalazione all'Area Urbanistica ed Assetto del");
+		addTextBoldBreak(
+				paragraphInfoDoc.createRun(),
+				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'");
+		addTextBoldBreak(
+				paragraphInfoDoc.createRun(),
+				"Qualora il destinatario della presente non sia a conoscenza della pratica in oggetto è cortesemente pregato di darne segnalazione all'Area Urbanistica ed Assetto del");
 
 	}
 
@@ -344,16 +406,8 @@ public class WordService {
 		XWPFRun paragraphAOneRunOne = paragraphDocTable.createRun();
 		paragraphAOneRunOne.setBold(true);
 		for (DocumentiAbuso documentiAbuso : daocumentiDB) {
-			paragraphAOneRunOne.setText(" - ".concat(documentiAbuso
+			addTextSimpleBreak(paragraphAOneRunOne, " - ".concat(documentiAbuso
 					.getIdTipoDocumento().getDescrizione()));
-			paragraphAOneRunOne.addBreak();
 		}
-	}
-
-	private void creaPargraphDOC(XWPFParagraph paragraphDoc) {
-		paragraphDoc.setAlignment(ParagraphAlignment.CENTER);
-		XWPFRun paragraphAOneRunOne = paragraphDoc.createRun();
-		paragraphAOneRunOne.addBreak(BreakType.PAGE);
-		addTextBold(paragraphAOneRunOne, "1) DOCUMENTI DA INTEGRARE");
 	}
 }
