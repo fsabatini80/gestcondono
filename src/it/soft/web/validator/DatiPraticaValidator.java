@@ -59,13 +59,19 @@ public class DatiPraticaValidator implements Validator {
 			List<EpocaAbuso> epocaDB = epocaAbusoHome.findAll(leggiCondonoHome
 					.findById(Integer.valueOf(pojo.getLeggeCondono())));
 			boolean rangeValid = false;
+			Object[] errorParam = new String[2];
 			for (EpocaAbuso epocaAbuso : epocaDB) {
 				rangeValid = validDateForRange(dataDomanda,
 						dateFormat.parse(epocaAbuso.getEpocaDa()),
 						dateFormat.parse(epocaAbuso.getEpocaA()), rangeValid);
+				if (!rangeValid) {
+					errorParam[0] = epocaAbuso.getEpocaDa();
+					errorParam[1] = epocaAbuso.getEpocaA();
+				}
 			}
 			if (!rangeValid)
-				arg1.rejectValue("dataDomanda", "date.legge.not.valid");
+				arg1.rejectValue("dataDomanda", "date.legge.not.valid",
+						errorParam, null);
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
