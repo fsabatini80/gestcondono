@@ -14,6 +14,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mysql.jdbc.StringUtils;
+
 @Service
 public class DatiPraticaService {
 
@@ -24,16 +26,14 @@ public class DatiPraticaService {
 
 	public void saveDatiPratica(DatiPraticaPojo pojo) {
 		Datipratica datipratica;
-		if (pojo.getIddatipratica() != null
-				&& !"".equals(pojo.getIddatipratica()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIddatipratica()))
 			datipratica = datiPraticaHome.findById(BigDecimal.valueOf(Integer
 					.parseInt(pojo.getIddatipratica())));
 		else
 			datipratica = new Datipratica();
-		if (pojo.getDataDomanda() != null && !"".equals(pojo.getDataDomanda()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getDataDomanda()))
 			datipratica.setDataDomanda(pojo.getDataDomanda());
-		if (pojo.getDataProtocollo() != null
-				&& !"".equals(pojo.getDataProtocollo()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getDataProtocollo()))
 			datipratica.setDataProtocollo(pojo.getDataProtocollo());
 		if (pojo.getLeggeCondono() != null)
 			datipratica.setLeggeCondono(leggiCondonoHome.findById(Integer
@@ -53,7 +53,7 @@ public class DatiPraticaService {
 		richiedente.setComuneEsteroRes(pojo.getComuneEsteroRes());
 		richiedente.setComuneNascita(pojo.getComuneNascita());
 		richiedente.setComuneResidenza(pojo.getComuneResidenza());
-		if (pojo.getDataNascita() != null && !"".equals(pojo.getDataNascita()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getDataNascita()))
 			richiedente.setDataNascita(pojo.getDataNascita());
 		richiedente.setEmail(pojo.getEmail());
 		richiedente.setIndirizzo(pojo.getIndirizzo());
@@ -69,8 +69,7 @@ public class DatiPraticaService {
 		richiedente.setDatipratica(datipratica);
 		datipratica.setRichiedente(richiedente);
 		datiPraticaHome.persist(datipratica);
-		if (pojo.getIddatipratica() == null
-				|| "".equals(pojo.getIddatipratica().trim()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIddatipratica()))
 			pojo.setIddatipratica(datipratica.getIddatipratica().toString());
 
 	}

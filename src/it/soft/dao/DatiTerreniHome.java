@@ -13,6 +13,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import com.mysql.jdbc.StringUtils;
+
 /**
  * Home object for domain model class DatiTerreni.
  * 
@@ -138,6 +140,33 @@ public class DatiTerreniHome {
 			return results;
 		} catch (RuntimeException re) {
 			log.error("count failed", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<DatiTerreni> findBy(String sezione, String foglio,
+			String particella, String sub) {
+		log.debug("getting DatiTerreni instance with sezione: " + sezione);
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(DatiTerreni.class);
+			if (!StringUtils.isEmptyOrWhitespaceOnly(sezione))
+				cr.add(Restrictions.eq("sezione", sezione));
+			if (!StringUtils.isEmptyOrWhitespaceOnly(foglio))
+				cr.add(Restrictions.eq("foglio", foglio));
+			if (!StringUtils.isEmptyOrWhitespaceOnly(particella))
+				cr.add(Restrictions.eq("particella", particella));
+			if (!StringUtils.isEmptyOrWhitespaceOnly(sub))
+				cr.add(Restrictions.eq("subalterno", sub));
+			List<DatiTerreni> results = cr.list();
+			log.debug("get successful");
+			sess.close();
+			return results;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
 			throw re;
 		}
 	}

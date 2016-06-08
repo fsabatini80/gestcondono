@@ -15,6 +15,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import com.mysql.jdbc.StringUtils;
+
 /**
  * Home object for domain model class Datipratica.
  * 
@@ -134,11 +136,11 @@ public class DatiPraticaHome {
 					.getCurrentSession();
 			sess.beginTransaction();
 			Criteria cr = sess.createCriteria(Datipratica.class);
-			if (numeroPratica != null && !"".equals(numeroPratica))
+			if (!StringUtils.isEmptyOrWhitespaceOnly(numeroPratica))
 				cr.add(Restrictions.eq("numeroPratica", numeroPratica));
-			if (numeroProtocollo != null && !"".equals(numeroProtocollo))
+			if (!StringUtils.isEmptyOrWhitespaceOnly(numeroProtocollo))
 				cr.add(Restrictions.eq("numeroProtocollo", numeroProtocollo));
-			if (dataDomanda != null && !"".equals(dataDomanda))
+			if (!StringUtils.isEmptyOrWhitespaceOnly(dataDomanda))
 				cr.add(Restrictions.eq("dataDomanda", dataDomanda));
 			if (leggeCondono != null && !"".equals(leggeCondono))
 				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
@@ -151,5 +153,5 @@ public class DatiPraticaHome {
 			throw re;
 		}
 	}
-
+	
 }

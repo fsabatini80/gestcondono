@@ -1,8 +1,11 @@
 package it.soft.web.validator;
 
+import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
+import it.soft.domain.Datipratica;
 import it.soft.domain.EpocaAbuso;
+import it.soft.domain.LeggiCondono;
 import it.soft.web.pojo.DatiPraticaPojo;
 
 import java.text.ParseException;
@@ -16,6 +19,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import com.mysql.jdbc.StringUtils;
+
 @Component
 public class DatiPraticaValidator implements Validator {
 
@@ -23,6 +28,8 @@ public class DatiPraticaValidator implements Validator {
 	EpocaAbusoHome epocaAbusoHome;
 	@Autowired
 	LeggiCondonoHome leggiCondonoHome;
+	@Autowired
+	DatiPraticaHome datiPraticaHome;
 
 	public boolean supports(Class<?> arg0) {
 		return DatiPraticaPojo.class.equals(arg0);
@@ -44,9 +51,28 @@ public class DatiPraticaValidator implements Validator {
 		// date.legge.not.valid
 		if (pojo.getLeggeCondono() != null
 				&& !"0".equals(pojo.getLeggeCondono())
-				&& pojo.getDataDomanda() != null
-				&& !"".equals(pojo.getDataDomanda())) {
+				&& !StringUtils.isEmptyOrWhitespaceOnly(pojo.getDataDomanda())) {
 			validaDataDomanda(arg1, pojo);
+		}
+
+		List<Datipratica> praticheList = datiPraticaHome.findBy(pojo
+				.getNumeroPratica(), pojo.getNumeroProtocollo(), pojo
+				.getDataDomanda(), leggiCondonoHome.findById(Integer
+				.valueOf(pojo.getLeggeCondono())));
+		for (Datipratica datipratica : praticheList) {
+			if (!String.valueOf(datipratica.getIddatipratica()).equals(
+					pojo.getIddatipratica())) {
+				LeggiCondono lc = datipratica.getLeggeCondono();
+				String np = datipratica.getNumeroProtocollo();
+				String dp = datipratica.getDataProtocollo();
+				String dd = datipratica.getDataDomanda();
+				if (pojo.getLeggeCondono().equals(
+						String.valueOf(lc.getIdleggiCondono()))
+						&& pojo.getNumeroProtocollo().equals(np)
+						&& pojo.getDataProtocollo().equals(dp)
+						&& pojo.getDataDomanda().equals(dd))
+					arg1.rejectValue("leggeCondono", "datipratica.duplicati");
+			}
 		}
 
 	}

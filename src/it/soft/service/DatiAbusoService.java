@@ -37,6 +37,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mysql.jdbc.StringUtils;
+
 @Service
 public class DatiAbusoService {
 
@@ -71,7 +73,7 @@ public class DatiAbusoService {
 
 	public void saveDatiAbuso(DatiAbusoPojo pojo) {
 		Datiabuso datiabuso;
-		if (pojo.getIddatiabuso() != null && !"".equals(pojo.getIddatiabuso()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIddatiabuso()))
 			datiabuso = datiAbusoHome.findById(BigDecimal.valueOf(Integer
 					.parseInt(pojo.getIddatiabuso())));
 		else
@@ -79,19 +81,17 @@ public class DatiAbusoService {
 		datiabuso.setProgressivo(Integer.valueOf(pojo.getProgressivo()));
 		datiabuso.setDataUltimazioneLavori(pojo.getDataUltimazioneLavori());
 		datiabuso.setDescrizione(pojo.getDescrizione());
-		if (pojo.getTipologiaAbuso() != null
-				&& !"".equals(pojo.getTipologiaAbuso()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getTipologiaAbuso()))
 			datiabuso.setTipologiaAbuso(tipologiaAbusoHome.findById(Integer
 					.valueOf(pojo.getTipologiaAbuso())));
-		if (pojo.getDestinazioneUso() != null
-				&& !"".equals(pojo.getDestinazioneUso()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getDestinazioneUso()))
 			datiabuso.setDestinazioneUso(destinazioneUsoHome.findById(Integer
 					.valueOf(pojo.getDestinazioneUso())));
-		if (pojo.getEpocaAbuso() != null && !"".equals(pojo.getEpocaAbuso()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getEpocaAbuso()))
 			datiabuso.setEpocaAbuso(epocaAbusoHome.findById(Integer
 					.valueOf(pojo.getEpocaAbuso())));
 		datiabuso.setEsenzioniPagamenti(pojo.getEsenzioniPagamenti());
-		if (pojo.getIdPratica() != null && !"".equals(pojo.getIdPratica()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIdPratica()))
 			datiabuso.setDatiPratica(datiPraticaHome.findById(BigDecimal
 					.valueOf(Integer.valueOf(pojo.getIdPratica()))));
 		if (pojo.getLocalizzazione() != null
@@ -118,7 +118,7 @@ public class DatiAbusoService {
 		datiabuso.setRiduzioni(pojo.getRiduzioni());
 		datiabuso.setSuperficeTotale(pojo.getSuperficeTotale());
 		datiabuso.setSuperficeUtile(pojo.getSuperficeUtile());
-		if (pojo.getTipoOpera() != null && !"".equals(pojo.getTipoOpera()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getTipoOpera()))
 			datiabuso.setTipoOpera(tipoOperaHome.findById(Integer.valueOf(pojo
 					.getTipoOpera())));
 		datiabuso.setTipoReddito(pojo.getTipoReddito());
@@ -190,8 +190,7 @@ public class DatiAbusoService {
 
 	public void saveDatiAlloggio(DatiAlloggioPojo pojo) {
 		DatiAlloggio datiAlloggio;
-		if (pojo.getIddatiAlloggio() != null
-				&& !"".equals(pojo.getIddatiAlloggio()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIddatiAlloggio()))
 			datiAlloggio = datiAlloggioHome.findById(BigDecimal.valueOf(Integer
 					.valueOf(pojo.getIddatiAlloggio())));
 		else

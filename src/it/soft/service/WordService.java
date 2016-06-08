@@ -30,6 +30,8 @@ import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mysql.jdbc.StringUtils;
+
 @Service
 public class WordService {
 
@@ -185,7 +187,8 @@ public class WordService {
 		addTextBold(document.createParagraph().createRun(), "Dati Catastali:");
 		XWPFTable tableHeader = createHeaderTableDatiCatastali(document);
 		for (DatiAlloggio datiAlloggio : alloggi) {
-			creaParagraphDatiCatastaliDB(datiAlloggio.getIddatiAlloggio(), document, tableHeader);
+			creaParagraphDatiCatastaliDB(datiAlloggio.getIddatiAlloggio(),
+					document, tableHeader);
 		}
 		document.createParagraph().createRun().addBreak();
 		addTextBold(document.createParagraph().createRun(), "Dati Tecnici: ");
@@ -201,8 +204,7 @@ public class WordService {
 			XWPFParagraph paragraphDatiTecniciTable, DatiAbusoPojo abusoDB,
 			DatiPraticaPojo praticaDB) {
 		String testo1 = "Destinazione d'uso: ";
-		if (abusoDB.getDestinazioneUso() != null
-				&& !"".equals(abusoDB.getDestinazioneUso().trim())) {
+		if (!StringUtils.isEmptyOrWhitespaceOnly(abusoDB.getDestinazioneUso())) {
 			TipologiaDestinazioneUso s = destinazioneUsoHome.findById(Integer
 					.valueOf(abusoDB.getDestinazioneUso()));
 			testo1.concat(s.getDescrizioneTipologia());
