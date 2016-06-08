@@ -6,7 +6,7 @@
 <div>
 	<form:form action="salvaAbuso.htm" commandName="datiAbusoPojo"
 		cssClass="ui-widget">
-		<form:errors path="*" cssClass="errorblock" element="div" />
+		<!-- form:errors path="*" cssClass="errorblock" element="div" /-->
 		<div id="accordionDatAbuso">
 			<h3>Dati abuso</h3>
 			<div id="accordionDatAbuso1">
@@ -24,6 +24,7 @@
 									itemLabel="descrizioneTipologia"
 									itemValue="idtipologiaDestinazioneUso" />
 							</form:select></td>
+							<td><form:errors path="destinazioneUso" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Tipologia*:</td>
@@ -31,16 +32,19 @@
 								<form:options items="${tipologiaAbusos}"
 									itemLabel="idtipologiaAbuso" itemValue="descrizioneBreve" />
 							</form:select></td>
+							<td><form:errors path="tipologiaAbuso" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Epoca abuso*:</td>
 						<td><form:radiobuttons items="${epocaAbusos}"
 								 itemValue="idepocaAbuso" path="epocaAbuso"
 								delimiter="<br />" /></td>
+								<td><form:errors path="epocaAbuso" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Data ultimazione lavori*:</td>
 						<td><form:input path="dataUltimazioneLavori" id="datepicker3" /></td>
+						<td><form:errors path="dataUltimazioneLavori" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Tipo opera:</td>
