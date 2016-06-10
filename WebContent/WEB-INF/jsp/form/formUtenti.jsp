@@ -28,7 +28,10 @@
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Tipo Utenza :</td>
-					<td><form:input path="ruolo" required="required" /></td>
+					<td><form:select path="ruolo">
+							<form:option value="admin">admin</form:option>
+							<form:option value="user">user</form:option>
+						</form:select></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="right"><form:button>Inserisci</form:button></td>

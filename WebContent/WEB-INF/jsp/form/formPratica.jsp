@@ -29,12 +29,14 @@
 			<tr>
 				<td>Numero protocollo *:</td>
 				<td><form:input path="numeroProtocollo" /></td>
-				<td><form:errors path="numeroProtocollo" cssClass="ui-state-error" /></td>
+				<td><form:errors path="numeroProtocollo"
+						cssClass="ui-state-error" /></td>
 			</tr>
 			<tr>
 				<td>Data protocollo *:</td>
 				<td><form:input path="dataProtocollo" id="datepicker" /></td>
-				<td><form:errors path="dataProtocollo" cssClass="ui-state-error" /></td>
+				<td><form:errors path="dataProtocollo"
+						cssClass="ui-state-error" /></td>
 			</tr>
 			<tr>
 				<td>Data presentazione domanda *:</td>
@@ -123,6 +125,9 @@
 			</table>
 		</div>
 		<form:button value="Salva" name="Salva">Salva</form:button>
+		<input type="button"
+			class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+			value="Indietro" name="Indietro" onclick="history.go(-1)" />
 	</form:form>
 </div>
 </body>

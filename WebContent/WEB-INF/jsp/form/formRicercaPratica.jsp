@@ -30,6 +30,9 @@
 			</tr>
 		</table>
 		<form:button value="Ricerca" name="Ricerca">Ricerca</form:button>
+		<input type="button"
+			class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+			value="Indietro" name="Indietro" onclick="history.go(-1)" />
 	</form:form>
 </div>
 </html>

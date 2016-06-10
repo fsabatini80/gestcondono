@@ -15,7 +15,8 @@
 			<table>
 				<tr>
 					<td>Comune :</td>
-					<td><form:hidden path="idcomuni"/><form:input path="descrizione" /></td>
+					<td><form:hidden path="idcomuni" />
+						<form:input path="descrizione" /></td>
 				</tr>
 				<tr>
 					<td>Provincia :
@@ -27,6 +28,9 @@
 				</tr>
 			</table>
 			<form:button>Conferma</form:button>
+			<input type="button"
+				class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+				value="Indietro" name="Indietro" onclick="history.go(-1)" />
 		</form:form>
 	</div>
 </body>

@@ -91,7 +91,10 @@
 		</tr>
 		<tr class="ui-widget-content">
 			<td></td>
-			<td><form:button value="Modifica" name="Modifica">Modifica</form:button></td>
+			<td><form:button value="Modifica" name="Modifica">Modifica</form:button><input
+				type="button"
+				class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+				value="Indietro" name="Indietro" onclick="history.go(-1)" /></td>
 		</tr>
 	</table>
 </form:form>
