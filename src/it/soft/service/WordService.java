@@ -15,11 +15,17 @@ import it.soft.domain.TipologiaDestinazioneUso;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.BreakType;
+import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -153,8 +159,7 @@ public class WordService {
 		addTextBold(parag.createRun(), "Totale da versare al ministero LLPP ");
 		addTab(parag, 5);
 		addTextBoldBreak(parag.createRun(), "=");
-		addTextBold(parag.createRun(),
-				"Totale da versare alla Regione Lazio ");
+		addTextBold(parag.createRun(), "Totale da versare alla Regione Lazio ");
 		addTab(parag, 5);
 		addTextBoldBreak(parag.createRun(), "=");
 		parag.createRun().addBreak();
@@ -201,17 +206,14 @@ public class WordService {
 		creaPargraphADB(document.createParagraph(), praticaDB, abusoDB);
 
 		XWPFParagraph paragAbuso = document.createParagraph();
-		addTextBoldBreak(paragAbuso.createRun(),
-				"Ubicazione dell'abuso:");
+		addTextBoldBreak(paragAbuso.createRun(), "Ubicazione dell'abuso:");
 		addTextSimple(paragAbuso.createRun(), "Località "
 				+ abusoDB.getLocalizzazione().getComune() + ", Indirizzo "
 				+ abusoDB.getLocalizzazione().getIndirizzo());
 
 		XWPFParagraph paragAbusoDesc = document.createParagraph();
-		addTextBoldBreak(paragAbusoDesc.createRun(),
-				"Descrizione abuso: ");
-		addTextSimple(paragAbusoDesc.createRun(),
-				abusoDB.getDescrizione());
+		addTextBoldBreak(paragAbusoDesc.createRun(), "Descrizione abuso: ");
+		addTextSimple(paragAbusoDesc.createRun(), abusoDB.getDescrizione());
 
 		addTextBold(document.createParagraph().createRun(), "Dati Catastali:");
 		XWPFTable tableHeader = createHeaderTableDatiCatastali(document);
@@ -222,8 +224,7 @@ public class WordService {
 		document.createParagraph().createRun().addBreak();
 		XWPFParagraph paragDatiTecnici = document.createParagraph();
 		addTextBoldBreak(paragDatiTecnici.createRun(), "Dati Tecnici: ");
-		creaParagraphDatiTecniciTable(paragDatiTecnici, abusoDB,
-				praticaDB);
+		creaParagraphDatiTecniciTable(paragDatiTecnici, abusoDB, praticaDB);
 		addTextSimple(
 				document.createParagraph().createRun(),
 				"Dall'istruttoria preliminare dell'istanza in oggetto, ai fini di poter completare le attività di disamina tecnico-amministrativo e procedere con il rilascio della Concessione in sanatoria la stessa, dovrà essere integrata con i documenti previsti dalle normative vigenti di cui al punto 1 e dalle attestazioni di versamento di cui al punto 2.");
@@ -425,6 +426,18 @@ public class WordService {
 		paragraphOneRunOne1.setText("telefono.........");
 		paragraphOneRunOne1.addBreak();
 		paragraphOneRunOne1.setText("email..........");
+
+		InputStream is = WordService.class.getResourceAsStream("contract.png");
+		try {
+			paragraph.createRun().addPicture(is, Document.PICTURE_TYPE_PNG,
+					"contract.png", Units.toEMU(200), Units.toEMU(200));
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public XWPFDocument createPage2(XWPFDocument document,
