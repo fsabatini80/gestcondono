@@ -6,6 +6,7 @@ import it.soft.dao.DatiFabbricatiHome;
 import it.soft.dao.DatiTerreniHome;
 import it.soft.dao.DestinazioneUsoHome;
 import it.soft.dao.EpocaAbusoHome;
+import it.soft.dao.LeggiCondonoHome;
 import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiFabbricati;
 import it.soft.domain.DatiTerreni;
@@ -32,6 +33,7 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell.XWPFVertAlign;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,8 @@ public class WordService {
 	DatiAbusoHome datiAbusoHome;
 	@Autowired
 	EpocaAbusoHome epocaAbusoHome;
+	@Autowired
+	LeggiCondonoHome leggiCondonoHome;
 
 	public XWPFDocument createDoc(XWPFDocument document,
 			DatiPraticaService praticaService, DatiAbusoService abusoService,
@@ -68,14 +72,36 @@ public class WordService {
 						.valueOf(Integer.valueOf(idabuso))));
 		List<DocumentiAbuso> daocumentiDB = abusoService
 				.findAllDocById(idabuso);
+
 		createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 		createPage2(document, daocumentiDB);
 		createPage3(document);
+		createPage4(document);
 		System.out.println("create successfully");
 
 		// scriviLocalTest(document);
 
 		return document;
+
+	}
+
+	public void createPage4(XWPFDocument document) {
+		document.createParagraph().createRun().addBreak(BreakType.PAGE);
+		InputStream is = WordService.class
+				.getResourceAsStream("ultima pag statica.jpg");
+		try {
+			document.createParagraph()
+					.createRun()
+					.addPicture(is, Document.PICTURE_TYPE_JPEG,
+							"ultima pag statica.jpg", Units.toEMU(500),
+							Units.toEMU(700));
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -151,25 +177,46 @@ public class WordService {
 		addTextBoldBreak(parag.createRun(), "= €");
 		parag.createRun().addBreak();
 		// TOTALE VERSAMENTI E RIEPILOGO
-		addTextBoldBreak(parag.createRun(), "Totale da versare al comune di ");
-		addTextSimple(parag.createRun(),
-				"Il versamento va effettuato a favore di: ");
-		addTextSimpleBreak(parag.createRun(), "TESORERIA COMUNALE");
-		addTextBoldBreak(parag.createRun(), "IBAN:");
-		addTextBold(parag.createRun(), "Totale da versare al ministero LLPP ");
-		addTab(parag, 5);
-		addTextBoldBreak(parag.createRun(), "=");
-		addTextBold(parag.createRun(), "Totale da versare alla Regione Lazio ");
-		addTab(parag, 5);
-		addTextBoldBreak(parag.createRun(), "=");
+		addTextBoldBreak(parag.createRun(),
+				"Totale da versare al comune di Palombara Sabina ");
+		addTextSimple(
+				parag.createRun(),
+				"Il versamento va effettuato a favore del Comune di Palombara Sabina può essere effettuato con le seguenti modalità:");
 		parag.createRun().addBreak();
-		// NOTE INFORMATIVE
+		addTextSimple(parag.createRun(), "1) UFFICIO POSTALE sul CCP n. ");
+		addTextBold(parag.createRun(), "1020723423 ");
+		addTextSimple(parag.createRun(), "IBAN: ");
+		addTextBold(parag.createRun(), "  IT 64 Z 07601 03200 001020723423 ");
+		addTextSimpleBreak(parag.createRun(),
+				"intestato a:  COMUNE DI PALOMBARA SABINA – ONERI CONCESS. IN SANATORIA");
+		document.createParagraph().createRun().addBreak();
 		addTextSimpleBreak(
 				document.createParagraph().createRun(),
 				"I versamenti delle somme dovute a saldo al cui causale dovrà riportare il numero di pratica e il numero di protocollo di cui al punto A della presente nota, dovranno essere effettuati entro e non oltre 60 gg. dal ricevimento della presente.");
-		addTextBold(document.createParagraph().createRun(), "NOTA BENE:");
 		addTextBold(
-				document.createParagraph().createRun(),
+				parag.createRun(),
+				"Importo da versare al Ministero LLPP a saldo comprensivo degli interessi su conto C/C255000 ");
+		addTextBoldBreak(parag.createRun(), "in €");
+		document.createParagraph().createRun().addBreak();
+
+		XWPFParagraph p = document.createParagraph();
+		addTextSimple(
+				p.createRun(),
+				"La circolare n. 1/DPF del 16.1.2004 del Ministero dell'Economia e delle Finanze ha stabilito che le somme dovute dovranno essere versate mediante il bollettino di conto corrente postale a tre sezioni (mod. CH8 ter) sul ");
+		addTextBold(p.createRun(),
+				"conto corrente postale n. 255000 intestato a Poste Italiane S.p.A.,");
+		addTextSimpleBreak(p.createRun(), " indicando:");
+		addTextSimpleBreak(p.createRun(), "•	l'importo;");
+		addTextSimpleBreak(p.createRun(), "•	gli estremi identificativi e l'indirizzo del richiedente;");
+		addTextSimpleBreak(p.createRun(), "•	nonché nello spazio riservato alla causale: ");
+		addTextSimpleBreak(p.createRun(), "		1) il comune dove è ubicato l'immobile;");
+		addTextSimpleBreak(p.createRun(), "		2) il numero progressivo indicato nella domanda relativa al versamento: il richiedente dovrà infatti  numerare” con numeri progressivi le domande di sanatoria presentate allo stesso comune e riportare il numero nella causale del versamento per consentirne l'abbinamento;");
+		addTextSimpleBreak(p.createRun(), "		3)  il codice fiscale del richiedente.");
+		// NOTE INFORMATIVE
+		p.createRun().addBreak();
+		addTextBold(p.createRun(), "NOTA BENE: ");
+		addTextBold(
+				p.createRun(),
 				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.");
 	}
 
@@ -179,7 +226,7 @@ public class WordService {
 		run.setText(testo);
 		run.setFontSize(16);
 		run.setBold(true);
-		run.addBreak();
+		// run.addBreak();
 	}
 
 	// private void scriviLocalTest(XWPFDocument document)
@@ -203,10 +250,12 @@ public class WordService {
 		creaOggetto(document.createParagraph(), praticaDB, abusoDB);
 		addTextBoldBreakCenter(document.createParagraph().createRun(),
 				"A) AVVIO ISTRUTTORIA DELLA PRATICA");
-		creaPargraphADB(document.createParagraph(), praticaDB, abusoDB);
+		creaPargraphADB(document, praticaDB, abusoDB);
 
+		addTextBoldBreakCenter(document.createParagraph().createRun(),
+				"B) DESCRIZIONE DELL'ABUSO");
 		XWPFParagraph paragAbuso = document.createParagraph();
-		addTextBoldBreak(paragAbuso.createRun(), "Ubicazione dell'abuso:");
+		addTextBoldBreak(paragAbuso.createRun(), "Ubicazione dell'abuso: ");
 		addTextSimple(paragAbuso.createRun(), "Località "
 				+ abusoDB.getLocalizzazione().getComune() + ", Indirizzo "
 				+ abusoDB.getLocalizzazione().getIndirizzo());
@@ -286,7 +335,22 @@ public class WordService {
 		addTableCellCenter(tableRowOne.addNewTableCell(), "PARTICELLA");
 		addTableCellCenter(tableRowOne.addNewTableCell(), "SUBALTERNO");
 		addTableCellCenter(tableRowOne.addNewTableCell(), "ZONA");
+
+		adjustTableWidth(table);
 		return table;
+	}
+
+	private void adjustTableWidth(XWPFTable table) {
+		for (int x = 0; x < table.getNumberOfRows(); x++) {
+			XWPFTableRow row = table.getRow(x);
+			int numberOfCell = row.getTableCells().size();
+			for (int y = 0; y < numberOfCell; y++) {
+				XWPFTableCell cell = row.getCell(y);
+
+				cell.getCTTc().addNewTcPr().addNewTcW()
+						.setW(BigInteger.valueOf(2000));
+			}
+		}
 	}
 
 	private void creaParagraphDatiCatastaliDB(BigDecimal idalloggio,
@@ -313,26 +377,18 @@ public class WordService {
 			tableRowTwo.getCell(3).setText(datiTerreni.getSubalterno());
 			// tableRowTwo.getCell(4).setText(datiFabbricati.get);
 		}
-
-		for (int x = 0; x < table.getNumberOfRows(); x++) {
-			XWPFTableRow row = table.getRow(x);
-			int numberOfCell = row.getTableCells().size();
-			for (int y = 0; y < numberOfCell; y++) {
-				XWPFTableCell cell = row.getCell(y);
-
-				cell.getCTTc().addNewTcPr().addNewTcW()
-						.setW(BigInteger.valueOf(2000));
-			}
-		}
-
 	}
 
-	private void addTableCellCenter(XWPFTableCell tableCell, String testo) {
+	private XWPFParagraph addTableCellCenter(XWPFTableCell tableCell,
+			String testo) {
 		XWPFParagraph parCell = tableCell.addParagraph();
+		tableCell.setVerticalAlignment(XWPFVertAlign.CENTER);
 		parCell.setAlignment(ParagraphAlignment.CENTER);
 		XWPFRun run = parCell.createRun();
 		run.setText(testo);
-		tableCell.addParagraph(parCell);
+		tableCell.setParagraph(parCell);
+		tableCell.removeParagraph(0);
+		return parCell;
 	}
 
 	private void addTextBold(XWPFRun run, String testo) {
@@ -361,19 +417,48 @@ public class WordService {
 		}
 	}
 
-	private void creaPargraphADB(XWPFParagraph paragraphA,
+	private void creaPargraphADB(XWPFDocument document,
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
-		String testo = "Numero interno: " + praticaDB.getNumeroPratica();
-		testo += ", sottonumero: " + abusoDB.getProgressivo();
-		testo += ", numero protocollo: " + praticaDB.getNumeroProtocollo();
-		addTextSimple(paragraphA.createRun(), testo);
+
+		XWPFTable table = document.createTable(1, 6);
+
+		table.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("100"));
+
+		addTableCellCenter(table.getRow(0).getCell(0), "Numero interno");
+		table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4000));
+
+		addTableCellCenter(table.getRow(0).getCell(1),
+				"00" + praticaDB.getNumeroPratica());
+		table.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(1500));
+
+		addTableCellCenter(table.getRow(0).getCell(2), "Sottonumero");
+		table.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4000));
+
+		addTableCellCenter(table.getRow(0).getCell(3), abusoDB.getProgressivo());
+		table.getRow(0).getCell(3).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(1000));
+
+		addTableCellCenter(table.getRow(0).getCell(4), "Numero Protocollo");
+		table.getRow(0).getCell(4).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		addTableCellCenter(table.getRow(0).getCell(5),
+				praticaDB.getNumeroProtocollo());
+		table.getRow(0).getCell(5).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(1000));
 	}
 
 	private void creaOggetto(XWPFParagraph paragraphggetto,
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
 		addTextBold(paragraphggetto.createRun(), "Oggetto: ");
 		String oggetto = "Avvio dell'attività di istruttoria della Istanza di Sanatoria Edilizia richiesta ai sensi della legge n."
-				.concat(praticaDB.getLeggeCondono());
+				.concat(praticaDB.getLeggeCondono() != null ? leggiCondonoHome
+						.findById(Integer.valueOf(praticaDB.getLeggeCondono()))
+						.getLeggeNumero() : " ");
 		oggetto += " presentata il " + praticaDB.getDataDomanda();
 		oggetto += " con protocollo n. " + praticaDB.getNumeroProtocollo();
 		oggetto += " del " + praticaDB.getDataProtocollo();
@@ -414,23 +499,11 @@ public class WordService {
 	}
 
 	private void createHeader(XWPFParagraph paragraph) {
-		XWPFRun paragraphOneRunOne = paragraph.createRun();
-		paragraphOneRunOne.setBold(true);
-		paragraphOneRunOne.setText("COMUNE DI GUIDONIA");
-		paragraphOneRunOne.addBreak();
-		XWPFRun paragraphOneRunOne1 = paragraph.createRun();
-		paragraphOneRunOne1.setText("Area..........");
-		paragraphOneRunOne1.addBreak();
-		paragraphOneRunOne1.setText("Indirizzo uffici.........");
-		paragraphOneRunOne1.addBreak();
-		paragraphOneRunOne1.setText("telefono.........");
-		paragraphOneRunOne1.addBreak();
-		paragraphOneRunOne1.setText("email..........");
-
-		InputStream is = WordService.class.getResourceAsStream("contract.png");
+		InputStream is = WordService.class
+				.getResourceAsStream("logoCondono.png");
 		try {
 			paragraph.createRun().addPicture(is, Document.PICTURE_TYPE_PNG,
-					"contract.png", Units.toEMU(200), Units.toEMU(200));
+					"logoCondono.png", Units.toEMU(375), Units.toEMU(95));
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -462,24 +535,31 @@ public class WordService {
 				"entro e non oltre 90 gg. dal ricevimento della presente. ");
 		addTextSimpleBreak(
 				paragraphInfoDoc.createRun(),
-				"Si fa presente che tutta la modulistica necessaria è reperibile presso il sito web del all'indirizzo");
-		addTextBoldBreak(paragraphInfoDoc.createRun(), "NOTA BENE:");
+				"Si fa presente che tutta la modulistica necessaria è reperibile presso il sito web del all'indirizzo www.comune.palombarasabina.rm.it");
+		paragraphInfoDoc.createRun().addBreak();
+		addTextBoldBreak(paragraphInfoDoc.createRun(), "NOTA BENE: ");
+		paragraphInfoDoc.createRun().addBreak();
 		addTextBoldBreak(
 				paragraphInfoDoc.createRun(),
-				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'");
-		addTextBoldBreak(
-				paragraphInfoDoc.createRun(),
-				"Qualora il destinatario della presente non sia a conoscenza della pratica in oggetto è cortesemente pregato di darne segnalazione all'Area Urbanistica ed Assetto del");
+				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'amministrazione.");
 
 	}
 
 	private void creaPargraphDOCTable(XWPFParagraph paragraphDocTable,
 			List<DocumentiAbuso> daocumentiDB) {
 		XWPFRun paragraphAOneRunOne = paragraphDocTable.createRun();
-		paragraphAOneRunOne.setBold(true);
 		for (DocumentiAbuso documentiAbuso : daocumentiDB) {
+			paragraphAOneRunOne.addTab();
 			addTextSimpleBreak(paragraphAOneRunOne, " - ".concat(documentiAbuso
 					.getIdTipoDocumento().getDescrizione()));
 		}
+
+		paragraphAOneRunOne.addBreak();
+		paragraphAOneRunOne.addBreak();
+		paragraphAOneRunOne.addBreak();
+		paragraphAOneRunOne.addBreak();
+		paragraphAOneRunOne.addBreak();
+		paragraphAOneRunOne.addBreak();
+
 	}
 }
