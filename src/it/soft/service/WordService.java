@@ -29,6 +29,8 @@ import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.VerticalAlign;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -288,18 +290,35 @@ public class WordService {
 
 		addTextBoldBreakCenter(document.createParagraph().createRun(),
 				"B) DESCRIZIONE DELL'ABUSO");
-		XWPFParagraph paragAbuso = document.createParagraph();
-		addTextBoldBreak(paragAbuso.createRun(), "Ubicazione dell'abuso: ");
-		addTextSimple(paragAbuso.createRun(), "Località "
+
+		XWPFTable table = document.createTable(1, 1);
+		addTableCellCenter(table.getRow(0).getCell(0),
+				"Ubicazione dell'abuso: ", true, ParagraphAlignment.LEFT);
+		table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(9999));
+		XWPFTable table1 = document.createTable(1, 1);
+		addTableCellCenter(table1.getRow(0).getCell(0), "Località "
 				+ abusoDB.getLocalizzazione().getComune() + ", Indirizzo "
 				+ abusoDB.getLocalizzazione().getIndirizzo() + ", cap "
-				+ abusoDB.getLocalizzazione().getCap());
+				+ abusoDB.getLocalizzazione().getCap(), false,
+				ParagraphAlignment.LEFT);
+		// table1.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+		// .setW(BigInteger.valueOf(9999));
 
-		XWPFParagraph paragAbusoDesc = document.createParagraph();
-		addTextBoldBreak(paragAbusoDesc.createRun(), "Descrizione abuso: ");
-		addTextSimple(paragAbusoDesc.createRun(), abusoDB.getDescrizione());
+		XWPFTable table2 = document.createTable(1, 1);
+		addTableCellCenter(table2.getRow(0).getCell(0), "Descrizione abuso: ",
+				true, ParagraphAlignment.LEFT);
+		table2.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(9999));
+
+		XWPFTable table3 = document.createTable(1, 1);
+		addTableCellCenter(table3.getRow(0).getCell(0),
+				abusoDB.getDescrizione(), false, ParagraphAlignment.LEFT);
+		table3.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(9999));
 
 		addTextBold(document.createParagraph().createRun(), "Dati Catastali:");
+
 		XWPFTable tableHeader = createHeaderTableDatiCatastali(document);
 		for (DatiAlloggio datiAlloggio : alloggi) {
 			creaParagraphDatiCatastaliDB(datiAlloggio.getIddatiAlloggio(),
@@ -361,14 +380,19 @@ public class WordService {
 
 	private XWPFTable createHeaderTableDatiCatastali(XWPFDocument document) {
 		// create table
-		XWPFTable table = document.createTable();
+		XWPFTable table = document.createTable(1, 5);
 		// create first row
 		XWPFTableRow tableRowOne = table.getRow(0);
-		addTableCellCenter(tableRowOne.getCell(0), "SEZIONE");
-		addTableCellCenter(tableRowOne.addNewTableCell(), "FOGLIO");
-		addTableCellCenter(tableRowOne.addNewTableCell(), "PARTICELLA");
-		addTableCellCenter(tableRowOne.addNewTableCell(), "SUBALTERNO");
-		addTableCellCenter(tableRowOne.addNewTableCell(), "ZONA");
+		addTableCellCenter(tableRowOne.getCell(0), "SEZIONE", true,
+				ParagraphAlignment.CENTER);
+		addTableCellCenter(tableRowOne.getCell(1), "FOGLIO", true,
+				ParagraphAlignment.CENTER);
+		addTableCellCenter(tableRowOne.getCell(2), "PARTICELLA", true,
+				ParagraphAlignment.CENTER);
+		addTableCellCenter(tableRowOne.getCell(3), "SUBALTERNO", true,
+				ParagraphAlignment.CENTER);
+		addTableCellCenter(tableRowOne.getCell(4), "ZONA", true,
+				ParagraphAlignment.CENTER);
 
 		adjustTableWidth(table);
 		return table;
@@ -414,14 +438,14 @@ public class WordService {
 	}
 
 	private XWPFParagraph addTableCellCenter(XWPFTableCell tableCell,
-			String testo) {
+			String testo, boolean bold, ParagraphAlignment alignment) {
 		XWPFParagraph parCell = tableCell.addParagraph();
 		tableCell.setVerticalAlignment(XWPFVertAlign.CENTER);
-		parCell.setAlignment(ParagraphAlignment.CENTER);
+		parCell.setAlignment(alignment);
 		XWPFRun run = parCell.createRun();
 		run.setFontFamily("Times New Roman");
 		run.setText(testo);
-		run.setBold(true);
+		run.setBold(bold);
 		tableCell.setParagraph(parCell);
 		tableCell.removeParagraph(0);
 		return parCell;
@@ -465,29 +489,35 @@ public class WordService {
 		table.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
 				.setVal(new BigInteger("100"));
 
-		addTableCellCenter(table.getRow(0).getCell(0), "Numero interno");
+		addTableCellCenter(table.getRow(0).getCell(0), "Numero interno", true,
+				ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(4000));
 
 		addTableCellCenter(table.getRow(0).getCell(1),
-				"00" + praticaDB.getNumeroPratica());
+				"00" + praticaDB.getNumeroPratica(), true,
+				ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(1500));
 
-		addTableCellCenter(table.getRow(0).getCell(2), "Sottonumero");
+		addTableCellCenter(table.getRow(0).getCell(2), "Sottonumero", true,
+				ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(4000));
 
-		addTableCellCenter(table.getRow(0).getCell(3), abusoDB.getProgressivo());
+		addTableCellCenter(table.getRow(0).getCell(3),
+				abusoDB.getProgressivo(), true, ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(3).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(1000));
 
-		addTableCellCenter(table.getRow(0).getCell(4), "Numero Protocollo");
+		addTableCellCenter(table.getRow(0).getCell(4), "Numero Protocollo",
+				true, ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(4).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(4500));
 
 		addTableCellCenter(table.getRow(0).getCell(5),
-				praticaDB.getNumeroProtocollo());
+				praticaDB.getNumeroProtocollo(), true,
+				ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(5).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(1000));
 	}
@@ -555,7 +585,7 @@ public class WordService {
 
 	public XWPFDocument createPage2(XWPFDocument document,
 			List<DocumentiAbuso> daocumentiDB) {
-		document.createParagraph().createRun().addBreak(BreakType.PAGE);
+		// document.createParagraph().createRun().addBreak(BreakType.PAGE);
 		addTextBoldBreakCenter(document.createParagraph().createRun(),
 				"1) DOCUMENTI DA INTEGRARE");
 		creaPargraphDOCTable(document.createParagraph(), daocumentiDB);
@@ -576,12 +606,22 @@ public class WordService {
 		addTextSimpleBreak(
 				paragraphInfoDoc.createRun(),
 				"Si fa presente che tutta la modulistica necessaria è reperibile presso il sito web del all'indirizzo www.comune.palombarasabina.rm.it");
-		paragraphInfoDoc.createRun().addBreak();
+		// paragraphInfoDoc.createRun().addBreak();
 		addTextBoldBreak(paragraphInfoDoc.createRun(), "NOTA BENE: ");
-		paragraphInfoDoc.createRun().addBreak();
-		addTextBoldBreak(
+		// paragraphInfoDoc.createRun().addBreak();
+		addTextBoldUnderlineBreak(
 				paragraphInfoDoc.createRun(),
 				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'amministrazione.");
+
+	}
+
+	private void addTextBoldUnderlineBreak(XWPFRun run, String testo) {
+
+		run.setFontFamily("Times New Roman");
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		run.setText(testo);
+		run.setBold(true);
+		run.addBreak();
 
 	}
 
