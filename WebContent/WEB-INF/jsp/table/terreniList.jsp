@@ -19,18 +19,22 @@
 				<td>Foglio :</td>
 				<td><form:input path="foglio" /> <form:hidden
 						path="iddatiTerreni" /> <form:hidden path="idAlloggio" /></td>
+				<td><form:errors path="foglio" cssClass="ui-state-error" />
 			</tr>
 			<tr>
 				<td>Particella :</td>
 				<td><form:input path="particella" /></td>
+				<td><form:errors path="particella" cssClass="ui-state-error" />
 			</tr>
 			<tr>
 				<td>Subalterno :
 				<td><form:input path="subalterno" /></td>
+				<td><form:errors path="subalterno" cssClass="ui-state-error" />
 			</tr>
 			<tr>
 				<td>Sezione :</td>
 				<td><form:input path="sezione" /></td>
+				<td><form:errors path="sezione" cssClass="ui-state-error" />
 			</tr>
 			<tr>
 				<td><form:button name="aggiungi" value="aggiungi">aggiungi</form:button>
