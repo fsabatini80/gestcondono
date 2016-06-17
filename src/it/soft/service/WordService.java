@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
+import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
@@ -35,6 +36,11 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell.XWPFVertAlign;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +83,27 @@ public class WordService {
 		createPage2(document, daocumentiDB);
 		createPage3(document);
 		createPage4(document);
+
+		XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(
+				document, document.getDocument().getBody().addNewSectPr());
+		try {
+			String testo1 = "Numero Interno " + praticaDB.getNumeroPratica()
+					+ ", Sottonumero " + abusoDB.getProgressivo()
+					+ ", Numero Protocollo " + praticaDB.getNumeroProtocollo();
+			CTP ctp = CTP.Factory.newInstance();
+			CTR ctr = ctp.addNewR();
+			CTRPr rpr = ctr.addNewRPr();
+			CTText textt = ctr.addNewT();
+			textt.setStringValue(testo1);
+			XWPFParagraph codePara = new XWPFParagraph(ctp, document);
+			XWPFParagraph[] newparagraphs = new XWPFParagraph[1];
+			newparagraphs[0] = codePara;
+			headerFooterPolicy.createFooter(STHdrFtr.DEFAULT, newparagraphs);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		System.out.println("create successfully");
 
 		// scriviLocalTest(document);
@@ -206,12 +233,18 @@ public class WordService {
 		addTextBold(p.createRun(),
 				"conto corrente postale n. 255000 intestato a Poste Italiane S.p.A.,");
 		addTextSimpleBreak(p.createRun(), " indicando:");
-		addTextSimpleBreak(p.createRun(), "•	l'importo;");
-		addTextSimpleBreak(p.createRun(), "•	gli estremi identificativi e l'indirizzo del richiedente;");
-		addTextSimpleBreak(p.createRun(), "•	nonché nello spazio riservato alla causale: ");
-		addTextSimpleBreak(p.createRun(), "		1) il comune dove è ubicato l'immobile;");
-		addTextSimpleBreak(p.createRun(), "		2) il numero progressivo indicato nella domanda relativa al versamento: il richiedente dovrà infatti  numerare” con numeri progressivi le domande di sanatoria presentate allo stesso comune e riportare il numero nella causale del versamento per consentirne l'abbinamento;");
-		addTextSimpleBreak(p.createRun(), "		3)  il codice fiscale del richiedente.");
+		addTextSimpleBreak(p.createRun(), "• l'importo;");
+		addTextSimpleBreak(p.createRun(),
+				"• gli estremi identificativi e l'indirizzo del richiedente;");
+		addTextSimpleBreak(p.createRun(),
+				"• nonché nello spazio riservato alla causale: ");
+		addTextSimpleBreak(p.createRun(),
+				"		1) il comune dove è ubicato l'immobile;");
+		addTextSimpleBreak(
+				p.createRun(),
+				"		2) il numero progressivo indicato nella domanda relativa al versamento: il richiedente dovrà infatti  numerare” con numeri progressivi le domande di sanatoria presentate allo stesso comune e riportare il numero nella causale del versamento per consentirne l'abbinamento;");
+		addTextSimpleBreak(p.createRun(),
+				"		3)  il codice fiscale del richiedente.");
 		// NOTE INFORMATIVE
 		p.createRun().addBreak();
 		addTextBold(p.createRun(), "NOTA BENE: ");
@@ -222,9 +255,10 @@ public class WordService {
 
 	@SuppressWarnings("deprecation")
 	private void addTextBoldBreakCenter(XWPFRun run, String testo) {
+		run.setFontFamily("Times New Roman");
 		run.getParagraph().setAlignment(ParagraphAlignment.CENTER);
 		run.setText(testo);
-		run.setFontSize(16);
+		run.setFontSize(11);
 		run.setBold(true);
 		// run.addBreak();
 	}
@@ -242,6 +276,7 @@ public class WordService {
 	public XWPFDocument createPage1(XWPFDocument document,
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
 			List<RelSoggettoAbuso> listaSoggetti, List<DatiAlloggio> alloggi) {
+
 		// create header
 		createHeader(document.createParagraph());
 		// create Protocollo e lista soggetti
@@ -258,7 +293,8 @@ public class WordService {
 		addTextBoldBreak(paragAbuso.createRun(), "Ubicazione dell'abuso: ");
 		addTextSimple(paragAbuso.createRun(), "Località "
 				+ abusoDB.getLocalizzazione().getComune() + ", Indirizzo "
-				+ abusoDB.getLocalizzazione().getIndirizzo());
+				+ abusoDB.getLocalizzazione().getIndirizzo() + ", cap "
+				+ abusoDB.getLocalizzazione().getCap());
 
 		XWPFParagraph paragAbusoDesc = document.createParagraph();
 		addTextBoldBreak(paragAbusoDesc.createRun(), "Descrizione abuso: ");
@@ -270,7 +306,6 @@ public class WordService {
 			creaParagraphDatiCatastaliDB(datiAlloggio.getIddatiAlloggio(),
 					document, tableHeader);
 		}
-		document.createParagraph().createRun().addBreak();
 		XWPFParagraph paragDatiTecnici = document.createParagraph();
 		addTextBoldBreak(paragDatiTecnici.createRun(), "Dati Tecnici: ");
 		creaParagraphDatiTecniciTable(paragDatiTecnici, abusoDB, praticaDB);
@@ -364,7 +399,7 @@ public class WordService {
 			tableRowTwo.getCell(1).setText(datiFabbricati.getFoglio());
 			tableRowTwo.getCell(2).setText(datiFabbricati.getParticella());
 			tableRowTwo.getCell(3).setText(datiFabbricati.getSubalterno());
-			// tableRowTwo.getCell(4).setText(datiFabbricati.get);
+			tableRowTwo.getCell(4).setText("E3");
 		}
 		List<DatiTerreni> listTerreni = datiTerreniHome.findAll(idalloggio
 				.intValue());
@@ -375,7 +410,7 @@ public class WordService {
 			tableRowTwo.getCell(1).setText(datiTerreni.getFoglio());
 			tableRowTwo.getCell(2).setText(datiTerreni.getParticella());
 			tableRowTwo.getCell(3).setText(datiTerreni.getSubalterno());
-			// tableRowTwo.getCell(4).setText(datiFabbricati.get);
+			tableRowTwo.getCell(4).setText("E3");
 		}
 	}
 
@@ -385,28 +420,34 @@ public class WordService {
 		tableCell.setVerticalAlignment(XWPFVertAlign.CENTER);
 		parCell.setAlignment(ParagraphAlignment.CENTER);
 		XWPFRun run = parCell.createRun();
+		run.setFontFamily("Times New Roman");
 		run.setText(testo);
+		run.setBold(true);
 		tableCell.setParagraph(parCell);
 		tableCell.removeParagraph(0);
 		return parCell;
 	}
 
 	private void addTextBold(XWPFRun run, String testo) {
+		run.setFontFamily("Times New Roman");
 		run.setText(testo);
 		run.setBold(true);
 	}
 
 	private void addTextBoldBreak(XWPFRun run, String testo) {
+		run.setFontFamily("Times New Roman");
 		run.setText(testo);
 		run.setBold(true);
 		run.addBreak();
 	}
 
 	private void addTextSimple(XWPFRun run, String testo) {
+		run.setFontFamily("Times New Roman");
 		run.setText(testo);
 	}
 
 	private void addTextSimpleBreak(XWPFRun run, String testo) {
+		run.setFontFamily("Times New Roman");
 		run.setText(testo);
 		run.addBreak();
 	}

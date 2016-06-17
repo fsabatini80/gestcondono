@@ -23,6 +23,7 @@ public class DatiVersamentiPojo implements Serializable {
 	private String nome;
 	private String cognome;
 	private String ragioneSociale;
+	private String causale;
 
 	public String getIddatipratica() {
 		return iddatipratica;
@@ -158,6 +159,14 @@ public class DatiVersamentiPojo implements Serializable {
 
 	public void setCodiceVersamento(String codiceVersamento) {
 		this.codiceVersamento = codiceVersamento;
+	}
+
+	public String getCausale() {
+		return causale;
+	}
+
+	public void setCausale(String causale) {
+		this.causale = causale;
 	}
 
 }

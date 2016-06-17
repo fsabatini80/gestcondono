@@ -10,7 +10,8 @@
 	<table>
 		<tr>
 			<td>Codice Versamento:</td>
-			<td><form:input path="codiceVersamento" /></td>
+			<td><form:input path="codiceVersamento" />
+				<form:hidden path="iddatipratica" /></td>
 		</tr>
 		<tr>
 			<td>CC postale:</td>
@@ -23,6 +24,10 @@
 		<tr>
 			<td>Importo euro:</td>
 			<td><form:input path="importoEuro" /></td>
+		</tr>
+		<tr>
+			<td>Causale:</td>
+			<td><form:input path="causale" /></td>
 		</tr>
 		<tr>
 			<td>Ufficio postale:</td>
