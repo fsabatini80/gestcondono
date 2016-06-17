@@ -117,8 +117,6 @@ public class VersamentiController extends BaseController {
 			Errors errors) throws Exception {
 
 		String view = "redirect:versamenti.htm?idpratica=";
-		validatorPratica.validate(pojo, errors);
-//		this.praticaPojo = pojo;
 		this.datiVersamentiPojo = pojo;
 		
 		if (errors.hasFieldErrors()) {

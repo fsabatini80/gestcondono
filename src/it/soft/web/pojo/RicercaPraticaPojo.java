@@ -7,6 +7,7 @@ public class RicercaPraticaPojo {
 	private String nominativo;
 	private String dataDomanda;
 	private String leggeCondono;
+	private String cognome;
 	
 	public String getNumeroPratica() {
 		return numeroPratica;
@@ -37,5 +38,11 @@ public class RicercaPraticaPojo {
 	}
 	public void setLeggeCondono(String leggeCondono) {
 		this.leggeCondono = leggeCondono;
+	}
+	public String getCognome() {
+		return cognome;
+	}
+	public void setCognome(String cognome) {
+		this.cognome = cognome;
 	}
 }

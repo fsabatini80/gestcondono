@@ -51,7 +51,7 @@ public class HomePraticaController extends BaseController {
 					.getLeggeCondono()));
 		List<Datipratica> list = datiPraticaService.findBy(
 				pojo.getNumeroPratica(), condono, pojo.getDataDomanda(),
-				pojo.getNumeroProtocollo());
+				pojo.getNumeroProtocollo(), pojo.getCognome());
 		model.addAttribute("pratiche", list);
 		return new ModelAndView(view, model);
 	}

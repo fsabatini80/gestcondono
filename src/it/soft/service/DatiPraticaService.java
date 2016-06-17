@@ -137,8 +137,8 @@ public class DatiPraticaService {
 
 	public List<Datipratica> findBy(String numeroPratica,
 			LeggiCondono leggeCondono, String dataDomanda,
-			String numeroProtocollo) {
+			String numeroProtocollo, String cognonme) {
 		return datiPraticaHome.findBy(numeroPratica, numeroProtocollo,
-				dataDomanda, leggeCondono);
+				dataDomanda, leggeCondono, cognonme);
 	}
 }

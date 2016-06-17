@@ -4,6 +4,7 @@ import it.soft.domain.Datipratica;
 import it.soft.domain.LeggiCondono;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -129,7 +130,7 @@ public class DatiPraticaHome {
 	@SuppressWarnings("unchecked")
 	public List<Datipratica> findBy(String numeroPratica,
 			String numeroProtocollo, String dataDomanda,
-			LeggiCondono leggeCondono) {
+			LeggiCondono leggeCondono, String cognome) {
 		log.debug("getting Datipratica instance with id: " + leggeCondono);
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
@@ -144,14 +145,26 @@ public class DatiPraticaHome {
 				cr.add(Restrictions.eq("dataDomanda", dataDomanda));
 			if (leggeCondono != null && !"".equals(leggeCondono))
 				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
+
 			List<Datipratica> results = cr.list();
+			List<Datipratica> answDatipraticas = new ArrayList<Datipratica>();
+			if (!StringUtils.isEmptyOrWhitespaceOnly(cognome)) {
+				for (Datipratica datipratica : results) {
+					if (datipratica.getRichiedente() != null
+							&& cognome.equalsIgnoreCase(datipratica
+									.getRichiedente().getCognome())) {
+						answDatipraticas.add(datipratica);
+					}
+				}
+			} else {
+				answDatipraticas.addAll(results);
+			}
 			log.debug("get successful");
 			sess.close();
-			return results;
+			return answDatipraticas;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
 			throw re;
 		}
 	}
-	
 }

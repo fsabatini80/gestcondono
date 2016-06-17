@@ -523,7 +523,7 @@ public class WordService {
 		for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
 			addTab(paragraph, 8);
 			addTextSimpleBreak(paragraph.createRun(),
-					"Cognome e Nome: " + relSoggettoAbuso.getCognome() + " "
+					"Cognome e Nome: " + relSoggettoAbuso.getCognome()
 							+ relSoggettoAbuso.getNome());
 			addTab(paragraph, 8);
 			addTextSimpleBreak(paragraph.createRun(), "Indirizzo: "

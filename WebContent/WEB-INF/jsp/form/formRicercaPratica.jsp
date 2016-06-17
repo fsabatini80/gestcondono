@@ -10,6 +10,10 @@
 		<form:errors path="*" cssClass="errorblock" element="div" />
 		<table>
 			<tr>
+				<td>Cognome Richiedente:</td>
+				<td><form:input path="cognome" /></td>
+			</tr>
+			<tr>
 				<td>Numero Pratica:</td>
 				<td><form:input path="numeroPratica" /></td>
 			</tr>

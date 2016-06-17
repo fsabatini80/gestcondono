@@ -30,7 +30,7 @@ public class Datiabuso implements Serializable {
 	@Column(name = "data_ultimazione_lavori", length = 45)
 	private String dataUltimazioneLavori;
 
-	@Column(length = 45)
+	@Column(length = 500)
 	private String descrizione;
 
 	@OneToOne
