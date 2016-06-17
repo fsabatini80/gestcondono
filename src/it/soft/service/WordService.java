@@ -100,7 +100,6 @@ public class WordService {
 			newparagraphs[0] = codePara;
 			headerFooterPolicy.createFooter(STHdrFtr.DEFAULT, newparagraphs);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
