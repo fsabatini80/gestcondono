@@ -58,6 +58,7 @@
 				<value>it.soft.domain.EpocaAbuso</value>
 				<value>it.soft.domain.TipologiaAlloggio</value>
 				<value>it.soft.domain.CaratteristicheSpeciali</value>
+				<value>it.soft.domain.DatiVersamenti</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -133,6 +134,10 @@
 	<bean id="soggettiAbusoHome" class="it.soft.dao.SoggettiAbusoHome">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	<bean id="datiVersamentiHome" class="it.soft.dao.DatiVersamentiHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
 	<!-- END MAP DAO -->
 
 	<!-- BEGIN MAP viewResolver -->
