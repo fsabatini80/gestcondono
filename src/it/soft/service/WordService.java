@@ -41,11 +41,12 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSpacing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLineSpacingRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -463,6 +464,7 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table17 = document.createTable(1, 1);
+
 		creatTotaleRiepilogoInfo(table17);
 
 		XWPFTable table18 = document.createTable(1, 3);
@@ -498,7 +500,10 @@ public class WordService {
 		XWPFParagraph p = table.getRow(0).getCell(0).addParagraph();
 		addTextSimple(
 				p.createRun(),
-				"La circolare n. 1/DPF del 16.1.2004 del Ministero dell'Economia e delle Finanze ha stabilito che le somme dovute dovranno essere versate mediante il bollettino di conto corrente postale a tre sezioni (mod. CH8 ter) sul ");
+				"La circolare n. 1/DPF del 16.1.2004 del Ministero dell'Economia e delle Finanze ha stabilito che le somme dovute dovranno essere versate mediante il ");
+		addTextUnderline(p.createRun(),
+				"bollettino di conto corrente postale a tre sezioni");
+		addTextSimple(p.createRun(), " (mod. CH8 ter) sul ");
 		addTextBold(p.createRun(),
 				"conto corrente postale n. 255000 intestato a Poste Italiane S.p.A.,");
 		addTextSimpleBreak(p.createRun(), " indicando:");
@@ -550,9 +555,14 @@ public class WordService {
 		addTextBold(parag.createRun(), "  IT 64 Z 07601 03200 001020723423 ");
 		addTextSimpleBreak(parag.createRun(),
 				"intestato a:  COMUNE DI PALOMBARA SABINA – ONERI CONCESS. IN SANATORIA");
-		addTextSimpleBreak(
-				parag.createRun(),
-				"I versamenti delle somme dovute a saldo al cui causale dovrà riportare il numero di pratica e il numero di protocollo di cui al punto A della presente nota, dovranno essere effettuati entro e non oltre 60 gg. dal ricevimento della presente.");
+		addTextSimple(parag.createRun(),
+				"I versamenti delle somme dovute a saldo al cui causale dovrà riportare ");
+		addTextBold(parag.createRun(),
+				"il numero di pratica e il numero di protocollo di cui al punto A");
+		addTextSimple(parag.createRun(),
+				" della presente nota, dovranno essere effettuati ");
+		addTextBoldUnderlineBreak(parag.createRun(),
+				"entro e non oltre 60 gg. dal ricevimento della presente.");
 		table17.getRow(0).getCell(0).removeParagraph(0);
 		spanCellsAcrossRow(table17, 0, 0, 3);
 
@@ -613,8 +623,6 @@ public class WordService {
 				+ abusoDB.getLocalizzazione().getIndirizzo() + ", cap "
 				+ abusoDB.getLocalizzazione().getCap(), false,
 				ParagraphAlignment.LEFT);
-		// table1.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		// .setW(BigInteger.valueOf(9999));
 
 		XWPFTable table2 = document.createTable(1, 1);
 		addTableCellCenter(table2.getRow(0).getCell(0), "Descrizione abuso: ",
@@ -642,6 +650,7 @@ public class WordService {
 					document, tableHeader);
 		}
 		XWPFParagraph paragDatiTecnici = document.createParagraph();
+		paragDatiTecnici.createRun().addBreak();
 		addTextBoldBreak(paragDatiTecnici.createRun(), "Dati Tecnici: ");
 		creaParagraphDatiTecniciTable(paragDatiTecnici, abusoDB, praticaDB);
 		addTextSimple(
@@ -735,11 +744,20 @@ public class WordService {
 				.findAll(idalloggio.intValue());
 		for (DatiFabbricati datiFabbricati : listFabbric) {
 			XWPFTableRow tableRowTwo = table.createRow();
-			tableRowTwo.getCell(0).setText(datiFabbricati.getSezione());
-			tableRowTwo.getCell(1).setText(datiFabbricati.getFoglio());
-			tableRowTwo.getCell(2).setText(datiFabbricati.getParticella());
-			tableRowTwo.getCell(3).setText(datiFabbricati.getSubalterno());
-			tableRowTwo.getCell(4).setText("E3");
+			addTableCellCenter(tableRowTwo.getCell(0),
+					datiFabbricati.getSezione(), false,
+					ParagraphAlignment.CENTER);
+			addTableCellCenter(tableRowTwo.getCell(1),
+					datiFabbricati.getFoglio(), false,
+					ParagraphAlignment.CENTER);
+			addTableCellCenter(tableRowTwo.getCell(2),
+					datiFabbricati.getParticella(), false,
+					ParagraphAlignment.CENTER);
+			addTableCellCenter(tableRowTwo.getCell(3),
+					datiFabbricati.getSubalterno(), false,
+					ParagraphAlignment.CENTER);
+			addTableCellCenter(tableRowTwo.getCell(4), "E3", false,
+					ParagraphAlignment.CENTER);
 		}
 		List<DatiTerreni> listTerreni = datiTerreniHome.findAll(idalloggio
 				.intValue());
@@ -751,6 +769,19 @@ public class WordService {
 			tableRowTwo.getCell(2).setText(datiTerreni.getParticella());
 			tableRowTwo.getCell(3).setText(datiTerreni.getSubalterno());
 			tableRowTwo.getCell(4).setText("E3");
+
+			addTableCellCenter(tableRowTwo.getCell(0),
+					datiTerreni.getSezione(), false, ParagraphAlignment.CENTER);
+			addTableCellCenter(tableRowTwo.getCell(1), datiTerreni.getFoglio(),
+					false, ParagraphAlignment.CENTER);
+			addTableCellCenter(tableRowTwo.getCell(2),
+					datiTerreni.getParticella(), false,
+					ParagraphAlignment.CENTER);
+			addTableCellCenter(tableRowTwo.getCell(3),
+					datiTerreni.getSubalterno(), false,
+					ParagraphAlignment.CENTER);
+			addTableCellCenter(tableRowTwo.getCell(4), "E3", false,
+					ParagraphAlignment.CENTER);
 		}
 	}
 
@@ -766,6 +797,15 @@ public class WordService {
 		run.setFontFamily("Times New Roman");
 		run.setText(testo);
 		run.setBold(bold);
+		CTPPr ppr = parCell.getCTP().getPPr();
+		if (ppr == null)
+			ppr = parCell.getCTP().addNewPPr();
+		CTSpacing spacing = ppr.isSetSpacing() ? ppr.getSpacing() : ppr
+				.addNewSpacing();
+		spacing.setAfter(BigInteger.valueOf(0));
+		spacing.setBefore(BigInteger.valueOf(0));
+		spacing.setLineRule(STLineSpacingRule.AUTO);
+		spacing.setLine(BigInteger.valueOf(240));
 		// tableCell.setParagraph(parCell);
 		tableCell.removeParagraph(0);
 		return parCell;
@@ -837,8 +877,6 @@ public class WordService {
 				ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(5).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(1000));
-		table.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(BigInteger.valueOf(300));
 	}
 
 	private void creaOggetto(XWPFParagraph paragraphggetto,
@@ -872,7 +910,7 @@ public class WordService {
 		for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
 			addTab(paragraph, 7);
 			addTextSimpleBreak(paragraph.createRun(),
-					"COGOME E NOME: " + relSoggettoAbuso.getCognome()
+					"COGOME E NOME: " + relSoggettoAbuso.getCognome() + " "
 							+ relSoggettoAbuso.getNome());
 			addTab(paragraph, 7);
 			addTextSimpleBreak(paragraph.createRun(), "INDIRIZZO: "
@@ -906,7 +944,7 @@ public class WordService {
 
 	public XWPFDocument createPage2(XWPFDocument document,
 			List<DocumentiAbuso> daocumentiDB) {
-		// document.createParagraph().createRun().addBreak(BreakType.PAGE);
+		document.createParagraph().createRun().addBreak(BreakType.PAGE);
 		addTextBoldBreakCenter(document.createParagraph().createRun(),
 				"1) DOCUMENTI DA INTEGRARE");
 		creaPargraphDOCTable(document.createParagraph(), daocumentiDB);
@@ -944,6 +982,12 @@ public class WordService {
 		run.setBold(true);
 		run.addBreak();
 
+	}
+	
+	private void addTextUnderline(XWPFRun run, String testo) {
+		run.setFontFamily("Times New Roman");
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		run.setText(testo);
 	}
 
 	private void creaPargraphDOCTable(XWPFParagraph paragraphDocTable,
