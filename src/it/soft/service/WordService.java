@@ -30,19 +30,22 @@ import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
-import org.apache.poi.xwpf.usermodel.VerticalAlign;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
-import org.apache.poi.xwpf.usermodel.XWPFTableCell.XWPFVertAlign;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFldChar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,24 +89,7 @@ public class WordService {
 		createPage3(document);
 		createPage4(document);
 
-		XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(
-				document, document.getDocument().getBody().addNewSectPr());
-		try {
-			String testo1 = "Numero Interno " + praticaDB.getNumeroPratica()
-					+ ", Sottonumero " + abusoDB.getProgressivo()
-					+ ", Numero Protocollo " + praticaDB.getNumeroProtocollo();
-			CTP ctp = CTP.Factory.newInstance();
-			CTR ctr = ctp.addNewR();
-			CTRPr rpr = ctr.addNewRPr();
-			CTText textt = ctr.addNewT();
-			textt.setStringValue(testo1);
-			XWPFParagraph codePara = new XWPFParagraph(ctp, document);
-			XWPFParagraph[] newparagraphs = new XWPFParagraph[1];
-			newparagraphs[0] = codePara;
-			headerFooterPolicy.createFooter(STHdrFtr.DEFAULT, newparagraphs);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		createFooter(document, praticaDB, abusoDB);
 
 		System.out.println("create successfully");
 
@@ -111,6 +97,62 @@ public class WordService {
 
 		return document;
 
+	}
+
+	private void createFooter(XWPFDocument document, DatiPraticaPojo praticaDB,
+			DatiAbusoPojo abusoDB) {
+		try {
+			String testo1 = "Numero Interno " + praticaDB.getNumeroPratica()
+					+ ", Sottonumero " + abusoDB.getProgressivo()
+					+ ", Numero Protocollo " + praticaDB.getNumeroProtocollo()
+					+ "                               Pag.";
+			// create footer
+			XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(
+					document, document.getDocument().getBody().addNewSectPr());
+			// document.getHeaderFooterPolicy();
+			CTP ctpFooter = CTP.Factory.newInstance();
+			CTR ctr = ctpFooter.addNewR();
+			ctr.addNewContinuationSeparator();
+			CTText textt = ctr.addNewT();
+			textt.setStringValue(testo1);
+			XWPFParagraph[] parsFooter;
+
+			// add style (s.th.)
+			CTPPr ctppr = ctpFooter.addNewPPr();
+			CTString pst = ctppr.addNewPStyle();
+			pst.setVal("style21");
+			CTJc ctjc = ctppr.addNewJc();
+			ctjc.setVal(STJc.RIGHT);
+			ctppr.addNewRPr();
+
+			// add everything from the footerXXX.xml you need
+			// CTR ctr = ctpFooter.addNewR();
+			ctr.addNewRPr();
+			CTFldChar fch = ctr.addNewFldChar();
+			fch.setFldCharType(STFldCharType.BEGIN);
+
+			ctr = ctpFooter.addNewR();
+			ctr.addNewInstrText().setStringValue(" PAGE ");
+
+			ctpFooter.addNewR().addNewFldChar()
+					.setFldCharType(STFldCharType.SEPARATE);
+			ctpFooter.addNewR().addNewT().setStringValue("1");
+
+			ctpFooter.addNewR().addNewFldChar()
+					.setFldCharType(STFldCharType.END);
+
+			XWPFParagraph footerParagraph = new XWPFParagraph(ctpFooter,
+					document);
+
+			parsFooter = new XWPFParagraph[1];
+
+			parsFooter[0] = footerParagraph;
+
+			policy.createFooter(XWPFHeaderFooterPolicy.DEFAULT, parsFooter);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void createPage4(XWPFDocument document) {
@@ -138,76 +180,367 @@ public class WordService {
 		document.createParagraph().createRun().addBreak(BreakType.PAGE);
 		addTextBoldBreakCenter(document.createParagraph().createRun(),
 				"2) ATTESTAZIONI DI VERSAMENTO");
-		// OBLAZIONE
-		XWPFParagraph parag = document.createParagraph();
-		addTextBoldBreak(parag.createRun(), "OBLAZIONE:");
-		addTextBold(parag.createRun(), "Autodetermina ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
 
-		addTextBold(parag.createRun(), "Importo versato ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(), "Importo calcolato ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(),
-				"Importo da versare a saldo comprensivo degli interessi dovuti ");
-		addTab(parag, 1);
-		addTextBoldBreak(parag.createRun(), "= €");
-		parag.createRun().addBreak();
-		// OBLAZIONE REGIONALE
-		addTextBoldBreak(parag.createRun(), "OBLAZIONE REGIONALE:");
-		addTextBold(parag.createRun(), "Autodetermina ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(), "Importo versato ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(), "Importo calcolato ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(),
-				"Importo da versare a saldo comprensivo degli interessi dovuti ");
-		addTab(parag, 1);
-		addTextBoldBreak(parag.createRun(), "= €");
-		parag.createRun().addBreak();
+		// OBLAZIONE
+		XWPFTable table = document.createTable(1, 3);
+		table.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table.getRow(0).getCell(0), "OBLAZIONE ", true,
+				ParagraphAlignment.LEFT);
+		table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(7099));
+		addTableCellCenter(table.getRow(0).getCell(1), "", false,
+				ParagraphAlignment.CENTER);
+		table.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(400));
+		addTableCellCenter(table.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.CENTER);
+		table.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(2500));
+
+		XWPFTable table1 = document.createTable(1, 3);
+		table1.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table1.getRow(0).getCell(0), "Autodetermina", false,
+				ParagraphAlignment.LEFT);
+		table1.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table1.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table1.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table1.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table1.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table2 = document.createTable(1, 3);
+		table2.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table2.getRow(0).getCell(0), "Importo versato",
+				false, ParagraphAlignment.LEFT);
+		table2.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table2.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table2.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table2.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table2.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table3 = document.createTable(1, 3);
+		table3.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table3.getRow(0).getCell(0), "Importo calcolato",
+				false, ParagraphAlignment.LEFT);
+		table3.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table3.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table3.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table3.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table3.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table4 = document.createTable(1, 3);
+		table4.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(
+				table4.getRow(0).getCell(0),
+				"Importo da versare a saldo comprensivo degli interessi dovuti ",
+				true, ParagraphAlignment.LEFT);
+		table4.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table4.getRow(0).getCell(1), "€", true,
+				ParagraphAlignment.CENTER);
+		table4.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table4.getRow(0).getCell(2), "", true,
+				ParagraphAlignment.RIGHT);
+		table4.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
 		// ONERI CONCESSORI
-		addTextBoldBreak(parag.createRun(), "ONERI CONCESSORI:");
-		addTextBold(parag.createRun(), "Importo versato ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(), "Importo calcolato ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(), "Importo da versare a saldo ");
-		addTab(parag, 6);
-		addTextBoldBreak(parag.createRun(), "= €");
-		parag.createRun().addBreak();
+		XWPFTable table5 = document.createTable(1, 3);
+		table5.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table5.getRow(0).getCell(0), "ONERI CONCESSORI",
+				true, ParagraphAlignment.LEFT);
+		table5.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(7099));
+		addTableCellCenter(table5.getRow(0).getCell(1), "", false,
+				ParagraphAlignment.CENTER);
+		table5.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(400));
+		addTableCellCenter(table5.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.CENTER);
+		table5.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(2500));
+
+		XWPFTable table6 = document.createTable(1, 3);
+		table6.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table6.getRow(0).getCell(0), "Importo versato",
+				false, ParagraphAlignment.LEFT);
+		table6.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table6.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table6.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table6.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table6.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table7 = document.createTable(1, 3);
+		table7.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table7.getRow(0).getCell(0), "Importo calcolato",
+				false, ParagraphAlignment.LEFT);
+		table7.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table7.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table7.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table7.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table7.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table8 = document.createTable(1, 3);
+		table8.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table8.getRow(0).getCell(0),
+				"Importo da versare a saldo comprensivo degli interessi ",
+				true, ParagraphAlignment.LEFT);
+		table8.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table8.getRow(0).getCell(1), "€", true,
+				ParagraphAlignment.CENTER);
+		table8.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table8.getRow(0).getCell(2), "", true,
+				ParagraphAlignment.RIGHT);
+		table8.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
 		// DIRITTI DI SEGRETERIA
-		addTextBoldBreak(parag.createRun(), "DIRITTI DI SEGRETERIA:");
-		addTextBold(parag.createRun(), "Diritti di istruttoria ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(),
-				"Diritti rilascio permesso di costruire ");
-		addTab(parag, 5);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(),
-				"Diritti istruttoria pareri sui vincoli ");
-		addTab(parag, 5);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(), "Agibilità ");
-		addTab(parag, 8);
-		addTextBoldBreak(parag.createRun(), "= €");
-		addTextBold(parag.createRun(), "Importo da versare ");
-		addTab(parag, 7);
-		addTextBoldBreak(parag.createRun(), "= €");
-		parag.createRun().addBreak();
-		// TOTALE VERSAMENTI E RIEPILOGO
-		addTextBoldBreak(parag.createRun(),
-				"Totale da versare al comune di Palombara Sabina ");
+		XWPFTable table9 = document.createTable(1, 3);
+		table9.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table9.getRow(0).getCell(0),
+				"DIRITTI DI SEGRETERIA ", true, ParagraphAlignment.LEFT);
+		table9.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table9.getRow(0).getCell(1), "", false,
+				ParagraphAlignment.CENTER);
+		table9.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table9.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table9.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table10 = document.createTable(1, 3);
+		table10.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table10.getRow(0).getCell(0),
+				"Diritti di istruttoria ", false, ParagraphAlignment.LEFT);
+		table10.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table10.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table10.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table10.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table10.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table11 = document.createTable(1, 3);
+		table11.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table11.getRow(0).getCell(0),
+				"Diritti rilascio permesso di costruire ", false,
+				ParagraphAlignment.LEFT);
+		table11.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table11.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table11.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table11.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table11.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table12 = document.createTable(1, 3);
+		table12.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table12.getRow(0).getCell(0),
+				"Diritti istruttoria pareri sui vincoli ", false,
+				ParagraphAlignment.LEFT);
+		table12.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table12.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table12.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table12.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table12.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table13 = document.createTable(1, 3);
+		table13.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table13.getRow(0).getCell(0), "Agibilità ", false,
+				ParagraphAlignment.LEFT);
+		table13.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table13.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table13.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table13.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table13.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table14 = document.createTable(1, 3);
+		table14.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table14.getRow(0).getCell(0), "Importo da versare ",
+				false, ParagraphAlignment.LEFT);
+		table14.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table14.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table14.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table14.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table14.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table15 = document.createTable(1, 3);
+		table15.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table15.getRow(0).getCell(0),
+				"Totale diritti di segreteria ", true, ParagraphAlignment.LEFT);
+		table15.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table15.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table15.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table15.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table15.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table16 = document.createTable(1, 3);
+		table16.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(new BigInteger("1"));
+		addTableCellCenter(table16.getRow(0).getCell(0),
+				"Totale da versare al comune di Palombara Sabina ", true,
+				ParagraphAlignment.LEFT);
+		table16.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(5000));
+		addTableCellCenter(table16.getRow(0).getCell(1), "€", false,
+				ParagraphAlignment.CENTER);
+		table16.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(499));
+		addTableCellCenter(table16.getRow(0).getCell(2), "", false,
+				ParagraphAlignment.RIGHT);
+		table16.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+				.setW(BigInteger.valueOf(4500));
+
+		XWPFTable table17 = document.createTable(1, 1);
+		creatTotaleRiepilogoInfo(table17);
+
+		XWPFTable table18 = document.createTable(1, 3);
+		addTableCellCenter(table18.getRow(0).getCell(0),
+				"OBLAZIONE MINISTERIALE", true, ParagraphAlignment.LEFT);
+		addTableCellCenter(table18.getRow(0).getCell(1), "", true,
+				ParagraphAlignment.LEFT);
+		addTableCellCenter(table18.getRow(0).getCell(2), "", true,
+				ParagraphAlignment.LEFT);
+
+		XWPFTable table19 = document.createTable(1, 3);
+		addTableCellCenter(
+				table19.getRow(0).getCell(0),
+				"Importo da versare al Ministero LLPP a saldo comprensivo degli interessi su conto C/C255000 ",
+				true, ParagraphAlignment.LEFT);
+		addTableCellCenter(table19.getRow(0).getCell(1), "€", true,
+				ParagraphAlignment.CENTER);
+		addTableCellCenter(table19.getRow(0).getCell(2), "", true,
+				ParagraphAlignment.RIGHT);
+
+		createCircolareInfo(document);
+
+		// NOTE INFORMATIVE
+		XWPFParagraph p = document.createParagraph();
+		p.createRun().addBreak();
+		addTextBoldUnderlineBreak(
+				p.createRun(),
+				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.");
+	}
+
+	private void createCircolareInfo(XWPFDocument document) {
+		XWPFTable table = document.createTable(1, 1);
+		XWPFParagraph p = table.getRow(0).getCell(0).addParagraph();
 		addTextSimple(
+				p.createRun(),
+				"La circolare n. 1/DPF del 16.1.2004 del Ministero dell'Economia e delle Finanze ha stabilito che le somme dovute dovranno essere versate mediante il bollettino di conto corrente postale a tre sezioni (mod. CH8 ter) sul ");
+		addTextBold(p.createRun(),
+				"conto corrente postale n. 255000 intestato a Poste Italiane S.p.A.,");
+		addTextSimpleBreak(p.createRun(), " indicando:");
+		addTextSimple(p.createRun(), "•");
+		addTab(p, 1);
+		addTextSimpleBreak(p.createRun(), "l'importo;");
+
+		addTextSimple(p.createRun(), "•");
+		addTab(p, 1);
+		addTextSimpleBreak(p.createRun(),
+				"gli estremi identificativi e l'indirizzo del richiedente;");
+
+		addTextSimple(p.createRun(), "•");
+		addTab(p, 1);
+		addTextSimpleBreak(p.createRun(),
+				"nonché nello spazio riservato alla causale; ");
+
+		addTab(p, 2);
+		addTextSimpleBreak(p.createRun(),
+				"1) il comune dove è ubicato l'immobile;");
+		addTab(p, 2);
+		addTextSimpleBreak(
+				p.createRun(),
+				"2) il numero progressivo indicato nella domanda relativa al versamento: il richiedente dovrà ");
+		addTab(p, 2);
+		addTextSimpleBreak(
+				p.createRun(),
+				"infatti  numerare” con numeri progressivi le domande di sanatoria presentate allo stesso comune ");
+		addTab(p, 2);
+		addTextSimpleBreak(
+				p.createRun(),
+				"e riportare il numero nella causale del versamento per consentirne l'abbinamento;");
+		addTab(p, 2);
+		addTextSimpleBreak(p.createRun(),
+				"3)  il codice fiscale del richiedente.");
+		table.getRow(0).getCell(0).removeParagraph(0);
+		spanCellsAcrossRow(table, 0, 0, 3);
+	}
+
+	private void creatTotaleRiepilogoInfo(XWPFTable table17) {
+		XWPFParagraph parag = table17.getRow(0).getCell(0).addParagraph();
+		addTextSimpleBreak(
 				parag.createRun(),
 				"Il versamento va effettuato a favore del Comune di Palombara Sabina può essere effettuato con le seguenti modalità:");
 		parag.createRun().addBreak();
@@ -217,41 +550,19 @@ public class WordService {
 		addTextBold(parag.createRun(), "  IT 64 Z 07601 03200 001020723423 ");
 		addTextSimpleBreak(parag.createRun(),
 				"intestato a:  COMUNE DI PALOMBARA SABINA – ONERI CONCESS. IN SANATORIA");
-		document.createParagraph().createRun().addBreak();
 		addTextSimpleBreak(
-				document.createParagraph().createRun(),
-				"I versamenti delle somme dovute a saldo al cui causale dovrà riportare il numero di pratica e il numero di protocollo di cui al punto A della presente nota, dovranno essere effettuati entro e non oltre 60 gg. dal ricevimento della presente.");
-		addTextBold(
 				parag.createRun(),
-				"Importo da versare al Ministero LLPP a saldo comprensivo degli interessi su conto C/C255000 ");
-		addTextBoldBreak(parag.createRun(), "in €");
-		document.createParagraph().createRun().addBreak();
+				"I versamenti delle somme dovute a saldo al cui causale dovrà riportare il numero di pratica e il numero di protocollo di cui al punto A della presente nota, dovranno essere effettuati entro e non oltre 60 gg. dal ricevimento della presente.");
+		table17.getRow(0).getCell(0).removeParagraph(0);
+		spanCellsAcrossRow(table17, 0, 0, 3);
 
-		XWPFParagraph p = document.createParagraph();
-		addTextSimple(
-				p.createRun(),
-				"La circolare n. 1/DPF del 16.1.2004 del Ministero dell'Economia e delle Finanze ha stabilito che le somme dovute dovranno essere versate mediante il bollettino di conto corrente postale a tre sezioni (mod. CH8 ter) sul ");
-		addTextBold(p.createRun(),
-				"conto corrente postale n. 255000 intestato a Poste Italiane S.p.A.,");
-		addTextSimpleBreak(p.createRun(), " indicando:");
-		addTextSimpleBreak(p.createRun(), "• l'importo;");
-		addTextSimpleBreak(p.createRun(),
-				"• gli estremi identificativi e l'indirizzo del richiedente;");
-		addTextSimpleBreak(p.createRun(),
-				"• nonché nello spazio riservato alla causale: ");
-		addTextSimpleBreak(p.createRun(),
-				"		1) il comune dove è ubicato l'immobile;");
-		addTextSimpleBreak(
-				p.createRun(),
-				"		2) il numero progressivo indicato nella domanda relativa al versamento: il richiedente dovrà infatti  numerare” con numeri progressivi le domande di sanatoria presentate allo stesso comune e riportare il numero nella causale del versamento per consentirne l'abbinamento;");
-		addTextSimpleBreak(p.createRun(),
-				"		3)  il codice fiscale del richiedente.");
-		// NOTE INFORMATIVE
-		p.createRun().addBreak();
-		addTextBold(p.createRun(), "NOTA BENE: ");
-		addTextBold(
-				p.createRun(),
-				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.");
+	}
+
+	private void spanCellsAcrossRow(XWPFTable table, int rowNum, int colNum,
+			int span) {
+		XWPFTableCell cell = table.getRow(rowNum).getCell(colNum);
+		cell.getCTTc().addNewTcPr().addNewGridSpan()
+				.setVal(BigInteger.valueOf((long) span));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -311,13 +622,19 @@ public class WordService {
 		table2.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(9999));
 
-		XWPFTable table3 = document.createTable(1, 1);
+		XWPFTable table3 = document.createTable(2, 1);
 		addTableCellCenter(table3.getRow(0).getCell(0),
 				abusoDB.getDescrizione(), false, ParagraphAlignment.LEFT);
 		table3.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(9999));
+		addTableCellCenter(table3.getRow(1).getCell(0), "Dati Catastali",
+				false, ParagraphAlignment.LEFT);
 
-		addTextBold(document.createParagraph().createRun(), "Dati Catastali:");
+		spanCellsAcrossRow(table, 0, 0, 5);
+		spanCellsAcrossRow(table1, 0, 0, 5);
+		spanCellsAcrossRow(table2, 0, 0, 5);
+		spanCellsAcrossRow(table3, 0, 0, 5);
+		spanCellsAcrossRow(table3, 1, 0, 5);
 
 		XWPFTable tableHeader = createHeaderTableDatiCatastali(document);
 		for (DatiAlloggio datiAlloggio : alloggi) {
@@ -343,7 +660,7 @@ public class WordService {
 		if (!StringUtils.isEmptyOrWhitespaceOnly(abusoDB.getDestinazioneUso())) {
 			TipologiaDestinazioneUso s = destinazioneUsoHome.findById(Integer
 					.valueOf(abusoDB.getDestinazioneUso()));
-			testo1.concat(s.getDescrizioneTipologia());
+			testo1 = testo1.concat(s.getDescrizioneTipologia());
 		}
 		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(), testo1);
 		addTextSimple(paragraphDatiTecniciTable.createRun(),
@@ -439,14 +756,17 @@ public class WordService {
 
 	private XWPFParagraph addTableCellCenter(XWPFTableCell tableCell,
 			String testo, boolean bold, ParagraphAlignment alignment) {
+		// IBody body = tableCell.getBodyElements().get(0).getBody();
+		// XWPFParagraph parCell = new XWPFParagraph(CTP.Factory.newInstance(),
+		// body);
 		XWPFParagraph parCell = tableCell.addParagraph();
-		tableCell.setVerticalAlignment(XWPFVertAlign.CENTER);
+		// tableCell.setVerticalAlignment(XWPFVertAlign.CENTER);
 		parCell.setAlignment(alignment);
 		XWPFRun run = parCell.createRun();
 		run.setFontFamily("Times New Roman");
 		run.setText(testo);
 		run.setBold(bold);
-		tableCell.setParagraph(parCell);
+		// tableCell.setParagraph(parCell);
 		tableCell.removeParagraph(0);
 		return parCell;
 	}
@@ -486,9 +806,6 @@ public class WordService {
 
 		XWPFTable table = document.createTable(1, 6);
 
-		table.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("100"));
-
 		addTableCellCenter(table.getRow(0).getCell(0), "Numero interno", true,
 				ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -520,6 +837,8 @@ public class WordService {
 				ParagraphAlignment.CENTER);
 		table.getRow(0).getCell(5).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(1000));
+		table.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
+				.setVal(BigInteger.valueOf(300));
 	}
 
 	private void creaOggetto(XWPFParagraph paragraphggetto,
@@ -545,25 +864,27 @@ public class WordService {
 	private void createListaSoggetti(XWPFParagraph paragraph,
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
 			List<RelSoggettoAbuso> listaSoggetti) {
-		addTab(paragraph, 8);
+		addTab(paragraph, 7);
 		String testo1 = "Protocollo Numero " + praticaDB.getNumeroProtocollo()
 				+ " del " + praticaDB.getDataProtocollo();
 		addTextSimpleBreak(paragraph.createRun(), testo1);
 		paragraph.createRun().addBreak();
 		for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
-			addTab(paragraph, 8);
+			addTab(paragraph, 7);
 			addTextSimpleBreak(paragraph.createRun(),
-					"Cognome e Nome: " + relSoggettoAbuso.getCognome()
+					"COGOME E NOME: " + relSoggettoAbuso.getCognome()
 							+ relSoggettoAbuso.getNome());
-			addTab(paragraph, 8);
-			addTextSimpleBreak(paragraph.createRun(), "Indirizzo: "
+			addTab(paragraph, 7);
+			addTextSimpleBreak(paragraph.createRun(), "INDIRIZZO: "
 					+ relSoggettoAbuso.getIndirizzo());
-			addTab(paragraph, 8);
-			addTextSimpleBreak(paragraph.createRun(), "Cap: "
-					+ relSoggettoAbuso.getCap());
-			addTab(paragraph, 8);
-			addTextSimpleBreak(paragraph.createRun(), "Comune: "
-					+ relSoggettoAbuso.getComuneResidenza());
+			addTab(paragraph, 7);
+			addTextSimpleBreak(
+					paragraph.createRun(),
+					"PALOMBARA-SABINA (CRETONE) 00018, RM"
+							+ relSoggettoAbuso.getCap());
+			// addTab(paragraph, 7);
+			// addTextSimpleBreak(paragraph.createRun(), "Comune: "
+			// + relSoggettoAbuso.getComuneResidenza());
 			paragraph.createRun().addBreak();
 		}
 	}
@@ -573,7 +894,7 @@ public class WordService {
 				.getResourceAsStream("logoCondono.png");
 		try {
 			paragraph.createRun().addPicture(is, Document.PICTURE_TYPE_PNG,
-					"logoCondono.png", Units.toEMU(375), Units.toEMU(95));
+					"logoCondono.png", Units.toEMU(262), Units.toEMU(66));
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
