@@ -24,7 +24,7 @@ public class DatiPraticaService {
 	@Autowired
 	LeggiCondonoHome leggiCondonoHome;
 
-	public void saveDatiPratica(DatiPraticaPojo pojo) {
+	public Datipratica saveDatiPratica(DatiPraticaPojo pojo) {
 		Datipratica datipratica;
 		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIddatipratica()))
 			datipratica = datiPraticaHome.findById(BigDecimal.valueOf(Integer
@@ -42,6 +42,8 @@ public class DatiPraticaService {
 		datipratica.setNumeroProtocollo(pojo.getNumeroProtocollo());
 		datipratica.setIdUtente(BigDecimal.valueOf(Integer.parseInt(pojo
 				.getIdutente())));
+		datipratica.setOblazioneAuto(BigDecimal.valueOf(Integer.parseInt(pojo
+				.getAutodeterminata())));
 
 		Richiedente richiedente = new Richiedente();
 		if (datipratica.getRichiedente() != null)
@@ -71,7 +73,7 @@ public class DatiPraticaService {
 		datiPraticaHome.persist(datipratica);
 		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIddatipratica()))
 			pojo.setIddatipratica(datipratica.getIddatipratica().toString());
-
+		return datipratica;
 	}
 
 	public DatiPraticaPojo findById(String id) {
@@ -128,6 +130,7 @@ public class DatiPraticaService {
 				.getRichiedente().getStatoEsteroRes() : "");
 		target.setTelefono(source.getRichiedente() != null ? source
 				.getRichiedente().getTelefono() : "");
+		target.setAutodeterminata(String.valueOf(source.getOblazioneAuto()));
 		return target;
 	}
 

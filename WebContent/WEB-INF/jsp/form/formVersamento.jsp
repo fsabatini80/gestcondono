@@ -10,8 +10,8 @@
 	<table>
 		<tr>
 			<td>Codice Versamento:</td>
-			<td><form:input path="codiceVersamento" />
-				<form:hidden path="iddatipratica" /></td>
+			<td><form:input path="codiceVersamento" /> <form:hidden
+					path="iddatipratica" /></td>
 		</tr>
 		<tr>
 			<td>CC postale:</td>
@@ -24,6 +24,10 @@
 		<tr>
 			<td>Importo euro:</td>
 			<td><form:input path="importoEuro" /></td>
+		</tr>
+		<tr>
+			<td>Importo lire:</td>
+			<td><form:input path="importoLire" /></td>
 		</tr>
 		<tr>
 			<td>Causale:</td>
@@ -39,7 +43,7 @@
 		</tr>
 		<tr>
 			<td>Data protocollo:</td>
-			<td><form:input path="dataProtocollo" /></td>
+			<td><form:input path="dataProtocollo" id="datepicker1" /></td>
 		</tr>
 		<tr>
 			<td>Numero protocollo:</td>

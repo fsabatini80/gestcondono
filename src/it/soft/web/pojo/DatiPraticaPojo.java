@@ -33,6 +33,7 @@ public class DatiPraticaPojo implements Serializable {
 	private String statoEsteroNas;
 	private String comuneEsteroNas;
 	private String email;
+	private String autodeterminata;
 
 	public DatiPraticaPojo() {
 	}
@@ -251,6 +252,14 @@ public class DatiPraticaPojo implements Serializable {
 
 	public void setIdutente(String idutente) {
 		this.idutente = idutente;
+	}
+
+	public String getAutodeterminata() {
+		return autodeterminata;
+	}
+
+	public void setAutodeterminata(String autodeterminata) {
+		this.autodeterminata = autodeterminata;
 	}
 
 }

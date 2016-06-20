@@ -167,4 +167,33 @@ public class DatiPraticaHome {
 			throw re;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Datipratica> findBy(String numeroPratica,
+			String numeroProtocollo, String dataDomanda,
+			LeggiCondono leggeCondono) {
+		log.debug("getting Datipratica instance with id: " + leggeCondono);
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(Datipratica.class);
+			if (!StringUtils.isEmptyOrWhitespaceOnly(numeroPratica))
+				cr.add(Restrictions.eq("numeroPratica", numeroPratica));
+			if (!StringUtils.isEmptyOrWhitespaceOnly(numeroProtocollo))
+				cr.add(Restrictions.eq("numeroProtocollo", numeroProtocollo));
+			if (!StringUtils.isEmptyOrWhitespaceOnly(dataDomanda))
+				cr.add(Restrictions.eq("dataDomanda", dataDomanda));
+			if (leggeCondono != null && !"".equals(leggeCondono))
+				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
+
+			List<Datipratica> results = cr.list();
+			log.debug("get successful");
+			sess.close();
+			return results;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
 }

@@ -2,7 +2,6 @@ package it.soft.dao;
 
 import it.soft.domain.DatiVersamenti;
 import it.soft.domain.Datiabuso;
-import it.soft.domain.Datipratica;
 
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -124,13 +123,13 @@ public class DatiVersamentiHome {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DatiVersamenti> findAll(Datipratica idPratica) {
+	public List<DatiVersamenti> findAll(BigInteger idPratica) {
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
 			sess.beginTransaction();
 			Criteria cr = sess.createCriteria(DatiVersamenti.class);
-			cr.add(Restrictions.eq("datiPratica", idPratica));
+			cr.add(Restrictions.eq("iddatipratica", idPratica));
 			List<DatiVersamenti> results = cr.list();
 			return results;
 		} catch (RuntimeException re) {

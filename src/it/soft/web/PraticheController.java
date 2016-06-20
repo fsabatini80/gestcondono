@@ -36,6 +36,7 @@ import it.soft.web.pojo.DocumentiAbusoPojo;
 import it.soft.web.pojo.TipologiaDocumentoPojo;
 import it.soft.web.validator.DatiAbusoValidator;
 import it.soft.web.validator.DatiPraticaValidator;
+import it.soft.web.validator.TerreniValidator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -83,6 +84,8 @@ public class PraticheController extends BaseController {
 	DatiPraticaValidator validatorPratica;
 	@Autowired
 	DatiAbusoValidator datiAbusoValidator;
+	@Autowired
+	TerreniValidator terreniValidator;
 
 	@Autowired
 	DatiPraticaService datiPraticaService;
@@ -151,8 +154,8 @@ public class PraticheController extends BaseController {
 			String name = user.getUsername();
 			Utenti utenti = utentiHome.findByUser(name);
 			pojo.setIdutente(String.valueOf(utenti.getIdUtenti()));
-			datiPraticaService.saveDatiPratica(pojo);
-			view = view.concat(pojo.getIddatipratica());
+			Datipratica datipratica = datiPraticaService.saveDatiPratica(pojo);
+			view = view.concat(String.valueOf(datipratica.getIddatipratica()));
 		}
 		return new ModelAndView(view, model);
 	}
@@ -329,7 +332,7 @@ public class PraticheController extends BaseController {
 	public ModelAndView modificaSoggetto(ModelMap model,
 			@RequestParam(value = "idsoggetto") String id) throws Exception {
 		String view = "form/formSoggetto";
-		//this.abusoPojo = datiAbusoService.findById(id);
+		// this.abusoPojo = datiAbusoService.findById(id);
 		initSoggetti(model);
 		RelSoggettoAbuso soggettoNew = datiAbusoService.findSoggettoById(id);
 		soggettoNew.setIdAbuso(BigInteger.valueOf(Integer
@@ -420,11 +423,14 @@ public class PraticheController extends BaseController {
 	}
 
 	@RequestMapping(value = "/salvaTerreno", method = RequestMethod.POST)
-	public ModelAndView salvaTerreno(ModelMap model, DatiTerreni datiTerreni)
-			throws Exception {
+	public ModelAndView salvaTerreno(ModelMap model, DatiTerreni datiTerreni,
+			Errors errors) throws Exception {
 		String view = "redirect:terreni.htm?idalloggio="
 				.concat(this.idDatiAlloggio);
-		datiAbusoService.saveTerreno(datiTerreni);
+		terreniValidator.validate(datiTerreni, errors);
+		if (!errors.hasFieldErrors()) {
+			datiAbusoService.saveTerreno(datiTerreni);
+		}
 		return new ModelAndView(view, model);
 	}
 
@@ -432,7 +438,7 @@ public class PraticheController extends BaseController {
 	public ModelAndView removeTerreno(ModelMap model, DatiTerreni datiTerreni,
 			@RequestParam(value = "idterreno") String id) throws Exception {
 		String view = "redirect:terreni.htm?idalloggio=".concat(String
-				.valueOf(datiTerreni.getIdAlloggio()));
+				.valueOf(this.idDatiAlloggio));
 		datiAbusoService.removeTerreno(id);
 		return new ModelAndView(view, model);
 	}
