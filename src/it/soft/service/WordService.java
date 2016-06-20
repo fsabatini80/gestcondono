@@ -492,7 +492,7 @@ public class WordService {
 		p.createRun().addBreak();
 		addTextBoldUnderlineBreak(
 				p.createRun(),
-				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.");
+				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.", false);
 	}
 
 	private void createCircolareInfo(XWPFDocument document) {
@@ -537,7 +537,7 @@ public class WordService {
 				p.createRun(),
 				"e riportare il numero nella causale del versamento per consentirne l'abbinamento;");
 		addTab(p, 2);
-		addTextSimpleBreak(p.createRun(),
+		addTextSimple(p.createRun(),
 				"3)  il codice fiscale del richiedente.");
 		table.getRow(0).getCell(0).removeParagraph(0);
 		spanCellsAcrossRow(table, 0, 0, 3);
@@ -562,7 +562,8 @@ public class WordService {
 		addTextSimple(parag.createRun(),
 				" della presente nota, dovranno essere effettuati ");
 		addTextBoldUnderlineBreak(parag.createRun(),
-				"entro e non oltre 60 gg. dal ricevimento della presente.");
+				"entro e non oltre 60 gg. dal ricevimento della presente.",
+				false);
 		table17.getRow(0).getCell(0).removeParagraph(0);
 		spanCellsAcrossRow(table17, 0, 0, 3);
 
@@ -970,20 +971,22 @@ public class WordService {
 		// paragraphInfoDoc.createRun().addBreak();
 		addTextBoldUnderlineBreak(
 				paragraphInfoDoc.createRun(),
-				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'amministrazione.");
+				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'amministrazione.", false);
 
 	}
 
-	private void addTextBoldUnderlineBreak(XWPFRun run, String testo) {
+	private void addTextBoldUnderlineBreak(XWPFRun run, String testo,
+			boolean isbreak) {
 
 		run.setFontFamily("Times New Roman");
 		run.setUnderline(UnderlinePatterns.SINGLE);
 		run.setText(testo);
 		run.setBold(true);
-		run.addBreak();
+		if (isbreak)
+			run.addBreak();
 
 	}
-	
+
 	private void addTextUnderline(XWPFRun run, String testo) {
 		run.setFontFamily("Times New Roman");
 		run.setUnderline(UnderlinePatterns.SINGLE);
