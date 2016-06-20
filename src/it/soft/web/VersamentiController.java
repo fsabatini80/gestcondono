@@ -3,10 +3,9 @@ package it.soft.web;
 import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DatiVersamentiHome;
 import it.soft.domain.DatiVersamenti;
-import it.soft.domain.Datipratica;
+import it.soft.service.VersamentiService;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -27,6 +26,9 @@ public class VersamentiController extends BaseController {
 
 	@Autowired
 	DatiPraticaHome datiPraticaHome;
+	
+	@Autowired
+	VersamentiService versamentiService;
 
 	DatiVersamentiPojo datiVersamentiPojo;
 
@@ -39,8 +41,6 @@ public class VersamentiController extends BaseController {
 
 		String view = "table/versamentiList";
 		// ricerca versamenti
-		Datipratica source = datiPraticaHome.findById(BigDecimal
-				.valueOf(Integer.parseInt(id)));
 		List<DatiVersamenti> list = datiVersamentiHome.findAll(BigInteger
 				.valueOf(Integer.valueOf(id)));
 		this.idPratica = id;
@@ -68,6 +68,8 @@ public class VersamentiController extends BaseController {
 		if (errors.hasFieldErrors()) {
 			view = "form/formVersamento";
 		} else {
+			pojo.setIddatipratica(this.idPratica);
+			versamentiService.persist(pojo);
 			view = view.concat(pojo.getIddatipratica());
 		}
 		return new ModelAndView(view, model);
