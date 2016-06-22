@@ -55,6 +55,13 @@ public class DatiPraticaValidator implements Validator {
 			validaDataDomanda(arg1, pojo);
 		}
 
+		verificaPraitcheDuplicate(arg1, pojo);
+		
+		
+
+	}
+
+	private void verificaPraitcheDuplicate(Errors arg1, DatiPraticaPojo pojo) {
 		List<Datipratica> praticheList = datiPraticaHome.findBy(pojo
 				.getNumeroPratica(), pojo.getNumeroProtocollo(), pojo
 				.getDataDomanda(), leggiCondonoHome.findById(Integer
@@ -74,7 +81,6 @@ public class DatiPraticaValidator implements Validator {
 					arg1.rejectValue("leggeCondono", "datipratica.duplicati");
 			}
 		}
-
 	}
 
 	private void validaDataDomanda(Errors arg1, DatiPraticaPojo pojo) {
