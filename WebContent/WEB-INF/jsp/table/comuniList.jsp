@@ -7,7 +7,7 @@
 
 <form:form action="removeComune.htm" commandName="comuni"
 	id="comuneDelete">
-	<table id="example1" class="display" cellspacing="0" width="100%">
+	<table id="example1" class="display" >
 		<thead>
 			<tr>
 				<th>Id</th>

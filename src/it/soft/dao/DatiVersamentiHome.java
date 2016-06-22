@@ -1,6 +1,6 @@
 package it.soft.dao;
 
-import it.soft.domain.DatiVersamenti;
+import it.soft.domain.DatiVersamento;
 import it.soft.domain.Datiabuso;
 
 import java.math.BigInteger;
@@ -16,9 +16,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
- * Home object for domain model class DatiVersamenti.
+ * Home object for domain model class DatiVersamento.
  * 
- * @see .DatiVersamenti
+ * @see .DatiVersamento
  * @author Hibernate Tools
  */
 public class DatiVersamentiHome {
@@ -32,13 +32,13 @@ public class DatiVersamentiHome {
 				sessionFactory);
 	}
 
-	public void persist(DatiVersamenti transientInstance) {
-		log.debug("persisting DatiVersamenti instance");
+	public void persist(DatiVersamento transientInstance) {
+		log.debug("persisting DatiVersamento instance");
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
 			sess.beginTransaction();
-			if (transientInstance.getIddati_versamento() != null)
+			if (transientInstance.getIddatiVersamento() != null)
 				sess.merge(transientInstance);
 			else
 				sess.saveOrUpdate(transientInstance);
@@ -50,8 +50,8 @@ public class DatiVersamentiHome {
 		}
 	}
 
-	public void remove(DatiVersamenti persistentInstance) {
-		log.debug("removing DatiVersamenti instance");
+	public void remove(DatiVersamento persistentInstance) {
+		log.debug("removing DatiVersamento instance");
 		try {
 			org.hibernate.Session sess2 = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
@@ -65,13 +65,14 @@ public class DatiVersamentiHome {
 		}
 	}
 
-	public DatiVersamenti merge(DatiVersamenti detachedInstance) {
-		log.debug("merging DatiVersamenti instance");
+	public DatiVersamento merge(DatiVersamento detachedInstance) {
+		log.debug("merging DatiVersamento instance");
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
 			sess.beginTransaction();
-			DatiVersamenti result = (DatiVersamenti) sess.merge(detachedInstance);
+			DatiVersamento result = (DatiVersamento) sess
+					.merge(detachedInstance);
 			sess.getTransaction().commit();
 			log.debug("merge successful");
 			return result;
@@ -82,28 +83,28 @@ public class DatiVersamentiHome {
 	}
 
 	@SuppressWarnings("unchecked")
-	public DatiVersamenti findById(BigInteger id) {
-		log.debug("getting DatiVersamenti instance with id: " + id);
+	public DatiVersamento findById(BigInteger id) {
+		log.debug("getting DatiVersamento instance with id: " + id);
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
 			sess.beginTransaction();
-			DatiVersamenti datiVersamenti = new DatiVersamenti();
-			datiVersamenti.setIddati_versamento(id);
-			Criteria cr = sess.createCriteria(DatiVersamenti.class);
-			cr.add(Restrictions.eq("iddati_versamento", id));
-			List<DatiVersamenti> results = cr.list();
+			DatiVersamento datiVersamento = new DatiVersamento();
+			datiVersamento.setIddatiVersamento(id);
+			Criteria cr = sess.createCriteria(DatiVersamento.class);
+			cr.add(Restrictions.eq("iddatiVersamento", id));
+			List<DatiVersamento> results = cr.list();
 			if (results != null && !results.isEmpty()) {
-				for (Iterator<DatiVersamenti> iterator = results.iterator(); iterator
+				for (Iterator<DatiVersamento> iterator = results.iterator(); iterator
 						.hasNext();) {
-					DatiVersamenti datiVersamenti2 = iterator.next();
-					sess.refresh(datiVersamenti2);
-					BeanUtils.copyProperties(datiVersamenti2, datiVersamenti);
+					DatiVersamento datiVersamento2 = iterator.next();
+					sess.refresh(datiVersamento2);
+					BeanUtils.copyProperties(datiVersamento2, datiVersamento);
 				}
 			}
 			log.debug("get successful");
 			sess.close();
-			return datiVersamenti;
+			return datiVersamento;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
 			throw re;
@@ -111,11 +112,11 @@ public class DatiVersamentiHome {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DatiVersamenti> findAll() {
-		log.debug("getting DatiVersamenti instance");
+	public List<DatiVersamento> findAll() {
+		log.debug("getting DatiVersamento instance");
 		try {
-			return (List<DatiVersamenti>) hibernateTemplate.findByExample(
-					"it.soft.domain.DatiVersamenti", new DatiVersamenti());
+			return (List<DatiVersamento>) hibernateTemplate.findByExample(
+					"it.soft.domain.DatiVersamento", new DatiVersamento());
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
 			throw re;
@@ -123,14 +124,14 @@ public class DatiVersamentiHome {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DatiVersamenti> findAll(BigInteger idPratica) {
+	public List<DatiVersamento> findAll(BigInteger idPratica) {
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
 			sess.beginTransaction();
-			Criteria cr = sess.createCriteria(DatiVersamenti.class);
+			Criteria cr = sess.createCriteria(DatiVersamento.class);
 			cr.add(Restrictions.eq("iddatipratica", idPratica));
-			List<DatiVersamenti> results = cr.list();
+			List<DatiVersamento> results = cr.list();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("count failed", re);
@@ -139,14 +140,14 @@ public class DatiVersamentiHome {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DatiVersamenti> findByIdAbuso(Datiabuso id) {
+	public List<DatiVersamento> findByIdAbuso(Datiabuso id) {
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
 			sess.beginTransaction();
-			Criteria cr = sess.createCriteria(DatiVersamenti.class);
+			Criteria cr = sess.createCriteria(DatiVersamento.class);
 			cr.add(Restrictions.eq("idAbuso", id));
-			List<DatiVersamenti> results = cr.list();
+			List<DatiVersamento> results = cr.list();
 			return results;
 		} catch (RuntimeException re) {
 			log.error("count failed", re);

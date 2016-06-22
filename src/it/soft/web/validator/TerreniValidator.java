@@ -18,12 +18,10 @@ public class TerreniValidator implements Validator {
 	@Autowired
 	DatiTerreniHome datiTerreniHome;
 
-	@Override
 	public boolean supports(Class<?> arg0) {
 		return DatiTerreni.class.equals(arg0);
 	}
 
-	@Override
 	public void validate(Object arg0, Errors arg1) {
 		DatiTerreni pojo = (DatiTerreni) arg0;
 

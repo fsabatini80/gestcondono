@@ -1,7 +1,7 @@
 package it.soft.service;
 
 import it.soft.dao.DatiVersamentiHome;
-import it.soft.domain.DatiVersamenti;
+import it.soft.domain.DatiVersamento;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
 import java.math.BigInteger;
@@ -16,7 +16,7 @@ public class VersamentiService {
 	DatiVersamentiHome datiVersamentiHome;
 
 	public void persist(DatiVersamentiPojo pojo) {
-		DatiVersamenti versamenti = new DatiVersamenti();
+		DatiVersamento versamenti = new DatiVersamento();
 
 		versamenti.setCausale(pojo.getCausale());
 		versamenti.setCcPostale(pojo.getCcPostale());

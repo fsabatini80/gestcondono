@@ -43,4 +43,8 @@ public class Converter {
 			throw new CustomException("99", e.getMessage());
 		}
 	}
+	
+	public static Double convertLireEuro(Double lire){
+		return lire / 1927.36;
+	}
 }

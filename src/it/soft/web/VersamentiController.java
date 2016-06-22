@@ -2,7 +2,7 @@ package it.soft.web;
 
 import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DatiVersamentiHome;
-import it.soft.domain.DatiVersamenti;
+import it.soft.domain.DatiVersamento;
 import it.soft.service.VersamentiService;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
@@ -41,7 +41,7 @@ public class VersamentiController extends BaseController {
 
 		String view = "table/versamentiList";
 		// ricerca versamenti
-		List<DatiVersamenti> list = datiVersamentiHome.findAll(BigInteger
+		List<DatiVersamento> list = datiVersamentiHome.findAll(BigInteger
 				.valueOf(Integer.valueOf(id)));
 		this.idPratica = id;
 		model.addAttribute("versamenti", list);
