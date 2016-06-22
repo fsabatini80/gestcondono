@@ -1,42 +1,47 @@
 package it.soft.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the tab_calc_oblazione database table.
  * 
  */
 @Entity
-@Table(name="tab_calc_oblazione")
+@Table(name = "tab_calc_oblazione")
 public class TabCalcOblazione implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="idtab_calc_oblazione", unique=true, nullable=false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "idtab_calc_oblazione", unique = true, nullable = false)
 	private int idtabCalcOblazione;
 
-	@Column(name="data_fine", length=10)
-	private String dataFine;
+	@Column(name = "data_fine", length = 10)
+	private Double dataFine;
 
-	@Column(name="data_inizio", length=10)
-	private String dataInizio;
+	@Column(name = "data_inizio", length = 10)
+	private Double dataInizio;
 
-	@Column(name="destinazione_uso")
+	@Column(name = "destinazione_uso")
 	private int destinazioneUso;
 
-	@Column(name="importo_oblazione", length=45)
+	@Column(name = "importo_oblazione", length = 45)
 	private String importoOblazione;
 
-	@Column(name="legge_condono")
+	@Column(name = "legge_condono")
 	private int leggeCondono;
 
 	private int tipoabuso;
 
-    public TabCalcOblazione() {
-    }
+	public TabCalcOblazione() {
+	}
 
 	public int getIdtabCalcOblazione() {
 		return this.idtabCalcOblazione;
@@ -46,19 +51,19 @@ public class TabCalcOblazione implements Serializable {
 		this.idtabCalcOblazione = idtabCalcOblazione;
 	}
 
-	public String getDataFine() {
+	public Double getDataFine() {
 		return this.dataFine;
 	}
 
-	public void setDataFine(String dataFine) {
+	public void setDataFine(Double dataFine) {
 		this.dataFine = dataFine;
 	}
 
-	public String getDataInizio() {
+	public Double getDataInizio() {
 		return this.dataInizio;
 	}
 
-	public void setDataInizio(String dataInizio) {
+	public void setDataInizio(Double dataInizio) {
 		this.dataInizio = dataInizio;
 	}
 
