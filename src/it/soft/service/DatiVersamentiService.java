@@ -4,6 +4,7 @@ import it.soft.dao.DatiVersamentiHome;
 import it.soft.domain.DatiVersamento;
 import it.soft.domain.TabCalcOblazione;
 import it.soft.util.Converter;
+import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
@@ -21,6 +22,9 @@ public class DatiVersamentiService {
 
 	@Autowired
 	DatiPraticaService datiPraticaService;
+
+	@Autowired
+	DatiAbusoService datiAbusoService;
 
 	public void persist(DatiVersamentiPojo pojo) {
 		DatiVersamento versamenti = new DatiVersamento();
@@ -70,7 +74,7 @@ public class DatiVersamentiService {
 	}
 
 	public Double getImportoCalcolatoOblazione(Integer tipoAbuso,
-			Double dataAbuso, String leggeCondono) {
+			Double dataAbuso, String leggeCondono, String idAbuso) {
 
 		// TODO
 		List<TabCalcOblazione> tabOblList = datiVersamentiHome.findOblazione(
@@ -87,11 +91,20 @@ public class DatiVersamentiService {
 					.getImportoOblazione()));
 			System.out.println(importoObla.doubleValue());
 		}
+
+		DatiAbusoPojo abusoDB = datiAbusoService.findById(idAbuso);
+		if (abusoDB != null && abusoDB.getSuperficeUtile() != null
+				&& !"".equals(abusoDB.getSuperficeUtile().trim())) {
+			String superUtile = abusoDB.getSuperficeUtile();
+
+			Double supUtilDouble = new Double(superUtile);
+			importoObla = Converter.round(importoObla * supUtilDouble, 2);
+		}
+
 		/**
 		 * Interessi di mora
 		 * 
 		 */
 		return importoObla;
 	}
-
 }
