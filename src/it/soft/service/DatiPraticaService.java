@@ -42,7 +42,7 @@ public class DatiPraticaService {
 		datipratica.setNumeroProtocollo(pojo.getNumeroProtocollo());
 		datipratica.setIdUtente(BigDecimal.valueOf(Integer.parseInt(pojo
 				.getIdutente())));
-		datipratica.setOblazioneAuto(BigDecimal.valueOf(Integer.parseInt(pojo
+		datipratica.setOblazioneAuto(BigDecimal.valueOf(new Double(pojo
 				.getAutodeterminata())));
 
 		Richiedente richiedente = new Richiedente();

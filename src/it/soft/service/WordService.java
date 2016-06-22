@@ -13,6 +13,7 @@ import it.soft.domain.DatiTerreni;
 import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.RelSoggettoAbuso;
 import it.soft.domain.TipologiaDestinazioneUso;
+import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
 
@@ -69,6 +70,8 @@ public class WordService {
 	EpocaAbusoHome epocaAbusoHome;
 	@Autowired
 	LeggiCondonoHome leggiCondonoHome;
+	@Autowired
+	DatiVersamentiService datiVersamentiService;
 
 	public XWPFDocument createDoc(XWPFDocument document,
 			DatiPraticaService praticaService, DatiAbusoService abusoService,
@@ -85,9 +88,20 @@ public class WordService {
 		List<DocumentiAbuso> daocumentiDB = abusoService
 				.findAllDocById(idabuso);
 
+		Double importoOblazione = datiVersamentiService
+				.getAutodeterminaOblazione(idpratica);
+		Double importoCalcolato = datiVersamentiService
+				.getImportoCalcolatoOblazione(Integer.valueOf(abusoDB
+						.getTipologiaAbuso()), Converter
+						.convertDateToDouble(praticaDB.getDataDomanda()),
+						praticaDB.getLeggeCondono());
+		Double importoVersato = datiVersamentiService
+				.getImportoVersatoOblazione(idpratica);
+
 		createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 		createPage2(document, daocumentiDB);
-		createPage3(document);
+		createPage3(document, importoOblazione, importoCalcolato,
+				importoVersato);
 		createPage4(document);
 
 		createFooter(document, praticaDB, abusoDB);
@@ -176,7 +190,8 @@ public class WordService {
 
 	}
 
-	public void createPage3(XWPFDocument document) {
+	public void createPage3(XWPFDocument document, Double importoOblazione,
+			Double importoCalcolato, Double importoVersato) {
 
 		document.createParagraph().createRun().addBreak(BreakType.PAGE);
 		addTextBoldBreakCenter(document.createParagraph().createRun(),
@@ -184,8 +199,6 @@ public class WordService {
 
 		// OBLAZIONE
 		XWPFTable table = document.createTable(1, 3);
-		table.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table.getRow(0).getCell(0), "OBLAZIONE ", true,
 				ParagraphAlignment.LEFT);
 		table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -200,8 +213,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(2500));
 
 		XWPFTable table1 = document.createTable(1, 3);
-		table1.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table1.getRow(0).getCell(0), "Autodetermina", false,
 				ParagraphAlignment.LEFT);
 		table1.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -210,14 +221,12 @@ public class WordService {
 				ParagraphAlignment.CENTER);
 		table1.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(499));
-		addTableCellCenter(table1.getRow(0).getCell(2), "", false,
-				ParagraphAlignment.RIGHT);
+		addTableCellCenter(table1.getRow(0).getCell(2),
+				importoOblazione.toString(), false, ParagraphAlignment.RIGHT);
 		table1.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table2 = document.createTable(1, 3);
-		table2.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table2.getRow(0).getCell(0), "Importo versato",
 				false, ParagraphAlignment.LEFT);
 		table2.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -226,14 +235,12 @@ public class WordService {
 				ParagraphAlignment.CENTER);
 		table2.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(499));
-		addTableCellCenter(table2.getRow(0).getCell(2), "", false,
-				ParagraphAlignment.RIGHT);
+		addTableCellCenter(table2.getRow(0).getCell(2),
+				importoVersato.toString(), false, ParagraphAlignment.RIGHT);
 		table2.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table3 = document.createTable(1, 3);
-		table3.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table3.getRow(0).getCell(0), "Importo calcolato",
 				false, ParagraphAlignment.LEFT);
 		table3.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -242,14 +249,12 @@ public class WordService {
 				ParagraphAlignment.CENTER);
 		table3.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(499));
-		addTableCellCenter(table3.getRow(0).getCell(2), "", false,
-				ParagraphAlignment.RIGHT);
+		addTableCellCenter(table3.getRow(0).getCell(2),
+				importoCalcolato.toString(), false, ParagraphAlignment.RIGHT);
 		table3.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table4 = document.createTable(1, 3);
-		table4.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(
 				table4.getRow(0).getCell(0),
 				"Importo da versare a saldo comprensivo degli interessi dovuti ",
@@ -267,8 +272,6 @@ public class WordService {
 
 		// ONERI CONCESSORI
 		XWPFTable table5 = document.createTable(1, 3);
-		table5.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table5.getRow(0).getCell(0), "ONERI CONCESSORI",
 				true, ParagraphAlignment.LEFT);
 		table5.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -283,8 +286,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(2500));
 
 		XWPFTable table6 = document.createTable(1, 3);
-		table6.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table6.getRow(0).getCell(0), "Importo versato",
 				false, ParagraphAlignment.LEFT);
 		table6.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -299,8 +300,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table7 = document.createTable(1, 3);
-		table7.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table7.getRow(0).getCell(0), "Importo calcolato",
 				false, ParagraphAlignment.LEFT);
 		table7.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -315,8 +314,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table8 = document.createTable(1, 3);
-		table8.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table8.getRow(0).getCell(0),
 				"Importo da versare a saldo comprensivo degli interessi ",
 				true, ParagraphAlignment.LEFT);
@@ -333,8 +330,6 @@ public class WordService {
 
 		// DIRITTI DI SEGRETERIA
 		XWPFTable table9 = document.createTable(1, 3);
-		table9.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table9.getRow(0).getCell(0),
 				"DIRITTI DI SEGRETERIA ", true, ParagraphAlignment.LEFT);
 		table9.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -349,8 +344,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table10 = document.createTable(1, 3);
-		table10.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table10.getRow(0).getCell(0),
 				"Diritti di istruttoria ", false, ParagraphAlignment.LEFT);
 		table10.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -365,8 +358,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table11 = document.createTable(1, 3);
-		table11.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table11.getRow(0).getCell(0),
 				"Diritti rilascio permesso di costruire ", false,
 				ParagraphAlignment.LEFT);
@@ -382,8 +373,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table12 = document.createTable(1, 3);
-		table12.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table12.getRow(0).getCell(0),
 				"Diritti istruttoria pareri sui vincoli ", false,
 				ParagraphAlignment.LEFT);
@@ -399,8 +388,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table13 = document.createTable(1, 3);
-		table13.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table13.getRow(0).getCell(0), "Agibilità ", false,
 				ParagraphAlignment.LEFT);
 		table13.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -415,8 +402,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table14 = document.createTable(1, 3);
-		table14.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table14.getRow(0).getCell(0), "Importo da versare ",
 				false, ParagraphAlignment.LEFT);
 		table14.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -431,8 +416,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table15 = document.createTable(1, 3);
-		table15.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table15.getRow(0).getCell(0),
 				"Totale diritti di segreteria ", true, ParagraphAlignment.LEFT);
 		table15.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
@@ -447,8 +430,6 @@ public class WordService {
 				.setW(BigInteger.valueOf(4500));
 
 		XWPFTable table16 = document.createTable(1, 3);
-		table16.getRow(0).getCtRow().addNewTrPr().addNewTrHeight()
-				.setVal(new BigInteger("1"));
 		addTableCellCenter(table16.getRow(0).getCell(0),
 				"Totale da versare al comune di Palombara Sabina ", true,
 				ParagraphAlignment.LEFT);
@@ -492,7 +473,8 @@ public class WordService {
 		p.createRun().addBreak();
 		addTextBoldUnderlineBreak(
 				p.createRun(),
-				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.", false);
+				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione / demolizione dell'abuso con costi a carico del richiedente ovvero con l'acquisizione del bene al patrimonio dell'amministrazione.",
+				false);
 	}
 
 	private void createCircolareInfo(XWPFDocument document) {
@@ -537,8 +519,7 @@ public class WordService {
 				p.createRun(),
 				"e riportare il numero nella causale del versamento per consentirne l'abbinamento;");
 		addTab(p, 2);
-		addTextSimple(p.createRun(),
-				"3)  il codice fiscale del richiedente.");
+		addTextSimple(p.createRun(), "3)  il codice fiscale del richiedente.");
 		table.getRow(0).getCell(0).removeParagraph(0);
 		spanCellsAcrossRow(table, 0, 0, 3);
 	}
@@ -636,8 +617,8 @@ public class WordService {
 				abusoDB.getDescrizione(), false, ParagraphAlignment.LEFT);
 		table3.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(9999));
-		addTableCellCenter(table3.getRow(1).getCell(0), "Dati Catastali",
-				false, ParagraphAlignment.LEFT);
+		addTableCellCenter(table3.getRow(1).getCell(0), "Dati Catastali", true,
+				ParagraphAlignment.LEFT);
 
 		spanCellsAcrossRow(table, 0, 0, 5);
 		spanCellsAcrossRow(table1, 0, 0, 5);
@@ -679,15 +660,14 @@ public class WordService {
 		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
 				abusoDB.getSuperficeUtile());
 		addTextSimple(paragraphDatiTecniciTable.createRun(),
-				"Non resid./accessori Mq: " + abusoDB.getSuperficeUtile());
+				"Non resid./accessori Mq: ");
 		paragraphDatiTecniciTable.createRun().addTab();
 		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
-				abusoDB.getSuperficeUtile());
-		addTextSimple(paragraphDatiTecniciTable.createRun(), "Mc VxP: "
-				+ abusoDB.getSuperficeTotale());
+				abusoDB.getNonresidenziale());
+		addTextSimple(paragraphDatiTecniciTable.createRun(), "Mc VxP: ");
 		addTab(paragraphDatiTecniciTable, 3);
 		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
-				abusoDB.getSuperficeUtile());
+				abusoDB.getVolumeTotale());
 		addTextSimple(paragraphDatiTecniciTable.createRun(), "Tipologia: ");
 		addTab(paragraphDatiTecniciTable, 3);
 		addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
@@ -971,7 +951,8 @@ public class WordService {
 		// paragraphInfoDoc.createRun().addBreak();
 		addTextBoldUnderlineBreak(
 				paragraphInfoDoc.createRun(),
-				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'amministrazione.", false);
+				"In difetto si procederà a norma di legge con un provvedimento di diniego della concessione in sanatoria e conseguente rimozione/demolizione dell'abuso con costi a carico del richiedente ovvero dell'acquisizione del bene al patrimonio dell'amministrazione.",
+				false);
 
 	}
 
