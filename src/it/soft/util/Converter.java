@@ -2,6 +2,7 @@ package it.soft.util;
 
 import it.soft.exception.CustomException;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,8 +36,7 @@ public class Converter {
 	}
 
 	public static Date convertData(String dataDomanda) {
-		dataDomanda = dataDomanda.replaceAll("-", "/");
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 		try {
 			return dateFormat.parse(dataDomanda);
 		} catch (ParseException e) {
@@ -44,8 +44,21 @@ public class Converter {
 		}
 	}
 
+	public static Double convertDateToDouble(String data) {
+
+		try {
+			DateFormat originalFormat = new SimpleDateFormat("dd-MM-yyyy");
+			DateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
+			Date date = originalFormat.parse(data);
+			String formattedDate = targetFormat.format(date);
+			return new Double(formattedDate);
+		} catch (Exception e) {
+			throw new CustomException("99", e.getMessage());
+		}
+	}
+
 	public static Double convertLireEuro(Double lire) {
-		return round(lire / 1927.36, 2);
+		return round(lire / 1936.27, 2);
 	}
 
 	public static double round(double value, int places) {
@@ -57,4 +70,20 @@ public class Converter {
 		long tmp = Math.round(value);
 		return (double) tmp / factor;
 	}
+
+	public static Boolean checkDoubleFormat(String doubleValueString) {
+		String[] s = doubleValueString.split("\\.");
+		if (s.length != 2)
+			return false;
+
+		try {
+			new Integer(s[0]);
+			new Integer(s[1]);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+
+		return true;
+	}
+
 }
