@@ -3,7 +3,7 @@ package it.soft.web;
 import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DatiVersamentiHome;
 import it.soft.domain.DatiVersamento;
-import it.soft.service.VersamentiService;
+import it.soft.service.DatiVersamentiService;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
 import java.math.BigInteger;
@@ -28,7 +28,7 @@ public class VersamentiController extends BaseController {
 	DatiPraticaHome datiPraticaHome;
 	
 	@Autowired
-	VersamentiService versamentiService;
+	DatiVersamentiService versamentiService;
 
 	DatiVersamentiPojo datiVersamentiPojo;
 
