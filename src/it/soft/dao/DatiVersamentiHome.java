@@ -2,6 +2,7 @@ package it.soft.dao;
 
 import it.soft.domain.DatiVersamento;
 import it.soft.domain.Datiabuso;
+import it.soft.domain.TabCalcOblazione;
 
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -102,11 +103,11 @@ public class DatiVersamentiHome {
 					BeanUtils.copyProperties(datiVersamento2, datiVersamento);
 				}
 			}
-			log.debug("get successful");
+			log.debug("findById successful");
 			sess.close();
 			return datiVersamento;
 		} catch (RuntimeException re) {
-			log.error("get failed", re);
+			log.error("findById failed", re);
 			throw re;
 		}
 	}
@@ -118,7 +119,7 @@ public class DatiVersamentiHome {
 			return (List<DatiVersamento>) hibernateTemplate.findByExample(
 					"it.soft.domain.DatiVersamento", new DatiVersamento());
 		} catch (RuntimeException re) {
-			log.error("get failed", re);
+			log.error("findAll failed", re);
 			throw re;
 		}
 	}
@@ -134,7 +135,7 @@ public class DatiVersamentiHome {
 			List<DatiVersamento> results = cr.list();
 			return results;
 		} catch (RuntimeException re) {
-			log.error("count failed", re);
+			log.error("findAll(BigInteger idPratica)  failed", re);
 			throw re;
 		}
 	}
@@ -150,7 +151,28 @@ public class DatiVersamentiHome {
 			List<DatiVersamento> results = cr.list();
 			return results;
 		} catch (RuntimeException re) {
-			log.error("count failed", re);
+			log.error("findByIdAbuso failed", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<TabCalcOblazione> findOblazione(Double dataAbuso,
+			String leggeCondono, Integer tipoAbuso) {
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(TabCalcOblazione.class);
+			cr.add(Restrictions.lt("dataInizio", dataAbuso));
+			cr.add(Restrictions.ge("dataFine", dataAbuso));
+			cr.add(Restrictions.eq("leggeCondono",
+					Integer.valueOf(leggeCondono)));
+			cr.add(Restrictions.eq("tipoabuso", tipoAbuso));
+			List<TabCalcOblazione> results = cr.list();
+			return results;
+		} catch (RuntimeException re) {
+			log.error("findOblazione failed", re);
 			throw re;
 		}
 	}
