@@ -33,7 +33,7 @@ public class Converter {
 			return false;
 		return true;
 	}
-	
+
 	public static Date convertData(String dataDomanda) {
 		dataDomanda = dataDomanda.replaceAll("-", "/");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
@@ -43,8 +43,18 @@ public class Converter {
 			throw new CustomException("99", e.getMessage());
 		}
 	}
-	
-	public static Double convertLireEuro(Double lire){
-		return lire / 1927.36;
+
+	public static Double convertLireEuro(Double lire) {
+		return round(lire / 1927.36, 2);
+	}
+
+	public static double round(double value, int places) {
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		long factor = (long) Math.pow(10, places);
+		value = value * factor;
+		long tmp = Math.round(value);
+		return (double) tmp / factor;
 	}
 }
