@@ -73,6 +73,9 @@ public class DatiVersamento implements Serializable {
 
 	@Column(length = 45)
 	private String ufficioPostale;
+	
+	@Column(name="progressivo_abuso")
+	private Integer progressivo_abuso;
 
 	public DatiVersamento() {
 	}
@@ -219,6 +222,14 @@ public class DatiVersamento implements Serializable {
 
 	public void setUfficioPostale(String ufficioPostale) {
 		this.ufficioPostale = ufficioPostale;
+	}
+
+	public Integer getProgressivo_abuso() {
+		return progressivo_abuso;
+	}
+
+	public void setProgressivo_abuso(Integer progressivo_abuso) {
+		this.progressivo_abuso = progressivo_abuso;
 	}
 
 }

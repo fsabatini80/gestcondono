@@ -93,12 +93,14 @@ public class Datiabuso implements Serializable {
 	@JoinColumn(name = "iddati_localizzazione")
 	private DatiLocalizzazione localizzazione;
 
-	
 	@Column(name = "idsoggettoabuso")
 	private Integer idsoggettoAbuso;
 
 	@Column
 	private Integer progressivo;
+
+	@Column(name = "autodeterminata")
+	private BigDecimal autodeterminata;
 
 	public Datiabuso() {
 	}
@@ -287,4 +289,11 @@ public class Datiabuso implements Serializable {
 		this.progressivo = progressivo;
 	}
 
+	public BigDecimal getAutodeterminata() {
+		return autodeterminata;
+	}
+
+	public void setAutodeterminata(BigDecimal autodeterminata) {
+		this.autodeterminata = autodeterminata;
+	}
 }

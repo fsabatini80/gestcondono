@@ -10,7 +10,7 @@ import org.springframework.validation.Validator;
 
 @Component
 public class FabbricatiValidator implements Validator {
-	
+
 	@Autowired
 	DatiFabbricatiHome datiFabbricatiHome;
 

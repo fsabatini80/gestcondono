@@ -28,12 +28,13 @@ public class StampeController extends BaseController {
 	public void stampaLettera(
 			@RequestParam(value = "idpratica") String idpratica,
 			@RequestParam(value = "idabuso") String idabuso,
+			@RequestParam(value = "progressivo") String progressivo,
 			HttpServletResponse response) {
 		XWPFDocument document = new XWPFDocument();
 		response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 		try {
 			document = wservice.createDoc(document, datiPraticaService,
-					datiAbusoService, idpratica, idabuso);
+					datiAbusoService, idpratica, idabuso, progressivo);
 			ServletOutputStream out = response.getOutputStream();
 			document.write(out);
 			out.flush();

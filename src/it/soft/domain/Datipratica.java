@@ -48,9 +48,6 @@ public class Datipratica implements Serializable {
 	@Column(name = "idUtente")
 	private BigDecimal idUtente;
 	
-	@Column(name = "oblazioneAuto")
-	private BigDecimal oblazioneAuto;
-
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "idrichiedente")
 	private Richiedente richiedente;
@@ -129,13 +126,5 @@ public class Datipratica implements Serializable {
 	public void setRichiedente(Richiedente richiedente) {
 		this.richiedente = richiedente;
 	}
-
-	public BigDecimal getOblazioneAuto() {
-		return oblazioneAuto;
-	}
-
-	public void setOblazioneAuto(BigDecimal oblazioneAuto) {
-		this.oblazioneAuto = oblazioneAuto;
-	}
-
+	
 }

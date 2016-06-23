@@ -33,6 +33,7 @@ public class DatiAbusoPojo implements Serializable {
 	private String volumeUtile;
 	private DatiLocalizzazione localizzazione;
 	private List<SoggettiAbuso> soggettiAbuso;
+	private String autodeterminata;
 
 	public String getIddatiabuso() {
 		return this.iddatiabuso;
@@ -224,6 +225,14 @@ public class DatiAbusoPojo implements Serializable {
 
 	public void setDatiPratica(String datiPratica) {
 		this.datiPratica = datiPratica;
+	}
+
+	public String getAutodeterminata() {
+		return autodeterminata;
+	}
+
+	public void setAutodeterminata(String autodeterminata) {
+		this.autodeterminata = autodeterminata;
 	}
 
 }

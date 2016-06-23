@@ -124,6 +124,9 @@ public class DatiAbusoService {
 		datiabuso.setTipoReddito(pojo.getTipoReddito());
 		datiabuso.setVolumeDirezionale(pojo.getVolumeDirezionale());
 		datiabuso.setVolumeUtile(pojo.getVolumeUtile());
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getAutodeterminata()))
+			datiabuso.setAutodeterminata(BigDecimal.valueOf(Integer
+					.parseInt(pojo.getAutodeterminata())));
 		datiAbusoHome.persist(datiabuso);
 
 	}
@@ -165,6 +168,53 @@ public class DatiAbusoService {
 		target.setTipoReddito(source.getTipoReddito());
 		target.setVolumeDirezionale(source.getVolumeDirezionale());
 		target.setVolumeUtile(source.getVolumeUtile());
+		if (source.getAutodeterminata() != null)
+			target.setAutodeterminata(String.valueOf(source
+					.getAutodeterminata()));
+		return target;
+	}
+
+	public DatiAbusoPojo findById(String id, String progressivoAbuso) {
+		Datiabuso source = datiAbusoHome.findById(
+				BigDecimal.valueOf(Integer.parseInt(id)),
+				Integer.parseInt(progressivoAbuso));
+		DatiAbusoPojo target = new DatiAbusoPojo();
+		target.setIddatiabuso(id);
+		target.setProgressivo(String.valueOf(source.getProgressivo()));
+		target.setDataUltimazioneLavori(source.getDataUltimazioneLavori());
+		target.setDescrizione(source.getDescrizione());
+		if (source.getTipologiaAbuso() != null)
+			target.setTipologiaAbuso(String.valueOf(source.getTipologiaAbuso()
+					.getIdtipologiaAbuso()));
+		if (source.getDestinazioneUso() != null)
+			target.setDestinazioneUso(String.valueOf(source
+					.getDestinazioneUso().getIdtipologiaDestinazioneUso()));
+		if (source.getEpocaAbuso() != null)
+			target.setEpocaAbuso(String.valueOf(source.getEpocaAbuso()
+					.getIdepocaAbuso()));
+		target.setEsenzioniPagamenti(source.getEsenzioniPagamenti());
+		if (source.getDatiPratica() != null)
+			target.setIdPratica(String.valueOf(source.getDatiPratica()
+					.getIddatipratica()));
+		if (source.getLocalizzazione() != null)
+			target.setLocalizzazione(datiLocalizzazioneHome.findById((source
+					.getLocalizzazione().getIddatiLocalizzazione())));
+		target.setNonresidenziale(source.getNonresidenziale());
+		target.setNonresidenzialeVuoto(source.getNonresidenzialeVuoto());
+		target.setNumeroAddetti(source.getNumeroAddetti());
+		target.setReddito(source.getReddito());
+		target.setRiduzioni(source.getRiduzioni());
+		target.setSuperficeTotale(source.getSuperficeTotale());
+		target.setSuperficeUtile(source.getSuperficeUtile());
+		if (source.getTipoOpera() != null)
+			target.setTipoOpera(String.valueOf(source.getTipoOpera()
+					.getIdtipoOpera()));
+		target.setTipoReddito(source.getTipoReddito());
+		target.setVolumeDirezionale(source.getVolumeDirezionale());
+		target.setVolumeUtile(source.getVolumeUtile());
+		if (source.getAutodeterminata() != null)
+			target.setAutodeterminata(String.valueOf(source
+					.getAutodeterminata()));
 		return target;
 	}
 

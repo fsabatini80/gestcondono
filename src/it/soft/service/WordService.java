@@ -75,7 +75,7 @@ public class WordService {
 
 	public XWPFDocument createDoc(XWPFDocument document,
 			DatiPraticaService praticaService, DatiAbusoService abusoService,
-			String idpratica, String idabuso) throws Exception {
+			String idpratica, String idabuso, String progressivo) throws Exception {
 
 		DatiPraticaPojo praticaDB = praticaService.findById(idpratica);
 		DatiAbusoPojo abusoDB = abusoService.findById(idabuso);
@@ -89,7 +89,7 @@ public class WordService {
 				.findAllDocById(idabuso);
 
 		Double importoOblazione = datiVersamentiService
-				.getAutodeterminaOblazione(idpratica);
+				.getAutodeterminaOblazione(idabuso, progressivo);
 		Double importoCalcolato = datiVersamentiService
 				.getImportoCalcolatoOblazione(Integer.valueOf(abusoDB
 						.getTipologiaAbuso()), Converter

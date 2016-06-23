@@ -5,6 +5,7 @@ import it.soft.dao.DatiVersamentiHome;
 import it.soft.domain.DatiVersamento;
 import it.soft.service.DatiVersamentiService;
 import it.soft.web.pojo.DatiVersamentiPojo;
+import it.soft.web.validator.DatiVersamentiValidator;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -26,9 +27,12 @@ public class VersamentiController extends BaseController {
 
 	@Autowired
 	DatiPraticaHome datiPraticaHome;
-	
+
 	@Autowired
 	DatiVersamentiService versamentiService;
+
+	@Autowired
+	DatiVersamentiValidator versamentiValidator;
 
 	DatiVersamentiPojo datiVersamentiPojo;
 
@@ -64,7 +68,7 @@ public class VersamentiController extends BaseController {
 
 		String view = "redirect:versamenti.htm?idpratica=";
 		this.datiVersamentiPojo = pojo;
-
+		versamentiValidator.validate(pojo, errors);
 		if (errors.hasFieldErrors()) {
 			view = "form/formVersamento";
 		} else {
@@ -75,14 +79,24 @@ public class VersamentiController extends BaseController {
 		return new ModelAndView(view, model);
 	}
 
-	// @RequestMapping(value = "/modificaVersamento", method =
-	// RequestMethod.GET)
-	// public ModelAndView modificaVersamento(
-	// @RequestParam(value = "idpratica") String id, ModelMap model)
-	// throws Exception {
-	// this.praticaPojo = datiPraticaService.findById(id);
-	// model.addAttribute("datiPraticaPojo", this.praticaPojo);
-	// return new ModelAndView("form/formPratica", model);
-	// }
+	@RequestMapping(value = "/removeVersamento", method = RequestMethod.GET)
+	public ModelAndView removeVersamento(ModelMap model,
+			@RequestParam(value = "idVersamento") String id) throws Exception {
+
+		String view = "redirect:versamenti.htm?idpratica="
+				.concat(this.idPratica);
+		versamentiService.remove(id);
+		return new ModelAndView(view, model);
+	}
+
+	@RequestMapping(value = "/modificaVersamento", method = RequestMethod.GET)
+	public ModelAndView modificaVersamento(
+			@RequestParam(value = "idVersamento") String id, ModelMap model)
+			throws Exception {
+		String view = "form/formVersamento";
+		DatiVersamentiPojo pojo = versamentiService.findById(id);
+		model.addAttribute("pojo", pojo);
+		return new ModelAndView(view, model);
+	}
 
 }

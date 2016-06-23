@@ -42,9 +42,6 @@ public class DatiPraticaService {
 		datipratica.setNumeroProtocollo(pojo.getNumeroProtocollo());
 		datipratica.setIdUtente(BigDecimal.valueOf(Integer.parseInt(pojo
 				.getIdutente())));
-		datipratica.setOblazioneAuto(BigDecimal.valueOf(new Double(pojo
-				.getAutodeterminata())));
-
 		Richiedente richiedente = new Richiedente();
 		if (datipratica.getRichiedente() != null)
 			richiedente = datipratica.getRichiedente();
@@ -130,7 +127,6 @@ public class DatiPraticaService {
 				.getRichiedente().getStatoEsteroRes() : "");
 		target.setTelefono(source.getRichiedente() != null ? source
 				.getRichiedente().getTelefono() : "");
-		target.setAutodeterminata(String.valueOf(source.getOblazioneAuto()));
 		return target;
 	}
 

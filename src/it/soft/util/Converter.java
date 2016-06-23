@@ -79,11 +79,12 @@ public class Converter {
 		try {
 			new Integer(s[0]);
 			new Integer(s[1]);
+			if (s[1].length() > 2)
+				return false;
 		} catch (NumberFormatException e) {
 			return false;
 		}
 
 		return true;
 	}
-
 }

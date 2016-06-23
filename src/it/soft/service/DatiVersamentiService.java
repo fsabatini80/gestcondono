@@ -5,7 +5,6 @@ import it.soft.domain.DatiVersamento;
 import it.soft.domain.TabCalcOblazione;
 import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
-import it.soft.web.pojo.DatiPraticaPojo;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
 import java.math.BigInteger;
@@ -13,6 +12,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.mysql.jdbc.StringUtils;
 
 @Service
 public class DatiVersamentiService {
@@ -40,16 +41,51 @@ public class DatiVersamentiService {
 		// versamenti.setIddati_versamento(iddati_versamento)
 		versamenti.setIddatipratica(BigInteger.valueOf(Integer.parseInt(pojo
 				.getIddatipratica())));
-		versamenti.setImporto(new Double(pojo.getImporto()));
-		versamenti.setImportoEuro(new Double(pojo.getImportoEuro()));
-		versamenti.setImportoLire(new Double(pojo.getImportoLire()));
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getImporto()))
+			versamenti.setImporto(new Double(pojo.getImporto()));
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getImportoEuro()))
+			versamenti.setImportoEuro(new Double(pojo.getImportoEuro()));
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getImportoLire()))
+			versamenti.setImportoLire(new Double(pojo.getImportoLire()));
 		versamenti.setNome(pojo.getNome());
 		versamenti.setNumeroBollettino(pojo.getNumeroBollettino());
 		versamenti.setNumeroProtocollo(pojo.getNumeroProtocollo());
 		versamenti.setRagioneSociale(pojo.getRagioneSociale());
 		versamenti.setUfficioPostale(pojo.getUfficioPostale());
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getProgressivo_abuso()))
+			versamenti.setProgressivo_abuso(Integer.parseInt(pojo
+					.getProgressivo_abuso()));
 
 		datiVersamentiHome.persist(versamenti);
+	}
+
+	public DatiVersamentiPojo findById(String idVersamento) {
+		DatiVersamentiPojo pojo = new DatiVersamentiPojo();
+
+		DatiVersamento source = datiVersamentiHome.findById(BigInteger
+				.valueOf(Integer.valueOf(idVersamento)));
+
+		pojo.setCausale(source.getCausale());
+		pojo.setCcPostale(source.getCcPostale());
+		pojo.setCodiceVersamento(source.getCodiceVersamento());
+		pojo.setCognome(source.getCognome());
+		pojo.setDataInserimento(source.getDataInserimento());
+		pojo.setDataProtocollo(source.getDataProtocollo());
+		pojo.setDataVersamento(source.getDataVersamento());
+		pojo.setIban(source.getIban());
+		pojo.setIddatipratica(String.valueOf(source.getIddatipratica()));
+		pojo.setIdversamento(String.valueOf(source.getIddatiVersamento()));
+		pojo.setImporto(String.valueOf(source.getImporto()));
+		pojo.setImportoEuro(String.valueOf(source.getImportoEuro()));
+		pojo.setImportoLire(String.valueOf(source.getImportoLire()));
+		pojo.setNome(source.getNome());
+		pojo.setNumeroBollettino(source.getNumeroBollettino());
+		pojo.setNumeroProtocollo(source.getNumeroProtocollo());
+		pojo.setProgressivo_abuso(String.valueOf(source.getProgressivo_abuso()));
+		pojo.setRagioneSociale(source.getRagioneSociale());
+		pojo.setUfficioPostale(source.getUfficioPostale());
+
+		return pojo;
 	}
 
 	public Double getImportoVersatoOblazione(String idPratica) {
@@ -67,10 +103,12 @@ public class DatiVersamentiService {
 		return answer;
 	}
 
-	public Double getAutodeterminaOblazione(String idPratica) {
+	public Double getAutodeterminaOblazione(String idAbuso,
+			String progressivoAbuso) {
 
-		DatiPraticaPojo pratica = datiPraticaService.findById(idPratica);
-		return new Double(pratica.getAutodeterminata());
+		DatiAbusoPojo abuso = datiAbusoService.findById(idAbuso,
+				progressivoAbuso);
+		return new Double(abuso.getAutodeterminata());
 	}
 
 	public Double getImportoCalcolatoOblazione(Integer tipoAbuso,
@@ -106,5 +144,10 @@ public class DatiVersamentiService {
 		 * 
 		 */
 		return importoObla;
+	}
+
+	public void remove(String id) {
+		datiVersamentiHome.remove(datiVersamentiHome.findById(BigInteger
+				.valueOf(Integer.parseInt(id))));
 	}
 }

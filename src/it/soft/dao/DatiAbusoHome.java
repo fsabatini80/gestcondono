@@ -120,6 +120,48 @@ public class DatiAbusoHome {
 			throw re;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Datiabuso findById(BigDecimal id, Integer progressivo) {
+		log.debug("getting Datiabuso instance with id: " + id);
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Datiabuso datiabuso = new Datiabuso();
+			datiabuso.setIddatiabuso(id);
+			Criteria cr = sess.createCriteria(Datiabuso.class);
+			cr.add(Restrictions.eq("iddatiabuso", id));
+			cr.add(Restrictions.eq("progressivo", progressivo));
+			List<Datiabuso> results = cr.list();
+			if (results != null && !results.isEmpty()) {
+				for (Iterator<Datiabuso> iterator = results.iterator(); iterator
+						.hasNext();) {
+					Datiabuso datiabuso2 = iterator.next();
+					sess.refresh(datiabuso2);
+					if (datiabuso2.getDestinazioneUso() != null)
+						sess.refresh(datiabuso2.getDestinazioneUso());
+					if (datiabuso2.getEpocaAbuso() != null)
+						sess.refresh(datiabuso2.getEpocaAbuso());
+					if (datiabuso2.getDatiPratica() != null)
+						sess.refresh(datiabuso2.getDatiPratica());
+					if (datiabuso2.getLocalizzazione() != null)
+						sess.refresh(datiabuso2.getLocalizzazione());
+					if (datiabuso2.getTipologiaAbuso() != null)
+						sess.refresh(datiabuso2.getTipologiaAbuso());
+					if (datiabuso2.getTipoOpera() != null)
+						sess.refresh(datiabuso2.getTipoOpera());
+					BeanUtils.copyProperties(datiabuso2, datiabuso);
+				}
+			}
+			log.debug("get successful");
+			sess.close();
+			return datiabuso;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<Datiabuso> findAll() {

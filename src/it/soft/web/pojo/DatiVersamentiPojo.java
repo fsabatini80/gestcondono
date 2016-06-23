@@ -24,6 +24,7 @@ public class DatiVersamentiPojo implements Serializable {
 	private String cognome;
 	private String ragioneSociale;
 	private String causale;
+	private String progressivo_abuso;
 
 	public String getIddatipratica() {
 		return iddatipratica;
@@ -167,6 +168,14 @@ public class DatiVersamentiPojo implements Serializable {
 
 	public void setCausale(String causale) {
 		this.causale = causale;
+	}
+
+	public String getProgressivo_abuso() {
+		return progressivo_abuso;
+	}
+
+	public void setProgressivo_abuso(String progressivo_abuso) {
+		this.progressivo_abuso = progressivo_abuso;
 	}
 
 }
