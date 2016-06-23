@@ -43,11 +43,6 @@
 				<td><form:input path="dataDomanda" id="datepicker2" /></td>
 				<td><form:errors path="dataDomanda" cssClass="ui-state-error" /></td>
 			</tr>
-			<tr>
-				<td>Autodetermina:</td>
-				<td><form:input path="autodeterminata" /></td>
-				<td><form:errors path="autodeterminata" cssClass="ui-state-error" /></td>
-			</tr>
 		</table>
 
 

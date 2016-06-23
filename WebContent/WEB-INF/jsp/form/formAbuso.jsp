@@ -14,8 +14,8 @@
 					<tr>
 						<td>Descrizione:</td>
 						<td><form:textarea path="descrizione" rows="5" cols="40" />
-							<form:hidden path="iddatiabuso" />
-							<form:hidden path="progressivo" /></td>
+							<form:hidden path="iddatiabuso" /> <form:hidden
+								path="progressivo" /></td>
 					</tr>
 					<tr>
 						<td>Destinazione d'uso*:</td>
@@ -24,7 +24,8 @@
 									itemLabel="descrizioneTipologia"
 									itemValue="idtipologiaDestinazioneUso" />
 							</form:select></td>
-							<td><form:errors path="destinazioneUso" cssClass="ui-state-error" /></td>
+						<td><form:errors path="destinazioneUso"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Tipologia*:</td>
@@ -32,19 +33,20 @@
 								<form:options items="${tipologiaAbusos}"
 									itemLabel="idtipologiaAbuso" itemValue="descrizioneBreve" />
 							</form:select></td>
-							<td><form:errors path="tipologiaAbuso" cssClass="ui-state-error" /></td>
+						<td><form:errors path="tipologiaAbuso"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Epoca abuso*:</td>
 						<td><form:radiobuttons items="${epocaAbusos}"
-								 itemValue="idepocaAbuso" path="epocaAbuso"
-								delimiter="<br />" /></td>
-								<td><form:errors path="epocaAbuso" cssClass="ui-state-error" /></td>
+								itemValue="idepocaAbuso" path="epocaAbuso" delimiter="<br />" /></td>
+						<td><form:errors path="epocaAbuso" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Data ultimazione lavori*:</td>
 						<td><form:input path="dataUltimazioneLavori" id="datepicker3" /></td>
-						<td><form:errors path="dataUltimazioneLavori" cssClass="ui-state-error" /></td>
+						<td><form:errors path="dataUltimazioneLavori"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Tipo opera:</td>
@@ -52,6 +54,12 @@
 								<form:options items="${tipoOperas}" itemLabel="descrizione"
 									itemValue="idtipoOpera" />
 							</form:select></td>
+					</tr>
+					<tr>
+						<td>Autodetermina:</td>
+						<td><form:input path="autodeterminata" /></td>
+						<td><form:errors path="autodeterminata"
+								cssClass="ui-state-error" /></td>
 					</tr>
 				</table>
 			</div>

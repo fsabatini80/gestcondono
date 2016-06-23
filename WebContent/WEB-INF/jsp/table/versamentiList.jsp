@@ -36,10 +36,14 @@
 					<td>${versamento.numeroProtocollo}</td>
 					<td>${versamento.dataVersamento}</td>
 					<td>${versamento.importo}</td>
-					<td><a href="#" title="modifica versamento"><img
-							src="img/24/edit.png" title="modifica versamento"></a></td>
-					<td><a href="#" title="cancella versamento"><img
-							src="img/24/delete.png" title="cancella versamento"></a></td>
+					<td><a
+						href="<c:url value="modificaVersamento.htm?idVersamento=${versamento.iddatiVersamento}" />"
+						title="modifica versamento"><img src="img/24/edit.png"
+							title="modifica versamento"></a></td>
+					<td><a
+						href="<c:url value="removeVersamento.htm?idVersamento=${versamento.iddatiVersamento}" />"
+						title="cancella versamento"><img src="img/24/delete.png"
+							title="cancella versamento"></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
