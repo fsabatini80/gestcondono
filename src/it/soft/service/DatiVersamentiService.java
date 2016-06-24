@@ -105,11 +105,11 @@ public class DatiVersamentiService {
 		for (DatiVersamento datiVersamento : vers) {
 
 			if (datiVersamento.getImporto() != null) {
-				answer = Math.abs(datiVersamento.getImporto());
+				answer = Math.abs(answer + datiVersamento.getImporto());
 			} else if (datiVersamento.getImportoEuro() != null) {
-				answer = Math.abs(datiVersamento.getImportoEuro());
+				answer = Math.abs(answer + datiVersamento.getImportoEuro());
 			} else if (datiVersamento.getImportoLire() != null) {
-				answer = Math.abs(Converter.convertLireEuro(datiVersamento
+				answer = Math.abs(answer + Converter.convertLireEuro(datiVersamento
 						.getImportoLire()));
 			} else {
 				answer = Math.abs(new Double(0.0));
