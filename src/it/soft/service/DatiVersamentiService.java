@@ -109,8 +109,9 @@ public class DatiVersamentiService {
 			} else if (datiVersamento.getImportoEuro() != null) {
 				answer = Math.abs(answer + datiVersamento.getImportoEuro());
 			} else if (datiVersamento.getImportoLire() != null) {
-				answer = Math.abs(answer + Converter.convertLireEuro(datiVersamento
-						.getImportoLire()));
+				answer = Math.abs(answer
+						+ Converter.convertLireEuro(datiVersamento
+								.getImportoLire()));
 			} else {
 				answer = Math.abs(new Double(0.0));
 			}
@@ -146,12 +147,17 @@ public class DatiVersamentiService {
 		}
 
 		DatiAbusoPojo abusoDB = datiAbusoService.findById(idAbuso);
+		Double supUtilDouble = new Double(0.0);
 		if (abusoDB != null && abusoDB.getSuperficeUtile() != null
 				&& !"".equals(abusoDB.getSuperficeUtile().trim())) {
-			String superUtile = abusoDB.getSuperficeUtile();
+			String superUtileString = abusoDB.getSuperficeUtile();
 
-			Double supUtilDouble = new Double(superUtile);
+			supUtilDouble = new Double(superUtileString);
 			importoObla = Converter.round(importoObla * supUtilDouble, 2);
+		}
+
+		if ("1".equals(leggeCondono)) {
+			calcolaRiduzioni(importoObla, supUtilDouble);
 		}
 
 		/**
@@ -159,6 +165,34 @@ public class DatiVersamentiService {
 		 * 
 		 */
 		return importoObla;
+	}
+
+	/**
+	 * Se 400< abuso mq< 800 allora L. x 1.2 
+	 * Se 800< abuso mq< 1200 allora L. x 2 
+	 * Se abuso mq > 1200 allora L. x 3 
+	 * Se abuso è prima casa e residente o non ancora abitabile allora oblazione = -1/3 (NO abitazioni di lusso,
+	 * cat. A/1). 
+	 * Agevolazione valida fino a 150 mq sup. complessiva 
+	 * Se esiste una convenzione urbanistica o atto d’obbligo sull’abuso -50% • - 1/3
+	 * costruzione industriale o artigianale fino a 3000 mq, ma se > 6000 mq
+	 * allora x 1.5 • - 1/3 attività commerciale < 50 mq, ma se >500mq allora x
+	 * 1.5 e se >1500 allora x2 • - 1/3 attività sportiva – culturale –
+	 * sanitaria - culto • - 1/3 se attività turistica e se <500 mq, ma se > 800
+	 * mq allora x1.5 • - 1/3 se in zona agricola
+	 * 
+	 * @param importoObla
+	 */
+	private void calcolaRiduzioni(Double importoObla, Double supUtilDouble) {
+		// TODO Auto-generated method stub
+		
+		if(supUtilDouble > 400 && supUtilDouble <= 800){
+			importoObla = importoObla * new Double(1.2);
+		}else if(supUtilDouble > 800 && supUtilDouble <= 1200){
+			importoObla = importoObla * new Double(2);
+		}else if(supUtilDouble > 1200){
+			importoObla = importoObla * new Double(3);
+		}
 	}
 
 	public void remove(String id) {
