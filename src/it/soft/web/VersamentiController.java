@@ -1,13 +1,17 @@
 package it.soft.web;
 
+import it.soft.dao.DatiAbusoHome;
 import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DatiVersamentiHome;
 import it.soft.domain.DatiVersamento;
+import it.soft.domain.Datiabuso;
 import it.soft.service.DatiVersamentiService;
 import it.soft.web.pojo.DatiVersamentiPojo;
 import it.soft.web.validator.DatiVersamentiValidator;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +28,10 @@ public class VersamentiController extends BaseController {
 
 	@Autowired
 	DatiVersamentiHome datiVersamentiHome;
-
 	@Autowired
 	DatiPraticaHome datiPraticaHome;
+	@Autowired
+	DatiAbusoHome datiAbusoHome;
 
 	@Autowired
 	DatiVersamentiService versamentiService;
@@ -48,6 +53,7 @@ public class VersamentiController extends BaseController {
 		List<DatiVersamento> list = datiVersamentiHome.findAll(BigInteger
 				.valueOf(Integer.valueOf(id)));
 		this.idPratica = id;
+		initVersamento(model);
 		model.addAttribute("versamenti", list);
 		model.addAttribute("idpratica", this.idPratica);
 		return new ModelAndView(view, model);
@@ -55,10 +61,10 @@ public class VersamentiController extends BaseController {
 
 	@RequestMapping(value = "/nuovoVersamento", method = RequestMethod.GET)
 	public ModelAndView nuovaVersamento(ModelMap model) throws Exception {
-
+		initVersamento(model);
 		String view = "form/formVersamento";
 		DatiVersamentiPojo pojo = new DatiVersamentiPojo();
-		model.addAttribute("pojo", pojo);
+		model.addAttribute("datiVersamentiPojo", pojo);
 		return new ModelAndView(view, model);
 	}
 
@@ -94,9 +100,21 @@ public class VersamentiController extends BaseController {
 			@RequestParam(value = "idVersamento") String id, ModelMap model)
 			throws Exception {
 		String view = "form/formVersamento";
+		initVersamento(model);
 		DatiVersamentiPojo pojo = versamentiService.findById(id);
-		model.addAttribute("pojo", pojo);
+		model.addAttribute("datiVersamentiPojo", pojo);
 		return new ModelAndView(view, model);
+	}
+
+	private void initVersamento(ModelMap model) {
+
+		List<String> progressivi = new ArrayList<String>();
+		List<Datiabuso> abusi = datiAbusoHome.findAll(datiPraticaHome
+				.findById(BigDecimal.valueOf(Integer.parseInt(idPratica))));
+		for (Datiabuso datiabuso : abusi) {
+			progressivi.add(String.valueOf(datiabuso.getProgressivo()));
+		}
+		model.addAttribute("progressivi", progressivi);
 	}
 
 }

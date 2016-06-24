@@ -96,7 +96,7 @@ public class WordService {
 						.convertDateToDouble(praticaDB.getDataDomanda()),
 						praticaDB.getLeggeCondono(), idabuso);
 		Double importoVersato = datiVersamentiService
-				.getImportoVersatoOblazione(idpratica);
+				.getImportoVersatoOblazione(idpratica, progressivo);
 
 		createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 		createPage2(document, daocumentiDB);

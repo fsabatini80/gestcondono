@@ -125,8 +125,8 @@ public class DatiAbusoService {
 		datiabuso.setVolumeDirezionale(pojo.getVolumeDirezionale());
 		datiabuso.setVolumeUtile(pojo.getVolumeUtile());
 		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getAutodeterminata()))
-			datiabuso.setAutodeterminata(BigDecimal.valueOf(Integer
-					.parseInt(pojo.getAutodeterminata())));
+			datiabuso.setAutodeterminata(BigDecimal.valueOf(new Double(pojo
+					.getAutodeterminata())));
 		datiAbusoHome.persist(datiabuso);
 
 	}

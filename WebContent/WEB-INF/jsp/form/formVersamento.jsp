@@ -3,7 +3,7 @@
 <html>
 <jsp:include page="../tpl/header.jsp" />
 
-<form:form action="salvaVersamento.htm" commandName="pojo"
+<form:form action="salvaVersamento.htm" commandName="datiVersamentiPojo"
 	cssClass="ui-widget">
 	<form:errors path="*" cssClass="errorblock" element="div" />
 	<h2
@@ -13,14 +13,17 @@
 
 		<tr>
 			<td>Sottonumero Abuso:</td>
-			<td><form:input path="progressivo_abuso" /></td>
+			<td><form:select path="progressivo_abuso">
+					<form:options items="${progressivi}" />
+				</form:select></td>
 			<td><form:errors path="progressivo_abuso"
 					cssClass="ui-state-error" /></td>
 		</tr>
 		<tr>
 			<td>Codice Versamento:</td>
 			<td><form:input path="codiceVersamento" /> <form:hidden
-					path="iddatipratica" /></td>
+					path="iddatipratica" /><form:hidden
+						path="idversamento" /></td>
 			<td><form:errors path="codiceVersamento"
 					cssClass="ui-state-error" /></td>
 		</tr>

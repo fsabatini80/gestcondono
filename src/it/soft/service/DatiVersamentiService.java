@@ -38,7 +38,9 @@ public class DatiVersamentiService {
 		versamenti.setDataProtocollo(pojo.getDataProtocollo());
 		versamenti.setDataVersamento(pojo.getDataVersamento());
 		versamenti.setIban(pojo.getIban());
-		// versamenti.setIddati_versamento(iddati_versamento)
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIdversamento()))
+			versamenti.setIddatiVersamento(BigInteger.valueOf(Integer
+					.valueOf(pojo.getIdversamento())));
 		versamenti.setIddatipratica(BigInteger.valueOf(Integer.parseInt(pojo
 				.getIddatipratica())));
 		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getImporto()))
@@ -75,9 +77,12 @@ public class DatiVersamentiService {
 		pojo.setIban(source.getIban());
 		pojo.setIddatipratica(String.valueOf(source.getIddatipratica()));
 		pojo.setIdversamento(String.valueOf(source.getIddatiVersamento()));
-		pojo.setImporto(String.valueOf(source.getImporto()));
-		pojo.setImportoEuro(String.valueOf(source.getImportoEuro()));
-		pojo.setImportoLire(String.valueOf(source.getImportoLire()));
+		if (source.getImporto() != null)
+			pojo.setImporto(String.valueOf(source.getImporto()));
+		if (source.getImportoEuro() != null)
+			pojo.setImportoEuro(String.valueOf(source.getImportoEuro()));
+		if (source.getImportoLire() != null)
+			pojo.setImportoLire(String.valueOf(source.getImportoLire()));
 		pojo.setNome(source.getNome());
 		pojo.setNumeroBollettino(source.getNumeroBollettino());
 		pojo.setNumeroProtocollo(source.getNumeroProtocollo());
@@ -88,17 +93,27 @@ public class DatiVersamentiService {
 		return pojo;
 	}
 
-	public Double getImportoVersatoOblazione(String idPratica) {
+	public Double getImportoVersatoOblazione(String idPratica,
+			String progressivo) {
 
-		List<DatiVersamento> vers = datiVersamentiHome.findAll(BigInteger
-				.valueOf(Integer.valueOf(idPratica)));
+		List<DatiVersamento> vers = datiVersamentiHome.findAll(
+				BigInteger.valueOf(Integer.valueOf(idPratica)),
+				Integer.valueOf(progressivo));
 
 		Double answer = new Double(0.0);
 
 		for (DatiVersamento datiVersamento : vers) {
-			answer = Math
-					.abs(datiVersamento.getImporto() != null ? datiVersamento
-							.getImporto() : new Double(0.0));
+
+			if (datiVersamento.getImporto() != null) {
+				answer = Math.abs(datiVersamento.getImporto());
+			} else if (datiVersamento.getImportoEuro() != null) {
+				answer = Math.abs(datiVersamento.getImportoEuro());
+			} else if (datiVersamento.getImportoLire() != null) {
+				answer = Math.abs(Converter.convertLireEuro(datiVersamento
+						.getImportoLire()));
+			} else {
+				answer = Math.abs(new Double(0.0));
+			}
 		}
 		return answer;
 	}

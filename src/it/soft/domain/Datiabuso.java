@@ -99,7 +99,7 @@ public class Datiabuso implements Serializable {
 	@Column
 	private Integer progressivo;
 
-	@Column(name = "autodeterminata")
+	@Column(name = "autodetermina")
 	private BigDecimal autodeterminata;
 
 	public Datiabuso() {
