@@ -76,6 +76,7 @@ public class VersamentiController extends BaseController {
 		this.datiVersamentiPojo = pojo;
 		versamentiValidator.validate(pojo, errors);
 		if (errors.hasFieldErrors()) {
+			initVersamento(model);
 			view = "form/formVersamento";
 		} else {
 			pojo.setIddatipratica(this.idPratica);
