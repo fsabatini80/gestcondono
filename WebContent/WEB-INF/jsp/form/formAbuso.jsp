@@ -67,7 +67,7 @@
 			<div id="accordionDatAbuso2">
 				<table>
 					<tr>
-						<td>Suoperficie utile mq:</td>
+						<td>Superficie utile mq:</td>
 						<td><form:input path="superficeUtile" /></td>
 					</tr>
 					<tr>
@@ -105,19 +105,38 @@
 				<table>
 					<tr>
 						<td>Esenzioni pagamenti:</td>
-						<td><form:input path="esenzioniPagamenti" /></td>
+						<td><form:select path="esenzioniPagamenti">
+								<form:options items="${esenzioniPagamentis}"
+									itemLabel="descrizione" itemValue="idtipoEsenzioni" />
+							</form:select></td>
+						<td><form:errors path="esenzioniPagamenti"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Riduzioni:</td>
-						<td><form:input path="riduzioni" /></td>
+						<td><form:select path="riduzioni">
+								<form:options items="${riduzionis}" itemLabel="descrizione"
+									itemValue="idtipoRiduzione" />
+							</form:select></td>
+						<td><form:errors path="riduzioni" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Tipo reddito:</td>
-						<td><form:input path="tipoReddito" /></td>
+						<td><form:select path="tipoReddito">
+								<form:options items="${tipoRedditos}" itemLabel="descrizione"
+									itemValue="idtipologiaRiduzioneReddito" />
+							</form:select></td>
+						<td><form:errors path="tipoReddito" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Reddito:</td>
 						<td><form:input path="reddito" /></td>
+						<td><form:errors path="reddito" cssClass="ui-state-error" /></td>
+					</tr>
+					<tr>
+						<td>Residenza Principale</td>
+						<td><form:checkbox path="isResidenzaPrincipale"/></td>
+						<td><form:errors path="isResidenzaPrincipale" cssClass="ui-state-error" /></td>
 					</tr>
 				</table>
 			</div>

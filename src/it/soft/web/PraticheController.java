@@ -3,6 +3,7 @@ package it.soft.web;
 import it.soft.dao.CaratteristicheHome;
 import it.soft.dao.ComuniHome;
 import it.soft.dao.DatiPraticaHome;
+import it.soft.dao.DatiVersamentiHome;
 import it.soft.dao.DestinazioneUsoHome;
 import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
@@ -21,11 +22,14 @@ import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.RelSoggettoAbuso;
 import it.soft.domain.SoggettiAbuso;
+import it.soft.domain.TipoEsenzioni;
 import it.soft.domain.TipoOpera;
+import it.soft.domain.TipoRiduzione;
 import it.soft.domain.TipologiaAbuso;
 import it.soft.domain.TipologiaAlloggio;
 import it.soft.domain.TipologiaDestinazioneUso;
 import it.soft.domain.TipologiaDocumento;
+import it.soft.domain.TipologiaRiduzioneReddito;
 import it.soft.domain.Utenti;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
@@ -79,6 +83,8 @@ public class PraticheController extends BaseController {
 	CaratteristicheHome caratteristicheHome;
 	@Autowired
 	SoggettiAbusoHome soggettiAbusoHome;
+	@Autowired
+	DatiVersamentiHome datiVersamentiHome;
 
 	@Autowired
 	DatiPraticaValidator validatorPratica;
@@ -104,6 +110,9 @@ public class PraticheController extends BaseController {
 	List<TipologiaAlloggio> tipologiaAlloggios;
 	List<CaratteristicheSpeciali> caratteristicheSpecialis;
 	List<SoggettiAbuso> soggettiAbusos;
+	List<TipoEsenzioni> esenzioniPagamentis;
+	List<TipoRiduzione> riduzionis;
+	List<TipologiaRiduzioneReddito> tipoRedditos;
 
 	@RequestMapping(value = "/pratiche", method = RequestMethod.GET)
 	public ModelAndView praticheHome(ModelMap model, DatiPraticaPojo pojo,
@@ -491,6 +500,16 @@ public class PraticheController extends BaseController {
 				.findById(Integer.valueOf(this.praticaPojo.getLeggeCondono())));
 		model.addAttribute("tipologiaDestinazioneUsos",
 				tipologiaDestinazioneUsos);
+		this.esenzioniPagamentis = datiVersamentiHome.findEsenzioni(BigInteger
+				.valueOf(Integer.valueOf(this.praticaPojo.getLeggeCondono())));
+		this.riduzionis = datiVersamentiHome.findRiduzioni(BigInteger
+				.valueOf(Integer.valueOf(this.praticaPojo.getLeggeCondono())));
+		this.tipoRedditos = datiVersamentiHome
+				.findAllTipologiaRiduzioneReddito();
+
+		model.addAttribute("tipoRedditos", tipoRedditos);
+		model.addAttribute("riduzionis", riduzionis);
+		model.addAttribute("esenzioniPagamentis", esenzioniPagamentis);
 		model.addAttribute("epocaAbusos", epocaAbusos);
 		model.addAttribute("tipoOperas", tipoOperas);
 		model.addAttribute("tipologiaAbusos", tipologiaAbusos);

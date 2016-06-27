@@ -3,6 +3,9 @@ package it.soft.dao;
 import it.soft.domain.DatiVersamento;
 import it.soft.domain.Datiabuso;
 import it.soft.domain.TabCalcOblazione;
+import it.soft.domain.TipoEsenzioni;
+import it.soft.domain.TipoRiduzione;
+import it.soft.domain.TipologiaRiduzioneReddito;
 
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -139,9 +142,10 @@ public class DatiVersamentiHome {
 			throw re;
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<DatiVersamento> findAll(BigInteger idPratica, Integer progressivo) {
+	public List<DatiVersamento> findAll(BigInteger idPratica,
+			Integer progressivo) {
 		try {
 			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 					.getCurrentSession();
@@ -193,4 +197,110 @@ public class DatiVersamentiHome {
 			throw re;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	public TipoEsenzioni findEsenzioneById(Integer idtipoEsenzioni) {
+
+		log.debug("getting TipoEsenzioni instance with id: " + idtipoEsenzioni);
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			TipoEsenzioni tipoEsenzioni = new TipoEsenzioni();
+			tipoEsenzioni.setIdtipoEsenzioni(idtipoEsenzioni);
+			Criteria cr = sess.createCriteria(TipoEsenzioni.class);
+			cr.add(Restrictions.eq("idtipoEsenzioni", idtipoEsenzioni));
+			List<TipoEsenzioni> results = cr.list();
+			if (results != null && !results.isEmpty()) {
+				for (Iterator<TipoEsenzioni> iterator = results.iterator(); iterator
+						.hasNext();) {
+					TipoEsenzioni tipoEsenzioni2 = iterator.next();
+					sess.refresh(tipoEsenzioni2);
+					BeanUtils.copyProperties(tipoEsenzioni2, tipoEsenzioni);
+				}
+			}
+			log.debug("findEsenzioneById successful");
+			sess.close();
+			return tipoEsenzioni;
+		} catch (RuntimeException re) {
+			log.error("findEsenzioneById failed", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<TipoEsenzioni> findEsenzioni(BigInteger idLeggeCondono) {
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(TipoEsenzioni.class);
+			cr.add(Restrictions.eq("idleggeCondono", idLeggeCondono));
+			List<TipoEsenzioni> results = cr.list();
+			return results;
+		} catch (RuntimeException re) {
+			log.error("findEsenzioni failed", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public TipoRiduzione findRiduzioneById(Integer idtipoRiduzione) {
+
+		log.debug("getting TipoRiduzione instance with id: " + idtipoRiduzione);
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			TipoRiduzione tipoRiduzione = new TipoRiduzione();
+			tipoRiduzione.setIdtipoRiduzione(idtipoRiduzione);
+			Criteria cr = sess.createCriteria(TipoRiduzione.class);
+			cr.add(Restrictions.eq("idtipoRiduzione", idtipoRiduzione));
+			List<TipoRiduzione> results = cr.list();
+			if (results != null && !results.isEmpty()) {
+				for (Iterator<TipoRiduzione> iterator = results.iterator(); iterator
+						.hasNext();) {
+					TipoRiduzione tipoRiduzione2 = iterator.next();
+					sess.refresh(tipoRiduzione2);
+					BeanUtils.copyProperties(tipoRiduzione2, tipoRiduzione);
+				}
+			}
+			log.debug("findRiduzioneById successful");
+			sess.close();
+			return tipoRiduzione;
+		} catch (RuntimeException re) {
+			log.error("findRiduzioneById failed", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<TipoRiduzione> findRiduzioni(BigInteger idLeggeCondono) {
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(TipoRiduzione.class);
+			cr.add(Restrictions.eq("idleggeCondono", idLeggeCondono));
+			List<TipoRiduzione> results = cr.list();
+			return results;
+		} catch (RuntimeException re) {
+			log.error("findEsenzioni failed", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<TipologiaRiduzioneReddito> findAllTipologiaRiduzioneReddito() {
+		log.debug("getting TipologiaRiduzioneReddito instance");
+		try {
+			return (List<TipologiaRiduzioneReddito>) hibernateTemplate
+					.findByExample("it.soft.domain.TipologiaRiduzioneReddito",
+							new TipologiaRiduzioneReddito());
+		} catch (RuntimeException re) {
+			log.error("findAllTipologiaRiduzioneReddito failed", re);
+			throw re;
+		}
+	}
+
 }

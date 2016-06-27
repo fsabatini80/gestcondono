@@ -75,7 +75,8 @@ public class WordService {
 
 	public XWPFDocument createDoc(XWPFDocument document,
 			DatiPraticaService praticaService, DatiAbusoService abusoService,
-			String idpratica, String idabuso, String progressivo) throws Exception {
+			String idpratica, String idabuso, String progressivo)
+			throws Exception {
 
 		DatiPraticaPojo praticaDB = praticaService.findById(idpratica);
 		DatiAbusoPojo abusoDB = abusoService.findById(idabuso);
@@ -897,13 +898,10 @@ public class WordService {
 			addTextSimpleBreak(paragraph.createRun(), "INDIRIZZO: "
 					+ relSoggettoAbuso.getIndirizzo());
 			addTab(paragraph, 7);
-			addTextSimpleBreak(
-					paragraph.createRun(),
-					"PALOMBARA-SABINA (CRETONE) 00018, RM"
+			addTextSimpleBreak(paragraph.createRun(),
+					relSoggettoAbuso.getComuneResidenza() + " ("
+							+ relSoggettoAbuso.getProvinciaResidenza() + "), "
 							+ relSoggettoAbuso.getCap());
-			// addTab(paragraph, 7);
-			// addTextSimpleBreak(paragraph.createRun(), "Comune: "
-			// + relSoggettoAbuso.getComuneResidenza());
 			paragraph.createRun().addBreak();
 		}
 	}

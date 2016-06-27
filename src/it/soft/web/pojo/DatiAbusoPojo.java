@@ -34,6 +34,7 @@ public class DatiAbusoPojo implements Serializable {
 	private DatiLocalizzazione localizzazione;
 	private List<SoggettiAbuso> soggettiAbuso;
 	private String autodeterminata;
+	private boolean isResidenzaPrincipale;
 
 	public String getIddatiabuso() {
 		return this.iddatiabuso;
@@ -233,6 +234,14 @@ public class DatiAbusoPojo implements Serializable {
 
 	public void setAutodeterminata(String autodeterminata) {
 		this.autodeterminata = autodeterminata;
+	}
+
+	public boolean getIsResidenzaPrincipale() {
+		return isResidenzaPrincipale;
+	}
+
+	public void setIsResidenzaPrincipale(boolean isResidenzaPrincipale) {
+		this.isResidenzaPrincipale = isResidenzaPrincipale;
 	}
 
 }
