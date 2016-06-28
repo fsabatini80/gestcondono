@@ -8,6 +8,7 @@ import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +132,7 @@ public class DatiVersamentiService {
 	public Double getImportoCalcolatoOblazione(Integer tipoAbuso,
 			Double dataAbuso, String leggeCondono, String idAbuso) {
 
-		// TODO
+		// TODO calcolo legge 2 e calcolo legge 3
 		List<TabCalcOblazione> tabOblList = datiVersamentiHome.findOblazione(
 				dataAbuso, leggeCondono, tipoAbuso);
 		TabCalcOblazione calcOblazione = null;
@@ -162,14 +163,107 @@ public class DatiVersamentiService {
 					abusoDB.getIsResidenzaPrincipale(),
 					"10".equals(abusoDB.getRiduzioni()), false, false, false,
 					false, abusoDB.getDestinazioneUso());
-			// FIXME
+
+			System.out.println("oblazione calcolata per la legge 1: "
+					+ importoObla);
+			return importoObla;
 		}
 
-		/**
-		 * Interessi di mora
-		 * 
-		 */
 		return importoObla;
+	}
+
+	public Double getImportoResiduo(Double oblazioneCalcolata,
+			DatiAbusoPojo abusoDB, Double dataAbuso) {
+		
+		
+		Double im = new Double(0.0);
+		Double interessi = new Double(0.0);
+		Double oblazioneEIM = new Double(0.0);
+		
+		List<DatiVersamento> vers = datiVersamentiHome.findAll(
+				BigInteger.valueOf(Integer.valueOf(abusoDB.getIdPratica())),
+				Integer.valueOf(abusoDB.getProgressivo()));
+		Double importoVersValidi = getVersamentiValidi(dataAbuso, vers);
+		Double autoDetermina = new Double(0.0);
+		if (!StringUtils.isEmptyOrWhitespaceOnly(abusoDB.getAutodeterminata())) {
+			autoDetermina = new Double(abusoDB.getAutodeterminata());
+		}
+		Double delta = autoDetermina - importoVersValidi;
+		
+		// FIXME vanno recuperati i dati per il calcolo degli interessi di mora
+		// con le date!
+		
+		if (delta > 0) {
+			im = (delta * 3) + interessi;
+		}
+		oblazioneEIM = oblazioneCalcolata + im;
+		System.out
+				.println("oblazione calcolata + interessi di mora per la legge 1: "
+						+ oblazioneEIM);
+		Double il = new Double(0.0);
+		// FIXME vanno recuperati i dati per il calcolo degli interessi di mora
+		// con le date!
+		Double t = oblazioneCalcolata - autoDetermina;
+		if (t > 0) {
+			t = delta + il + im;
+		}
+		if (importoVersValidi > autoDetermina) {
+			Double b = oblazioneCalcolata - importoVersValidi;
+			if (im + b < 0) {
+				return new Double(0.0);
+			}
+		}
+		Double importoVersato = new Double(0.0);
+		for (DatiVersamento datiVersamento : vers) {
+
+			if (datiVersamento.getImporto() != null) {
+				importoVersato = Math.abs(importoVersato
+						+ datiVersamento.getImporto());
+			} else if (datiVersamento.getImportoEuro() != null) {
+				importoVersato = Math.abs(importoVersato
+						+ datiVersamento.getImportoEuro());
+			} else if (datiVersamento.getImportoLire() != null) {
+				importoVersato = Math.abs(importoVersato
+						+ Converter.convertLireEuro(datiVersamento
+								.getImportoLire()));
+			} else {
+				importoVersato = Math.abs(new Double(0.0));
+			}
+		}
+		System.out.println("oblazioneCalcolata: " + oblazioneCalcolata);
+		System.out.println("importoVersato: " + importoVersato);
+		return Converter.round((oblazioneEIM - importoVersato), 2);
+	}
+
+	public Double getVersamentiValidi(Double dataAbuso,
+			List<DatiVersamento> vers) {
+		List<DatiVersamento> versamentiValidi = new ArrayList<DatiVersamento>();
+		for (DatiVersamento versamento : vers) {
+			String dataVersa = versamento.getDataVersamento();
+			Double dv = Converter.dateToDouble(dataVersa);
+			if (dv <= dataAbuso) {
+				versamentiValidi.add(versamento);
+			}
+		}
+
+		Double answer = new Double(0.0);
+
+		for (DatiVersamento datiVersamento : versamentiValidi) {
+
+			if (datiVersamento.getImporto() != null) {
+				answer = Math.abs(answer + datiVersamento.getImporto());
+			} else if (datiVersamento.getImportoEuro() != null) {
+				answer = Math.abs(answer + datiVersamento.getImportoEuro());
+			} else if (datiVersamento.getImportoLire() != null) {
+				answer = Math.abs(answer
+						+ Converter.convertLireEuro(datiVersamento
+								.getImportoLire()));
+			} else {
+				answer = Math.abs(new Double(0.0));
+			}
+		}
+
+		return answer;
 	}
 
 	/**

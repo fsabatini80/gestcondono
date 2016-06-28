@@ -44,7 +44,7 @@ public class Converter {
 		}
 	}
 
-	public static Double convertDateToDouble(String data) {
+	public static Double dateToDouble(String data) {
 
 		try {
 			DateFormat originalFormat = new SimpleDateFormat("dd-MM-yyyy");

@@ -92,17 +92,20 @@ public class WordService {
 		Double importoOblazione = datiVersamentiService
 				.getAutodeterminaOblazione(idabuso, progressivo);
 		Double importoCalcolato = datiVersamentiService
-				.getImportoCalcolatoOblazione(Integer.valueOf(abusoDB
-						.getTipologiaAbuso()), Converter
-						.convertDateToDouble(praticaDB.getDataDomanda()),
+				.getImportoCalcolatoOblazione(
+						Integer.valueOf(abusoDB.getTipologiaAbuso()),
+						Converter.dateToDouble(praticaDB.getDataDomanda()),
 						praticaDB.getLeggeCondono(), idabuso);
 		Double importoVersato = datiVersamentiService
 				.getImportoVersatoOblazione(idpratica, progressivo);
+		Double importoRediduo = datiVersamentiService.getImportoResiduo(
+				importoCalcolato, abusoDB,
+				Converter.dateToDouble(praticaDB.getDataDomanda()));
 
 		createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 		createPage2(document, daocumentiDB);
 		createPage3(document, importoOblazione, importoCalcolato,
-				importoVersato);
+				importoVersato, importoRediduo);
 		createPage4(document);
 
 		createFooter(document, praticaDB, abusoDB);
@@ -192,7 +195,8 @@ public class WordService {
 	}
 
 	public void createPage3(XWPFDocument document, Double importoOblazione,
-			Double importoCalcolato, Double importoVersato) {
+			Double importoCalcolato, Double importoVersato,
+			Double importoRediduo) {
 
 		document.createParagraph().createRun().addBreak(BreakType.PAGE);
 		addTextBoldBreakCenter(document.createParagraph().createRun(),
@@ -266,8 +270,8 @@ public class WordService {
 				ParagraphAlignment.CENTER);
 		table4.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(499));
-		addTableCellCenter(table4.getRow(0).getCell(2), "", true,
-				ParagraphAlignment.RIGHT);
+		addTableCellCenter(table4.getRow(0).getCell(2),
+				importoRediduo.toString(), true, ParagraphAlignment.RIGHT);
 		table4.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 				.setW(BigInteger.valueOf(4500));
 
