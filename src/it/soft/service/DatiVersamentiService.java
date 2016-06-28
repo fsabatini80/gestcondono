@@ -3,6 +3,7 @@ package it.soft.service;
 import it.soft.dao.DatiVersamentiHome;
 import it.soft.domain.DatiVersamento;
 import it.soft.domain.TabCalcOblazione;
+import it.soft.domain.TipologiaAbuso;
 import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiVersamentiPojo;
@@ -129,9 +130,10 @@ public class DatiVersamentiService {
 				abuso.getAutodeterminata()) : new Double(0.0));
 	}
 
-	public Double getImportoCalcolatoOblazione(Integer tipoAbuso,
+	public Double getImportoCalcolatoOblazione(TipologiaAbuso tipologiaAbuso,
 			Double dataAbuso, String leggeCondono, String idAbuso) {
 
+		Integer tipoAbuso = tipologiaAbuso.getDescrizioneBreve();
 		// TODO calcolo legge 2 e calcolo legge 3
 		List<TabCalcOblazione> tabOblList = datiVersamentiHome.findOblazione(
 				dataAbuso, leggeCondono, tipoAbuso);
@@ -155,10 +157,10 @@ public class DatiVersamentiService {
 			String superUtileString = abusoDB.getSuperficeUtile();
 
 			supUtilDouble = new Double(superUtileString);
-			importoObla = Converter.round(importoObla * supUtilDouble, 2);
 		}
 
 		if ("1".equals(leggeCondono)) {
+			importoObla = Converter.round(importoObla * supUtilDouble, 2);
 			calcolaRiduzioniLegge1(importoObla, supUtilDouble,
 					abusoDB.getIsResidenzaPrincipale(),
 					"10".equals(abusoDB.getRiduzioni()), false, false, false,
@@ -168,18 +170,28 @@ public class DatiVersamentiService {
 					+ importoObla);
 			return importoObla;
 		}
+		if ("2".equals(leggeCondono)) {
+			if (tipoAbuso == 4 || tipoAbuso == 5 || tipoAbuso == 6
+					|| tipoAbuso == 7) {
+				return importoObla;
+			}
+			importoObla = calcolaRiduzioniLegge2(importoObla, tipoAbuso);
+		}
 
 		return importoObla;
 	}
 
+	private Double calcolaRiduzioniLegge2(Double importoObla,
+			Integer destinazioneUso) {
+		return 0.0;
+	}
+
 	public Double getImportoResiduo(Double oblazioneCalcolata,
 			DatiAbusoPojo abusoDB, Double dataAbuso) {
-		
-		
+
 		Double im = new Double(0.0);
-		Double interessi = new Double(0.0);
 		Double oblazioneEIM = new Double(0.0);
-		
+
 		List<DatiVersamento> vers = datiVersamentiHome.findAll(
 				BigInteger.valueOf(Integer.valueOf(abusoDB.getIdPratica())),
 				Integer.valueOf(abusoDB.getProgressivo()));
@@ -189,13 +201,9 @@ public class DatiVersamentiService {
 			autoDetermina = new Double(abusoDB.getAutodeterminata());
 		}
 		Double delta = autoDetermina - importoVersValidi;
-		
-		// FIXME vanno recuperati i dati per il calcolo degli interessi di mora
-		// con le date!
-		
-		if (delta > 0) {
-			im = (delta * 3) + interessi;
-		}
+		// calcolo interessi di mora
+		im = calcolaInteressiMoraL1(im, delta);
+
 		oblazioneEIM = oblazioneCalcolata + im;
 		System.out
 				.println("oblazione calcolata + interessi di mora per la legge 1: "
@@ -206,12 +214,6 @@ public class DatiVersamentiService {
 		Double t = oblazioneCalcolata - autoDetermina;
 		if (t > 0) {
 			t = delta + il + im;
-		}
-		if (importoVersValidi > autoDetermina) {
-			Double b = oblazioneCalcolata - importoVersValidi;
-			if (im + b < 0) {
-				return new Double(0.0);
-			}
 		}
 		Double importoVersato = new Double(0.0);
 		for (DatiVersamento datiVersamento : vers) {
@@ -230,9 +232,27 @@ public class DatiVersamentiService {
 				importoVersato = Math.abs(new Double(0.0));
 			}
 		}
+		if (importoVersValidi > autoDetermina) {
+			Double b = oblazioneCalcolata - importoVersato;
+			if (im + b < 0) {
+				return new Double(0.0);
+			}
+		}
 		System.out.println("oblazioneCalcolata: " + oblazioneCalcolata);
 		System.out.println("importoVersato: " + importoVersato);
 		return Converter.round((oblazioneEIM - importoVersato), 2);
+	}
+
+	private Double calcolaInteressiMoraL1(Double im, Double delta) {
+
+		Double interessi = new Double(0.0);
+		// FIXME vanno recuperati i dati per il calcolo degli interessi di mora
+		// con le date!
+
+		if (delta > 0) {
+			im = (delta * 3) + interessi;
+		}
+		return im;
 	}
 
 	public Double getVersamentiValidi(Double dataAbuso,

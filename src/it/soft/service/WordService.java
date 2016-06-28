@@ -7,6 +7,7 @@ import it.soft.dao.DatiTerreniHome;
 import it.soft.dao.DestinazioneUsoHome;
 import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
+import it.soft.dao.TipologiaAbusoHome;
 import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiFabbricati;
 import it.soft.domain.DatiTerreni;
@@ -72,6 +73,8 @@ public class WordService {
 	LeggiCondonoHome leggiCondonoHome;
 	@Autowired
 	DatiVersamentiService datiVersamentiService;
+	@Autowired
+	TipologiaAbusoHome tipologiaAbusoHome;
 
 	public XWPFDocument createDoc(XWPFDocument document,
 			DatiPraticaService praticaService, DatiAbusoService abusoService,
@@ -93,8 +96,9 @@ public class WordService {
 				.getAutodeterminaOblazione(idabuso, progressivo);
 		Double importoCalcolato = datiVersamentiService
 				.getImportoCalcolatoOblazione(
-						Integer.valueOf(abusoDB.getTipologiaAbuso()),
-						Converter.dateToDouble(praticaDB.getDataDomanda()),
+						tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
+								.getTipologiaAbuso())), Converter
+								.dateToDouble(praticaDB.getDataDomanda()),
 						praticaDB.getLeggeCondono(), idabuso);
 		Double importoVersato = datiVersamentiService
 				.getImportoVersatoOblazione(idpratica, progressivo);
