@@ -206,6 +206,7 @@ public class PraticheController extends BaseController {
 		String view = "redirect:abusi.htm?idpratica=".concat(this.praticaPojo
 				.getIddatipratica());
 		this.abusoPojo = pojo;
+		pojo.setIdPratica(this.praticaPojo.getIddatipratica());
 		datiAbusoValidator.validate(pojo, errors);
 		if (errors.hasFieldErrors()) {
 			initModelAbuso(model);
@@ -227,7 +228,7 @@ public class PraticheController extends BaseController {
 			throws Exception {
 		this.abusoPojo = datiAbusoService.findById(id);
 		this.praticaPojo = datiPraticaService.findById(this.abusoPojo
-				.getDatiPratica());
+				.getIdPratica());
 		model.addAttribute("datiAbusoPojo", this.abusoPojo);
 		initModelAbuso(model);
 		return new ModelAndView("form/formAbuso", model);
@@ -240,7 +241,7 @@ public class PraticheController extends BaseController {
 		this.abusoPojo = datiAbusoService.findById(id);
 		List<DatiAlloggio> list = datiAbusoService.findAlloggi(id);
 		model.addAttribute("alloggi", list);
-		model.addAttribute("idpratica", this.abusoPojo.getDatiPratica());
+		model.addAttribute("idpratica", this.abusoPojo.getIdPratica());
 		return new ModelAndView(view, model);
 	}
 
@@ -271,7 +272,7 @@ public class PraticheController extends BaseController {
 		String view = "redirect:alloggi.htm?idabuso=".concat(this.abusoPojo
 				.getIddatiabuso());
 		datiAlloggio.setIdAbuso(this.abusoPojo.getIddatiabuso());
-		datiAlloggio.setIdPratica(abusoPojo.getDatiPratica());
+		datiAlloggio.setIdPratica(abusoPojo.getIdPratica());
 		datiAbusoService.saveDatiAlloggio(datiAlloggio);
 		return new ModelAndView(view, model);
 	}
@@ -289,7 +290,7 @@ public class PraticheController extends BaseController {
 		model.addAttribute("documentiAdd", listAdd);
 		model.addAttribute("tipologiaDocumentoPojo",
 				new TipologiaDocumentoPojo());
-		model.addAttribute("idpratica", this.abusoPojo.getDatiPratica());
+		model.addAttribute("idpratica", this.abusoPojo.getIdPratica());
 		return new ModelAndView(view, model);
 	}
 
@@ -333,7 +334,7 @@ public class PraticheController extends BaseController {
 		soggettoNew.setIdAbuso(BigInteger.valueOf(Integer.valueOf(id)));
 		model.addAttribute("soggettoNew", soggettoNew);
 		model.addAttribute("soggetti", list);
-		model.addAttribute("idpratica", this.abusoPojo.getDatiPratica());
+		model.addAttribute("idpratica", this.abusoPojo.getIdPratica());
 		return new ModelAndView(view, model);
 	}
 

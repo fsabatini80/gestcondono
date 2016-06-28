@@ -220,14 +220,6 @@ public class DatiAbusoPojo implements Serializable {
 		this.progressivo = progressivo;
 	}
 
-	public String getDatiPratica() {
-		return datiPratica;
-	}
-
-	public void setDatiPratica(String datiPratica) {
-		this.datiPratica = datiPratica;
-	}
-
 	public String getAutodeterminata() {
 		return autodeterminata;
 	}

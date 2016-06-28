@@ -31,7 +31,7 @@
 						<td>Tipologia*:</td>
 						<td><form:select path="tipologiaAbuso">
 								<form:options items="${tipologiaAbusos}"
-									itemLabel="idtipologiaAbuso" itemValue="descrizioneBreve" />
+									itemLabel="descrizioneBreve" itemValue="idtipologiaAbuso" />
 							</form:select></td>
 						<td><form:errors path="tipologiaAbuso"
 								cssClass="ui-state-error" /></td>
@@ -54,6 +54,7 @@
 								<form:options items="${tipoOperas}" itemLabel="descrizione"
 									itemValue="idtipoOpera" />
 							</form:select></td>
+						<td><form:errors path="tipoOpera" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Autodetermina:</td>
@@ -69,34 +70,49 @@
 					<tr>
 						<td>Superficie utile mq:</td>
 						<td><form:input path="superficeUtile" /></td>
+						<td><form:errors path="superficeUtile"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Volume utile vuoto per pieno mc:</td>
 						<td><form:input path="volumeUtile" /></td>
+						<td><form:errors path="volumeUtile" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Non residenziale/accessori mq:</td>
 						<td><form:input path="nonresidenziale" /></td>
+						<td><form:errors path="nonresidenziale"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Non redenziale/accessori vuoto per pieno mc:</td>
 						<td><form:input path="nonresidenzialeVuoto" /></td>
+						<td><form:errors path="nonresidenzialeVuoto"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Superficie totale insediamento abuso mq:</td>
 						<td><form:input path="superficeTotale" /></td>
+						<td><form:errors path="superficeTotale"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Volume totale insediamento abuso mc:</td>
 						<td><form:input path="volumeTotale" /></td>
+						<td><form:errors path="volumeTotale"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Volume direzionale mc:</td>
 						<td><form:input path="volumeDirezionale" /></td>
+						<td><form:errors path="volumeDirezionale"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Numero Addetti:</td>
 						<td><form:input path="numeroAddetti" /></td>
+						<td><form:errors path="numeroAddetti"
+								cssClass="ui-state-error" /></td>
 					</tr>
 				</table>
 			</div>
@@ -135,8 +151,9 @@
 					</tr>
 					<tr>
 						<td>Residenza Principale</td>
-						<td><form:checkbox path="isResidenzaPrincipale"/></td>
-						<td><form:errors path="isResidenzaPrincipale" cssClass="ui-state-error" /></td>
+						<td><form:checkbox path="isResidenzaPrincipale" /></td>
+						<td><form:errors path="isResidenzaPrincipale"
+								cssClass="ui-state-error" /></td>
 					</tr>
 				</table>
 			</div>

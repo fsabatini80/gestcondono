@@ -34,8 +34,8 @@
 			heightStyle : "content"
 		});
 		$("#accordionDatAbuso").accordion({
-			active : false,
-			collapsible : true,
+			active : true,
+			collapsible : false,
 			heightStyle : "content"
 		});
 		$("#selectable1").selectable();
