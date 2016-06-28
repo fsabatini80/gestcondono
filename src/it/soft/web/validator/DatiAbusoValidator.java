@@ -62,7 +62,7 @@ public class DatiAbusoValidator implements Validator {
 		String destinazioneUso = pojo.getDestinazioneUso();
 		String volumeTotateMC = pojo.getVolumeTotale();
 		Double volumeTotDouble = new Double(0.0);
-		if (volumeTotateMC != null)
+		if (!StringUtils.isEmptyOrWhitespaceOnly(volumeTotateMC))
 			volumeTotDouble = new Double(volumeTotateMC);
 		Double volumeMax = new Double(750);
 		Double volumePerc = volumeTotDouble * 0.3;
