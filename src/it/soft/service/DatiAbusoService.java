@@ -127,7 +127,6 @@ public class DatiAbusoService {
 		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getAutodeterminata()))
 			datiabuso.setAutodeterminata(BigDecimal.valueOf(new Double(pojo
 					.getAutodeterminata())));
-		datiabuso.setIsResidenzaPrincipale(pojo.getIsResidenzaPrincipale());
 		datiAbusoHome.persist(datiabuso);
 
 	}
@@ -172,7 +171,6 @@ public class DatiAbusoService {
 		if (source.getAutodeterminata() != null)
 			target.setAutodeterminata(String.valueOf(source
 					.getAutodeterminata()));
-		target.setIsResidenzaPrincipale(source.getIsResidenzaPrincipale());
 		return target;
 	}
 

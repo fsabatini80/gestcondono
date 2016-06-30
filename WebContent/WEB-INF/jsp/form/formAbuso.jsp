@@ -149,12 +149,6 @@
 						<td><form:input path="reddito" /></td>
 						<td><form:errors path="reddito" cssClass="ui-state-error" /></td>
 					</tr>
-					<tr>
-						<td>Residenza Principale</td>
-						<td><form:checkbox path="isResidenzaPrincipale" /></td>
-						<td><form:errors path="isResidenzaPrincipale"
-								cssClass="ui-state-error" /></td>
-					</tr>
 				</table>
 			</div>
 			<h2>Localizzazione</h2>
@@ -183,7 +177,7 @@
 					</tr>
 					<tr>
 						<td>Immobile soggetto a vincoli di tutela :</td>
-						<td><form:input path="localizzazione.vincoliTutela" /></td>
+						<td><form:checkbox path="localizzazione.vincoliTutela" /></td>
 					</tr>
 				</table>
 			</div>

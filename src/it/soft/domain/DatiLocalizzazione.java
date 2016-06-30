@@ -42,7 +42,7 @@ public class DatiLocalizzazione implements Serializable {
 	private String provincia;
 
 	@Column(name = "vincoli_tutela")
-	private String vincoliTutela;
+	private boolean vincoliTutela;
 
 	@Column(name = "zona_urbanizzazione")
 	private String zonaUrbanizzazione;
@@ -102,11 +102,11 @@ public class DatiLocalizzazione implements Serializable {
 		this.provincia = provincia;
 	}
 
-	public String getVincoliTutela() {
+	public boolean getVincoliTutela() {
 		return this.vincoliTutela;
 	}
 
-	public void setVincoliTutela(String vincoliTutela) {
+	public void setVincoliTutela(boolean vincoliTutela) {
 		this.vincoliTutela = vincoliTutela;
 	}
 

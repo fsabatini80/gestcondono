@@ -162,9 +162,8 @@ public class DatiVersamentiService {
 		if ("1".equals(leggeCondono)) {
 			importoObla = Converter.round(importoObla * supUtilDouble, 2);
 			calcolaRiduzioniLegge1(importoObla, supUtilDouble,
-					abusoDB.getIsResidenzaPrincipale(),
 					"10".equals(abusoDB.getRiduzioni()), false, false, false,
-					false, abusoDB.getDestinazioneUso());
+					abusoDB.getDestinazioneUso());
 
 			System.out.println("oblazione calcolata per la legge 1: "
 					+ importoObla);
@@ -290,8 +289,7 @@ public class DatiVersamentiService {
 	 * @param importoObla
 	 */
 	private void calcolaRiduzioniLegge1(Double importoObla,
-			Double supUtilDouble, boolean residente, boolean primacasa,
-			boolean abitabile, boolean abitazioneLusso,
+			Double supUtilDouble, boolean primacasa, boolean abitazioneLusso,
 			boolean convenzioneUrbanistica, boolean attoObbligo,
 			String destinazioneUso) {
 		// Se 400< abuso mq< 800 allora L. x 1.2 Se 800< abuso mq< 1200 allora
@@ -308,8 +306,7 @@ public class DatiVersamentiService {
 		// non ancora abitabile allora oblazione = -1/3 (NO abitazioni di
 		// lusso,
 		// cat. A/1). Agevolazione valida fino a 150 mq sup. complessiva
-		if (supUtilDouble <= 150 && ((residente && primacasa) || !abitabile)
-				&& !abitazioneLusso) {
+		if (supUtilDouble <= 150 && ((primacasa)) && !abitazioneLusso) {
 			importoObla = importoObla - (importoObla * new Double(0.3));
 		}
 		// Se esiste

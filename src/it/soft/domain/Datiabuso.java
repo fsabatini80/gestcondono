@@ -102,9 +102,6 @@ public class Datiabuso implements Serializable {
 	@Column(name = "autodetermina")
 	private BigDecimal autodeterminata;
 
-	@Column(name = "redenza_principale")
-	private boolean isResidenzaPrincipale;
-
 	public Datiabuso() {
 	}
 
@@ -300,11 +297,4 @@ public class Datiabuso implements Serializable {
 		this.autodeterminata = autodeterminata;
 	}
 
-	public boolean getIsResidenzaPrincipale() {
-		return isResidenzaPrincipale;
-	}
-
-	public void setIsResidenzaPrincipale(boolean isResidenzaPrincipale) {
-		this.isResidenzaPrincipale = isResidenzaPrincipale;
-	}
 }
