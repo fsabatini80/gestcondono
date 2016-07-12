@@ -89,8 +89,9 @@ public class WordService {
 		List<DatiAlloggio> alloggi = datiAlloggioHome
 				.findByIdAbuso(datiAbusoHome.findById(BigDecimal
 						.valueOf(Integer.valueOf(idabuso))));
-		List<DocumentiAbuso> daocumentiDB = abusoService
-				.findAllDocById(idabuso);
+		List<DocumentiAbuso> daocumentiDB = abusoService.findAllDocValid(
+				idabuso, false);
+		// .findAllDocById(idabuso);
 
 		Double importoOblazione = datiVersamentiService
 				.getAutodeterminaOblazione(idabuso, progressivo);

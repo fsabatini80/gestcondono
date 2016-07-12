@@ -139,4 +139,24 @@ public class DocumentiAbusoHome {
 			throw re;
 		}
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<DocumentiAbuso> findAll(Datiabuso iddocumentiAbuso, boolean valido) {
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(DocumentiAbuso.class);
+			cr.add(Restrictions.eq("idAbuso", iddocumentiAbuso));
+			cr.add(Restrictions.eq("valido", valido));
+			List<DocumentiAbuso> results = cr.list();
+			sess.close();
+			return results;
+		} catch (RuntimeException re) {
+			log.error("count failed", re);
+			throw re;
+		}
+	}
+	
 }
