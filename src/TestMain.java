@@ -1,6 +1,11 @@
+import it.soft.service.MailService;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class TestMain {
 
@@ -9,7 +14,16 @@ public class TestMain {
 	 */
 	public static void main(String[] args) {
 		// System.out.println(checkDoubleFormat("2511.22").toString());
-		System.out.println(convertDateToDouble("22-02-1983"));
+//		System.out.println(convertDateToDouble("22-02-1983"));
+		
+		ApplicationContext context = 
+	             new ClassPathXmlApplicationContext("disp-servlet.xml");
+	    	 
+	    	MailService mm = (MailService) context.getBean("mailService");
+	        mm.sendMail("from@no-spam.com",
+	    		   "f.sabatini80@gmail.com",
+	    		   "Testing123", 
+	    		   "Testing only \n\n Hello Spring Email Sender");
 		System.exit(1);
 	}
 

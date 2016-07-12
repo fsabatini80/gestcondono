@@ -143,7 +143,7 @@
 
 
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="smtp.linkem.com" />
+		<property name="host" value="smtp.live.com" />
 		<property name="port" value="25" />
 		<property name="username" value="postmaster@aneda.it" />
 		<property name="password" value="478mari15ani" />
