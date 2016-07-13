@@ -25,7 +25,7 @@ public class Converter {
 	public static String dateToString(Date data) {
 		if (data == null)
 			return null;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 		return dateFormat.format(data);
 	}
 

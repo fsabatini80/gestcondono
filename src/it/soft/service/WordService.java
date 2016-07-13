@@ -99,7 +99,7 @@ public class WordService {
 				.getImportoCalcolatoOblazione(
 						tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
 								.getTipologiaAbuso())), Converter
-								.dateToDouble(praticaDB.getDataDomanda()),
+								.dateToDouble(praticaDB.getDataCreazione()),
 						praticaDB.getLeggeCondono(), idabuso, abusoDB
 								.getDestinazioneUso());
 		Double importoVersato = datiVersamentiService

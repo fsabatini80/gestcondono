@@ -10,6 +10,7 @@ public class DatiPraticaPojo implements Serializable {
 	private String idutente;
 	private String dataDomanda;
 	private String dataProtocollo;
+	private String dataCreazione;
 	private String leggeCondono;
 	private String numeroPratica;
 	private String numeroProtocollo;
@@ -251,6 +252,14 @@ public class DatiPraticaPojo implements Serializable {
 
 	public void setIdutente(String idutente) {
 		this.idutente = idutente;
+	}
+
+	public String getDataCreazione() {
+		return dataCreazione;
+	}
+
+	public void setDataCreazione(String dataCreazione) {
+		this.dataCreazione = dataCreazione;
 	}
 	
 }

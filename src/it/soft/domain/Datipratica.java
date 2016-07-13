@@ -29,6 +29,9 @@ public class Datipratica implements Serializable {
 
 	@Column(name = "data_domanda", length = 10)
 	private String dataDomanda;
+	
+	@Column(name = "data_creazione", length = 10)
+	private String dataCreazione;
 
 	@Column(name = "data_protocollo", length = 10)
 	private String dataProtocollo;
@@ -125,6 +128,14 @@ public class Datipratica implements Serializable {
 
 	public void setRichiedente(Richiedente richiedente) {
 		this.richiedente = richiedente;
+	}
+
+	public String getDataCreazione() {
+		return dataCreazione;
+	}
+
+	public void setDataCreazione(String dataCreazione) {
+		this.dataCreazione = dataCreazione;
 	}
 	
 }

@@ -9,6 +9,7 @@ import it.soft.util.Converter;
 import it.soft.web.pojo.DatiPraticaPojo;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,13 @@ public class DatiPraticaService {
 
 	public Datipratica saveDatiPratica(DatiPraticaPojo pojo) {
 		Datipratica datipratica;
-		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIddatipratica()))
+		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getIddatipratica())) {
 			datipratica = datiPraticaHome.findById(BigDecimal.valueOf(Integer
 					.parseInt(pojo.getIddatipratica())));
-		else
+		} else {
 			datipratica = new Datipratica();
+			datipratica.setDataCreazione(Converter.dateToString(new Date()));
+		}
 		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getDataDomanda()))
 			datipratica.setDataDomanda(pojo.getDataDomanda());
 		if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getDataProtocollo()))
@@ -92,6 +95,7 @@ public class DatiPraticaService {
 		target.setComuneResidenza(source.getRichiedente() != null ? source
 				.getRichiedente().getComuneResidenza() : "");
 		target.setDataDomanda(source.getDataDomanda());
+		target.setDataCreazione(source.getDataCreazione());
 		target.setDataNascita(source.getRichiedente() != null ? source
 				.getRichiedente().getDataNascita() : null);
 		target.setDataProtocollo(source.getDataProtocollo());
