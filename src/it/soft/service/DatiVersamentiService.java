@@ -131,7 +131,7 @@ public class DatiVersamentiService {
 	}
 
 	public Double getImportoCalcolatoOblazione(TipologiaAbuso tipologiaAbuso,
-			Double dataAbuso, String leggeCondono, String idAbuso) {
+			Double dataAbuso, String leggeCondono, String idAbuso, String destinazioneUso) {
 
 		Integer tipoAbuso = tipologiaAbuso.getDescrizioneBreve();
 		// TODO calcolo legge 2 e calcolo legge 3
@@ -147,6 +147,10 @@ public class DatiVersamentiService {
 				&& ("1".equals(leggeCondono) || "2".equals(leggeCondono))) {
 			importoObla = Converter.convertLireEuro(new Double(calcOblazione
 					.getImportoOblazione()));
+			//se la destinazione uso è diversa da RESIDENZIALE, gli importi in tabella vanno divisi per 2
+			if("1".equals(leggeCondono) && !"1".equals(destinazioneUso)){
+				importoObla = importoObla /2;
+			}
 			System.out.println(importoObla.doubleValue());
 		}
 
@@ -162,8 +166,9 @@ public class DatiVersamentiService {
 		if ("1".equals(leggeCondono)) {
 			importoObla = Converter.round(importoObla * supUtilDouble, 2);
 			calcolaRiduzioniLegge1(importoObla, supUtilDouble,
-					"10".equals(abusoDB.getRiduzioni()), false, false, false,
-					abusoDB.getDestinazioneUso());
+					"10".equals(abusoDB.getRiduzioni()), abusoDB
+							.getLocalizzazione().getAbitazioneLusso(), false,
+					false, abusoDB.getDestinazioneUso());
 
 			System.out.println("oblazione calcolata per la legge 1: "
 					+ importoObla);

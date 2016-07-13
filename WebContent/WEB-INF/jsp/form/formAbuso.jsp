@@ -179,6 +179,10 @@
 						<td>Immobile soggetto a vincoli di tutela :</td>
 						<td><form:checkbox path="localizzazione.vincoliTutela" /></td>
 					</tr>
+					<tr>
+						<td>Abitazione di lusso :</td>
+						<td><form:checkbox path="localizzazione.abitazioneLusso" /></td>
+					</tr>
 				</table>
 			</div>
 		</div>

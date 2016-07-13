@@ -44,6 +44,9 @@ public class DatiLocalizzazione implements Serializable {
 	@Column(name = "vincoli_tutela")
 	private boolean vincoliTutela;
 
+	@Column(name = "abitazione_lusso")
+	private boolean abitazioneLusso;
+
 	@Column(name = "zona_urbanizzazione")
 	private String zonaUrbanizzazione;
 
@@ -124,6 +127,14 @@ public class DatiLocalizzazione implements Serializable {
 
 	public void setDatiabuso(Datiabuso datiabuso) {
 		this.datiabuso = datiabuso;
+	}
+
+	public boolean getAbitazioneLusso() {
+		return abitazioneLusso;
+	}
+
+	public void setAbitazioneLusso(boolean abitazioneLusso) {
+		this.abitazioneLusso = abitazioneLusso;
 	}
 
 }

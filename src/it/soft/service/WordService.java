@@ -100,7 +100,8 @@ public class WordService {
 						tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
 								.getTipologiaAbuso())), Converter
 								.dateToDouble(praticaDB.getDataDomanda()),
-						praticaDB.getLeggeCondono(), idabuso);
+						praticaDB.getLeggeCondono(), idabuso, abusoDB
+								.getDestinazioneUso());
 		Double importoVersato = datiVersamentiService
 				.getImportoVersatoOblazione(idpratica, progressivo);
 		Double importoRediduo = datiVersamentiService.getImportoResiduo(
