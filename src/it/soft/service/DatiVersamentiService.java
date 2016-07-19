@@ -1,7 +1,9 @@
 package it.soft.service;
 
 import it.soft.dao.DatiVersamentiHome;
+import it.soft.dao.InteressiLegaliHome;
 import it.soft.domain.DatiVersamento;
+import it.soft.domain.InteressiLegali;
 import it.soft.domain.TabCalcOblazione;
 import it.soft.domain.TipologiaAbuso;
 import it.soft.util.Converter;
@@ -10,6 +12,7 @@ import it.soft.web.pojo.DatiVersamentiPojo;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public class DatiVersamentiService {
 
 	@Autowired
 	DatiAbusoService datiAbusoService;
+
+	@Autowired
+	InteressiLegaliHome interessiLegaliHome;
 
 	public void persist(DatiVersamentiPojo pojo) {
 		DatiVersamento versamenti = new DatiVersamento();
@@ -131,7 +137,8 @@ public class DatiVersamentiService {
 	}
 
 	public Double getImportoCalcolatoOblazione(TipologiaAbuso tipologiaAbuso,
-			Double dataAbuso, String leggeCondono, String idAbuso, String destinazioneUso) {
+			Double dataAbuso, String leggeCondono, String idAbuso,
+			String destinazioneUso) {
 
 		Integer tipoAbuso = tipologiaAbuso.getDescrizioneBreve();
 		// TODO calcolo legge 2 e calcolo legge 3
@@ -147,9 +154,10 @@ public class DatiVersamentiService {
 				&& ("1".equals(leggeCondono) || "2".equals(leggeCondono))) {
 			importoObla = Converter.convertLireEuro(new Double(calcOblazione
 					.getImportoOblazione()));
-			//se la destinazione uso è diversa da RESIDENZIALE, gli importi in tabella vanno divisi per 2
-			if("1".equals(leggeCondono) && !"1".equals(destinazioneUso)){
-				importoObla = importoObla /2;
+			// se la destinazione uso è diversa da RESIDENZIALE, gli importi in
+			// tabella vanno divisi per 2
+			if ("1".equals(leggeCondono) && !"1".equals(destinazioneUso)) {
+				importoObla = importoObla / 2;
 			}
 			System.out.println(importoObla.doubleValue());
 		}
@@ -190,7 +198,7 @@ public class DatiVersamentiService {
 		return 0.0;
 	}
 
-	public Double getImportoResiduo(Double oblazioneCalcolata,
+	public Double getOblazioneDovuta(Double oblazioneCalcolata,
 			DatiAbusoPojo abusoDB, Double dataAbuso) {
 
 		Double im = new Double(0.0);
@@ -205,16 +213,17 @@ public class DatiVersamentiService {
 			autoDetermina = new Double(abusoDB.getAutodeterminata());
 		}
 		Double delta = autoDetermina - importoVersValidi;
-		// calcolo interessi di mora
-		im = calcolaInteressiMoraL1(im, delta);
 
+		// calcolo interessi di mora
+		im = calcolaInteressiMoraL1(dataAbuso, new Date(), delta);
 		oblazioneEIM = oblazioneCalcolata + im;
 		System.out
 				.println("oblazione calcolata + interessi di mora per la legge 1: "
 						+ oblazioneEIM);
-		Double il = new Double(0.0);
-		// FIXME vanno recuperati i dati per il calcolo degli interessi di mora
-		// con le date!
+		// calcolo interessi legali
+		Double il = calcolaIL(dataAbuso, Converter.dateToDouble(
+				Converter.dateToString(new Date()), "yyyyMMdd"),
+				oblazioneCalcolata);
 		Double t = oblazioneCalcolata - autoDetermina;
 		if (t > 0) {
 			t = delta + il + im;
@@ -244,19 +253,22 @@ public class DatiVersamentiService {
 		}
 		System.out.println("oblazioneCalcolata: " + oblazioneCalcolata);
 		System.out.println("importoVersato: " + importoVersato);
-		return Converter.round((oblazioneEIM - importoVersato), 2);
+		return Converter.round(
+				(im + il + (oblazioneCalcolata - importoVersato)), 2);
 	}
 
-	private Double calcolaInteressiMoraL1(Double im, Double delta) {
+	private Double calcolaInteressiMoraL1(Double dataAbuso, Date dataOdierna,
+			Double delta) {
 
 		Double interessi = new Double(0.0);
-		// FIXME vanno recuperati i dati per il calcolo degli interessi di mora
-		// con le date!
+		Double oblaIM = delta * 3;
+		String dataOdiernaString = Converter.dateToString(dataOdierna);
+		interessi = oblaIM
+				+ calcolaIL(dataAbuso,
+						Converter.dateToDouble(dataOdiernaString, "yyyyMMdd"),
+						oblaIM);
 
-		if (delta > 0) {
-			im = (delta * 3) + interessi;
-		}
-		return im;
+		return interessi;
 	}
 
 	public Double getVersamentiValidi(Double dataAbuso,
@@ -264,9 +276,11 @@ public class DatiVersamentiService {
 		List<DatiVersamento> versamentiValidi = new ArrayList<DatiVersamento>();
 		for (DatiVersamento versamento : vers) {
 			String dataVersa = versamento.getDataVersamento();
-			Double dv = Converter.dateToDouble(dataVersa);
-			if (dv <= dataAbuso) {
-				versamentiValidi.add(versamento);
+			if (dataVersa != null && !"".equals(dataVersa)) {
+				Double dv = Converter.dateToDouble(dataVersa);
+				if (dv <= dataAbuso) {
+					versamentiValidi.add(versamento);
+				}
 			}
 		}
 
@@ -358,6 +372,58 @@ public class DatiVersamentiService {
 		if (destinazioneUso.equals("5")) {
 			importoObla = importoObla - (importoObla * new Double(0.3));
 		}
+	}
+
+	private Double calcolaIL(Double dataInizioIM, Double dataOdierna,
+			Double delta) {
+
+		Double sommaimportoDeltaOblaCalcAut = new Double(delta);
+
+		String dataInizioIMString = String.valueOf(dataInizioIM);
+		String dataOdiernaString = String.valueOf(dataOdierna);
+
+		dataInizioIMString = dataInizioIMString.replace(".", "");
+		dataOdiernaString = dataOdiernaString.replace(".", "");
+
+		Integer annoInizioIM = Integer.parseInt(dataInizioIMString.substring(0,
+				4));
+		Integer annoOdierna = Integer.parseInt(dataOdiernaString
+				.substring(0, 4));
+
+		long ggInteroAnno = 0;
+
+		Double interessiAnno = new Double(0.0);
+
+		Integer annoStart = annoInizioIM;
+		Integer annoEnd = annoOdierna;
+		for (int i = annoStart; annoStart < annoEnd; annoStart++) {
+
+			String dataInizioAnno = annoStart + "1231";
+			List<InteressiLegali> list = interessiLegaliHome
+					.findByDtFine(new Double(dataInizioAnno));
+
+			for (InteressiLegali interessiLegali : list) {
+				ggInteroAnno = interessiLegali.getGiorni();
+				interessiAnno = interessiLegali.getPercentuale();
+			}
+			sommaimportoDeltaOblaCalcAut = sommaimportoDeltaOblaCalcAut
+					+ applicaPercentuale(delta, ggInteroAnno, ggInteroAnno,
+							interessiAnno);
+		}
+		return sommaimportoDeltaOblaCalcAut;
+	}
+
+	private static Double applicaPercentuale(Double importoDeltaOblaCalcAut,
+			long ggInteroAnno, long ggPrimoAnno, Double interessiAnno) {
+
+		Double importoAnnoIntero = importoDeltaOblaCalcAut
+				* (interessiAnno / 100);
+		Double percAnnoFraz = (((new Double(ggPrimoAnno) * new Double(100)) / new Double(
+				ggInteroAnno)) / new Double(100));
+		if (percAnnoFraz.intValue() != 1) {
+			return Converter.round((importoAnnoIntero * percAnnoFraz), 2);
+		}
+		return Converter.round(importoAnnoIntero, 2);
 	}
 
 	public void remove(String id) {

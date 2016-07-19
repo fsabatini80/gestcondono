@@ -93,8 +93,12 @@ public class WordService {
 				idabuso, false);
 		// .findAllDocById(idabuso);
 
-		Double importoOblazione = datiVersamentiService
+		Double importoOblazioneAut = datiVersamentiService
 				.getAutodeterminaOblazione(idabuso, progressivo);
+		
+		Double importoVersato = datiVersamentiService
+				.getImportoVersatoOblazione(idpratica, progressivo);
+		
 		Double importoCalcolato = datiVersamentiService
 				.getImportoCalcolatoOblazione(
 						tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
@@ -102,16 +106,15 @@ public class WordService {
 								.dateToDouble(praticaDB.getDataCreazione()),
 						praticaDB.getLeggeCondono(), idabuso, abusoDB
 								.getDestinazioneUso());
-		Double importoVersato = datiVersamentiService
-				.getImportoVersatoOblazione(idpratica, progressivo);
-		Double importoRediduo = datiVersamentiService.getImportoResiduo(
+		
+		Double oblazioneDovuta = datiVersamentiService.getOblazioneDovuta(
 				importoCalcolato, abusoDB,
-				Converter.dateToDouble(praticaDB.getDataDomanda()));
+				Converter.dateToDouble(praticaDB.getDataCreazione()));
 
 		createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 		createPage2(document, daocumentiDB);
-		createPage3(document, importoOblazione, importoCalcolato,
-				importoVersato, importoRediduo);
+		createPage3(document, importoOblazioneAut, importoCalcolato,
+				importoVersato, oblazioneDovuta);
 		createPage4(document);
 
 		createFooter(document, praticaDB, abusoDB);
@@ -188,8 +191,8 @@ public class WordService {
 			document.createParagraph()
 					.createRun()
 					.addPicture(is, Document.PICTURE_TYPE_JPEG,
-							"ultima pag statica.jpg", Units.toEMU(500),
-							Units.toEMU(700));
+							"ultima pag statica.jpg", Units.toEMU(450),
+							Units.toEMU(650));
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {

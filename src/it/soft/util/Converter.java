@@ -44,10 +44,46 @@ public class Converter {
 		}
 	}
 
+	public static Date convertData(String dataDomanda, String format) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+		try {
+			return dateFormat.parse(dataDomanda);
+		} catch (ParseException e) {
+			throw new CustomException("99", e.getMessage());
+		}
+	}
+
+	/**
+	 * converte date stringa formattate dd-MM-yyyy
+	 * 
+	 * @param data
+	 * @return Double nel formato yyyyMMdd
+	 */
+
 	public static Double dateToDouble(String data) {
 
 		try {
 			DateFormat originalFormat = new SimpleDateFormat("dd-MM-yyyy");
+			DateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
+			Date date = originalFormat.parse(data);
+			String formattedDate = targetFormat.format(date);
+			return new Double(formattedDate);
+		} catch (Exception e) {
+			throw new CustomException("99", e.getMessage());
+		}
+	}
+
+	/**
+	 * converte date stringa formattate parametro
+	 * 
+	 * @param data
+	 * @return Double nel formato yyyyMMdd
+	 */
+
+	public static Double dateToDouble(String data, String format) {
+
+		try {
+			DateFormat originalFormat = new SimpleDateFormat(format);
 			DateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
 			Date date = originalFormat.parse(data);
 			String formattedDate = targetFormat.format(date);
