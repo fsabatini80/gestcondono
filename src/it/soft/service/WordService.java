@@ -12,6 +12,7 @@ import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiFabbricati;
 import it.soft.domain.DatiTerreni;
 import it.soft.domain.DocumentiAbuso;
+import it.soft.domain.EpocaAbuso;
 import it.soft.domain.RelSoggettoAbuso;
 import it.soft.domain.TipologiaDestinazioneUso;
 import it.soft.util.Converter;
@@ -95,18 +96,21 @@ public class WordService {
 
 		Double importoOblazioneAut = datiVersamentiService
 				.getAutodeterminaOblazione(idabuso, progressivo);
-		
+
 		Double importoVersato = datiVersamentiService
 				.getImportoVersatoOblazione(idpratica, progressivo);
-		
+
+		EpocaAbuso epocaAbuso = epocaAbusoHome.findById(Integer
+				.parseInt(praticaDB.getLeggeCondono()));
+
 		Double importoCalcolato = datiVersamentiService
 				.getImportoCalcolatoOblazione(
 						tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
 								.getTipologiaAbuso())), Converter
-								.dateToDouble(praticaDB.getDataCreazione()),
+								.dateToDouble(epocaAbuso.getEpocaDa()),
 						praticaDB.getLeggeCondono(), idabuso, abusoDB
 								.getDestinazioneUso());
-		
+
 		Double oblazioneDovuta = datiVersamentiService.getOblazioneDovuta(
 				importoCalcolato, abusoDB,
 				Converter.dateToDouble(praticaDB.getDataCreazione()));

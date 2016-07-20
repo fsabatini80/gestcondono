@@ -46,6 +46,9 @@ public class DatiLocalizzazione implements Serializable {
 
 	@Column(name = "abitazione_lusso")
 	private boolean abitazioneLusso;
+	
+	@Column(name = "convenzione_urbanistica")
+	private boolean convenzione_urbanistica;
 
 	@Column(name = "zona_urbanizzazione")
 	private String zonaUrbanizzazione;
@@ -135,6 +138,14 @@ public class DatiLocalizzazione implements Serializable {
 
 	public void setAbitazioneLusso(boolean abitazioneLusso) {
 		this.abitazioneLusso = abitazioneLusso;
+	}
+
+	public boolean getConvenzione_urbanistica() {
+		return convenzione_urbanistica;
+	}
+
+	public void setConvenzione_urbanistica(boolean convenzione_urbanistica) {
+		this.convenzione_urbanistica = convenzione_urbanistica;
 	}
 
 }

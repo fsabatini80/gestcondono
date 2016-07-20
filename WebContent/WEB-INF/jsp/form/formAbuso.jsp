@@ -183,6 +183,10 @@
 						<td>Abitazione di lusso :</td>
 						<td><form:checkbox path="localizzazione.abitazioneLusso" /></td>
 					</tr>
+					<tr>
+						<td>Immobile con convenzione urbanistica :</td>
+						<td><form:checkbox path="localizzazione.convenzione_urbanistica" /></td>
+					</tr>
 				</table>
 			</div>
 		</div>

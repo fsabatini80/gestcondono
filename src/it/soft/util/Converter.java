@@ -13,7 +13,7 @@ public class Converter {
 
 		if (data == null)
 			return null;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 		try {
 			return dateFormat.parse(data);
 		} catch (ParseException e) {
