@@ -173,7 +173,12 @@
 					</tr>
 					<tr>
 						<td>Zona urbanizzazione :</td>
-						<td><form:input path="localizzazione.zonaUrbanizzazione" /></td>
+						<td><form:select path="localizzazione.zonaUrbanizzazione">
+								<form:option value="" />
+								<form:option value="ZONA E" />
+								<form:option value="ZONA B" />
+								<form:option value="ZONA A" />
+							</form:select></td>
 					</tr>
 					<tr>
 						<td>Immobile soggetto a vincoli di tutela :</td>
@@ -185,7 +190,8 @@
 					</tr>
 					<tr>
 						<td>Immobile con convenzione urbanistica :</td>
-						<td><form:checkbox path="localizzazione.convenzione_urbanistica" /></td>
+						<td><form:checkbox
+								path="localizzazione.convenzione_urbanistica" /></td>
 					</tr>
 				</table>
 			</div>

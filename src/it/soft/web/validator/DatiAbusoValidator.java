@@ -56,10 +56,23 @@ public class DatiAbusoValidator implements Validator {
 		}
 	}
 
+	/**
+	 * Nuove costruzioni con destinazione d’uso residenziale che superano i 750
+	 * mc o ampliamenti con destinazione d’uso residenziale che superano il 30%
+	 * del volume totale
+	 * 
+	 * @param dp
+	 * @param pojo
+	 * @return
+	 */
+
 	private boolean abusoNonSanabile(Datipratica dp, DatiAbusoPojo pojo) {
 
 		String tipoOpera = pojo.getTipoOpera();
 		String destinazioneUso = pojo.getDestinazioneUso();
+		// destinazione uso diverso da residenziale
+				if (!"1".equals(destinazioneUso))
+					return false;
 		String volumeTotateMC = pojo.getVolumeTotale();
 		Double volumeTotDouble = new Double(0.0);
 		if (!StringUtils.isEmptyOrWhitespaceOnly(volumeTotateMC))
@@ -67,8 +80,9 @@ public class DatiAbusoValidator implements Validator {
 		Double volumeMax = new Double(750);
 		Double volumePerc = volumeTotDouble * 0.3;
 
-		return (("1".equals(tipoOpera) || "2".equals(tipoOpera))
-				&& "1".equals(destinazioneUso) && (volumeTotDouble > volumeMax || volumeTotDouble > volumePerc));
+		// apliamento con volume totale maggiore del 30% del volume
+		return ("1".equals(tipoOpera) && volumeTotDouble > volumePerc)
+				|| ("2".equals(tipoOpera) && volumeTotDouble > volumeMax);
 	}
 
 }
