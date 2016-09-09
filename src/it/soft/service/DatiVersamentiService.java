@@ -12,6 +12,7 @@ import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -172,15 +173,18 @@ public class DatiVersamentiService {
 
 	DatiAbusoPojo abusoDB = datiAbusoService.findById(idAbuso);
 	Double supUtilDouble = new Double(0.0);
+	Double supUtilNRDouble = new Double(0.0);
 	if (abusoDB != null && abusoDB.getSuperficeUtile() != null
 		&& !"".equals(abusoDB.getSuperficeUtile().trim())) {
 	    String superUtileString = abusoDB.getSuperficeUtile();
 	    supUtilDouble = new Double(superUtileString);
+	    supUtilNRDouble = new Double(abusoDB.getNonresidenziale());
 	}
-
+	// legge n. 47/85
 	if ("1".equals(leggeCondono)) {
 	    return calcolaLegge1(importoObla, abusoDB, supUtilDouble);
 	}
+	// legge n. 724/94
 	if ("2".equals(leggeCondono)) {
 
 	    // tipo reddito 10 dipendente 20 non dipendente
@@ -201,15 +205,18 @@ public class DatiVersamentiService {
 			abusoDB.getLocalizzazione().getAbitazioneLusso(),
 			abusoDB.getLocalizzazione()
 				.getConvenzione_urbanistica(),
-			abusoDB.getDestinazioneUso(), riduzioneRedditoBean);
+			abusoDB.getDestinazioneUso(), riduzioneRedditoBean,
+			abusoDB.getLocalizzazione().getZonaUrbanizzazione());
 		return importoObla;
 	    }
-	    importoObla = importoObla * supUtilDouble;
+	    importoObla = importoObla
+		    * (supUtilDouble + (supUtilNRDouble * 0.6));
 	    importoObla = calcolaRiduzioniLegge2(importoObla, supUtilDouble,
 		    "10".equals(abusoDB.getRiduzioni()), abusoDB
 			    .getLocalizzazione().getAbitazioneLusso(), abusoDB
 			    .getLocalizzazione().getConvenzione_urbanistica(),
-		    abusoDB.getDestinazioneUso(), riduzioneRedditoBean);
+		    abusoDB.getDestinazioneUso(), riduzioneRedditoBean, abusoDB
+			    .getLocalizzazione().getZonaUrbanizzazione());
 	}
 
 	return importoObla;
@@ -232,16 +239,34 @@ public class DatiVersamentiService {
     private Double calcolaRiduzioniLegge2(Double importoObla,
 	    Double supUtilDouble, boolean primacasa, boolean abitazioneLusso,
 	    boolean convenzioneUrbanistica, String destinazioneUso,
-	    RiduzioneReddito riduzioneRedditoBean) {
+	    RiduzioneReddito riduzioneRedditoBean, String zonaUrbanizzazione) {
 
 	calcolaRiduzioniLegge1(importoObla, supUtilDouble, primacasa,
 		abitazioneLusso, convenzioneUrbanistica, destinazioneUso);
+
+	// riduzione per reddito
+	if (riduzioneRedditoBean != null) {
+	    BigDecimal riduzioneRedditoPerc = riduzioneRedditoBean
+		    .getRiduzione();
+	    importoObla = importoObla * riduzioneRedditoPerc.doubleValue()
+		    / 100;
+	}
+	// riduzione/maggiorazione per zona urbanistica
+	if (supUtilDouble <= 150) {
+	    if ("ZONA E".equals(zonaUrbanizzazione)) {
+		importoObla = importoObla * 0.85;
+	    } else if ("ZONA B".equals(zonaUrbanizzazione)) {
+		importoObla = importoObla * 1.20;
+	    } else if ("ZONA A".equals(zonaUrbanizzazione)) {
+		importoObla = importoObla * 1.30;
+	    }
+	}
 
 	return importoObla;
     }
 
     public Double getOblazioneDovuta(Double oblazioneCalcolata,
-	    DatiAbusoPojo abusoDB, Double dataAbuso) {
+	    DatiAbusoPojo abusoDB, Double dataAbuso, String leggeCondono) {
 
 	Double im = new Double(0.0);
 	Double oblazioneEIM = new Double(0.0);
@@ -257,13 +282,15 @@ public class DatiVersamentiService {
 	Double delta = autoDetermina - importoVersValidi;
 
 	// calcolo interessi di mora
-	if (delta > 0)
-	    im = calcolaInteressiMoraL1(new Double(19960401), new Date(), delta);
-	oblazioneEIM = oblazioneCalcolata + im;
-	System.out
-		.println("oblazione calcolata + interessi di mora per la legge 1: "
-			+ oblazioneEIM);
-
+	if ("1".equals(leggeCondono)) {
+	    if (delta > 0)
+		im = calcolaInteressiMoraL1(new Double(19960401), new Date(),
+			delta);
+	    oblazioneEIM = oblazioneCalcolata + im;
+	    System.out
+		    .println("oblazione calcolata + interessi di mora per la legge 1: "
+			    + oblazioneEIM);
+	}
 	Double t = oblazioneCalcolata - autoDetermina;
 	if (t > 0 && importoVersValidi < autoDetermina) {
 
