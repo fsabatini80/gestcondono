@@ -54,7 +54,7 @@
 				<td><form:input path="dataNascita" id="datepicker1" /></td>
 			</tr>
 			<tr class="ui-widget-content">
-				<td>Provincia di nasicita</td>
+				<td>Provincia di nascita</td>
 				<td><form:input path="provinciaNascita" /></td>
 			</tr>
 			<tr class="ui-widget-content">
@@ -62,7 +62,7 @@
 				<td><form:input path="comuneNascita" /></td>
 			</tr>
 			<tr class="ui-widget-content">
-				<td>Stato estero nasicita</td>
+				<td>Stato estero nascita</td>
 				<td><form:input path="statoEsteroNas" /></td>
 			</tr>
 			<tr class="ui-widget-content">
