@@ -2,6 +2,7 @@ package it.soft.dao;
 
 import it.soft.domain.RiduzioneReddito;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
@@ -84,10 +85,10 @@ public class RiduzioneRedditoHome {
 	    riduzioneReddito.setIdriduzioneReddito(id);
 	    Criteria cr = sess.createCriteria(RiduzioneReddito.class);
 	    cr.add(Restrictions.eq("idriduzioneReddito", id));
-	    cr.add(Restrictions.ge("redditoDa", reddito));
-	    cr.add(Restrictions.le("redditoA", reddito));
-	    cr.add(Restrictions.ge("superficeDa", superfice));
-	    cr.add(Restrictions.le("superficeA", superfice));
+	    cr.add(Restrictions.ge("redditoDa", new BigDecimal(reddito)));
+	    cr.add(Restrictions.le("redditoA", new BigDecimal(reddito)));
+	    cr.add(Restrictions.ge("superficeDa", new BigDecimal(superfice)));
+	    cr.add(Restrictions.le("superficeA", new BigDecimal(superfice)));
 	    List<RiduzioneReddito> results = cr.list();
 	    if (results != null && !results.isEmpty()) {
 		for (Iterator<RiduzioneReddito> iterator = results.iterator(); iterator

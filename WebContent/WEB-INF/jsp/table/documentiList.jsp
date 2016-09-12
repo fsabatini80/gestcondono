@@ -64,14 +64,15 @@
 						</c:if></td>
 					<td><a
 						href="<c:url value="modificaDocumento.htm?iddocumento=${doc.iddocumentiAbuso}" />"><img
-							src="img/document_edit.png"></a><img
-						src="img/document_delete.png"></td>
+							src="img/document_edit.png"></a> <a
+						href="<c:url value="eliminaDocumento.htm?iddocumento=${doc.iddocumentiAbuso}" />"><img
+							src="img/document_delete.png"></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
 </div>
 <div>
-	<a href="<c:url value="abusi.htm?idpratica=${idpratica}" />" title="INDIETRO">
-		INDIETRO </a>
+	<a href="<c:url value="abusi.htm?idpratica=${idpratica}" />"
+		title="INDIETRO"> INDIETRO </a>
 </div>

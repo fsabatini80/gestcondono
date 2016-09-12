@@ -66,7 +66,7 @@
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Data Documento :</td>
-					<td><form:input path="cognome" id="datepicker1" /></td>
+					<td><form:input path="cognome" id="datepicker2" /></td>
 				</tr>
 			</table>
 			<form:button>Salva</form:button>

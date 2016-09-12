@@ -59,25 +59,23 @@
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			shortYearCutoff : 100
 		});
 		$("#datepicker1").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			shortYearCutoff : 100
+			//shortYearCutoff : 100
 		});
 		$("#datepicker2").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			shortYearCutoff : 100
+		
 		});
 		$("#datepicker3").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			shortYearCutoff : 100
 		});
 
 		$("#effect").hide();

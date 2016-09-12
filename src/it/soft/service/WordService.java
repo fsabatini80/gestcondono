@@ -903,9 +903,11 @@ public class WordService {
 	    DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
 	    List<RelSoggettoAbuso> listaSoggetti) {
 	addTab(paragraph, 7);
-	String testo1 = "Protocollo Numero " + praticaDB.getNumeroProtocollo()
-		+ " del " + praticaDB.getDataProtocollo();
-	addTextSimpleBreak(paragraph.createRun(), testo1);
+	String testo1 = "Protocollo Numero";
+	addTextSimple(paragraph.createRun(), testo1);
+	addTab(paragraph, 1);
+	String testo2 = "del ";// + praticaDB.getNumeroProtocollo()+ praticaDB.getDataProtocollo();
+	addTextSimpleBreak(paragraph.createRun(), testo2);
 	paragraph.createRun().addBreak();
 	for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
 	    addTab(paragraph, 7);

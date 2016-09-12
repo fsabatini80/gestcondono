@@ -178,7 +178,9 @@ public class DatiVersamentiService {
 		&& !"".equals(abusoDB.getSuperficeUtile().trim())) {
 	    String superUtileString = abusoDB.getSuperficeUtile();
 	    supUtilDouble = new Double(superUtileString);
-	    supUtilNRDouble = new Double(abusoDB.getNonresidenziale());
+	    if (abusoDB.getNonresidenziale() != null
+		    && !"".equals(abusoDB.getNonresidenziale().trim()))
+		supUtilNRDouble = new Double(abusoDB.getNonresidenziale());
 	}
 	// legge n. 47/85
 	if ("1".equals(leggeCondono)) {
@@ -248,8 +250,9 @@ public class DatiVersamentiService {
 	if (riduzioneRedditoBean != null) {
 	    BigDecimal riduzioneRedditoPerc = riduzioneRedditoBean
 		    .getRiduzione();
-	    importoObla = importoObla * riduzioneRedditoPerc.doubleValue()
-		    / 100;
+	    if (riduzioneRedditoPerc != null)
+		importoObla = importoObla * riduzioneRedditoPerc.doubleValue()
+			/ 100;
 	}
 	// riduzione/maggiorazione per zona urbanistica
 	if (supUtilDouble <= 150) {
