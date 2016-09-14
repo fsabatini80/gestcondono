@@ -124,6 +124,7 @@ public class DatiAbusoService {
 	datiabuso.setTipoReddito(pojo.getTipoReddito());
 	datiabuso.setVolumeDirezionale(pojo.getVolumeDirezionale());
 	datiabuso.setVolumeUtile(pojo.getVolumeUtile());
+	datiabuso.setVolumeTotale(pojo.getVolumeTotale());
 	if (pojo.getAutodeterminata() != null)
 	    datiabuso.setAutodeterminata(BigDecimal.valueOf(pojo
 		    .getAutodeterminata()));
@@ -168,6 +169,7 @@ public class DatiAbusoService {
 	target.setTipoReddito(source.getTipoReddito());
 	target.setVolumeDirezionale(source.getVolumeDirezionale());
 	target.setVolumeUtile(source.getVolumeUtile());
+	target.setVolumeTotale(source.getVolumeTotale());
 	if (source.getAutodeterminata() != null)
 	    target.setAutodeterminata(new Double(source.getAutodeterminata()
 		    .doubleValue()));
@@ -212,6 +214,7 @@ public class DatiAbusoService {
 	target.setTipoReddito(source.getTipoReddito());
 	target.setVolumeDirezionale(source.getVolumeDirezionale());
 	target.setVolumeUtile(source.getVolumeUtile());
+	target.setVolumeTotale(source.getVolumeTotale());
 	if (source.getAutodeterminata() != null)
 	    target.setAutodeterminata(new Double(source.getAutodeterminata()
 		    .doubleValue()));

@@ -96,9 +96,11 @@ public class WordService {
 
 	Double importoOblazioneAut = datiVersamentiService
 		.getAutodeterminaOblazione(idabuso, progressivo);
+	importoOblazioneAut = Converter.round(importoOblazioneAut, 2);
 
 	Double importoVersato = datiVersamentiService
 		.getImportoVersatoOblazione(idpratica, progressivo);
+	importoVersato = Converter.round(importoVersato, 2);
 
 	EpocaAbuso epocaAbuso = epocaAbusoHome.findById(Integer
 		.parseInt(praticaDB.getLeggeCondono()));
@@ -110,11 +112,13 @@ public class WordService {
 				.dateToDouble(epocaAbuso.getEpocaDa()),
 			praticaDB.getLeggeCondono(), idabuso, abusoDB
 				.getDestinazioneUso());
-
+	importoCalcolato = Converter.round(importoCalcolato, 2);
+	
 	Double oblazioneDovuta = datiVersamentiService.getOblazioneDovuta(
 		importoCalcolato, abusoDB,
 		Converter.dateToDouble(praticaDB.getDataCreazione()),
 		praticaDB.getLeggeCondono());
+	oblazioneDovuta = Converter.round(oblazioneDovuta, 2);
 
 	createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 	createPage2(document, daocumentiDB);
