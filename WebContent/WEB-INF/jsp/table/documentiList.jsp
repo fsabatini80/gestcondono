@@ -35,7 +35,7 @@
 				<th>Tipo</th>
 				<th>Data protocollo</th>
 				<th>Numero protocollo</th>
-				<th>Allegato</th>
+				<!--<th>Allegato</th>-->
 				<th>Presente?</th>
 				<th>Valido?</th>
 				<th></th>
@@ -51,22 +51,22 @@
 					<td>${doc.idTipoDocumento.descrizione}</td>
 					<td>${doc.dataProtocollo}</td>
 					<td>${doc.numeroProtocollo}</td>
-					<td><img src="img/document_attachment.png"></td>
+					<!-- td><img src="img/document_attachment.png"></td> -->
 					<td><c:if test="${doc.presente}">
-							<img src="img/document_ok.png">
+							<img src="img/24/document_ok.png">
 						</c:if> <c:if test="${!doc.presente}">
-							<img src="img/document_forbidden.png">
+							<img src="img/24/document_forbidden.png">
 						</c:if></td>
 					<td><c:if test="${doc.valido}">
-							<img src="img/document_ok.png">
+							<img src="img/24/document_ok.png">
 						</c:if> <c:if test="${!doc.valido}">
-							<img src="img/document_forbidden.png">
+							<img src="img/24/document_forbidden.png">
 						</c:if></td>
 					<td><a
 						href="<c:url value="modificaDocumento.htm?iddocumento=${doc.iddocumentiAbuso}" />"><img
-							src="img/document_edit.png"></a> <a
+							src="img/24/edit.png"></a> <a
 						href="<c:url value="eliminaDocumento.htm?iddocumento=${doc.iddocumentiAbuso}" />"><img
-							src="img/document_delete.png"></a></td>
+							src="img/24/delete.png"></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

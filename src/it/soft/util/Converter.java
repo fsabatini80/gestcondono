@@ -9,118 +9,129 @@ import java.util.Date;
 
 public class Converter {
 
-	public static Date stringToDate(String data) {
+    public static Date stringToDate(String data) {
 
-		if (data == null)
-			return null;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
-		try {
-			return dateFormat.parse(data);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
+	if (data == null)
+	    return null;
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+	try {
+	    return dateFormat.parse(data);
+	} catch (ParseException e) {
+	    e.printStackTrace();
+	    return null;
+	}
+    }
+
+    public static String dateToString(Date data) {
+	if (data == null)
+	    return null;
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+	return dateFormat.format(data);
+    }
+
+    public static boolean byteToBoolean(byte b) {
+	if (b == 0)
+	    return false;
+	return true;
+    }
+
+    public static Date convertData(String dataDomanda) {
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+	try {
+	    return dateFormat.parse(dataDomanda);
+	} catch (ParseException e) {
+	    throw new CustomException("99", e.getMessage());
+	}
+    }
+
+    public static Date convertData(String dataDomanda, String format) {
+	SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+	try {
+	    return dateFormat.parse(dataDomanda);
+	} catch (ParseException e) {
+	    throw new CustomException("99", e.getMessage());
+	}
+    }
+
+    /**
+     * converte date stringa formattate dd-MM-yyyy
+     * 
+     * @param data
+     * @return Double nel formato yyyyMMdd
+     */
+
+    public static Double dateToDouble(String data) {
+
+	try {
+	    DateFormat originalFormat = new SimpleDateFormat("dd-MM-yyyy");
+	    DateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
+	    Date date = originalFormat.parse(data);
+	    String formattedDate = targetFormat.format(date);
+	    return new Double(formattedDate);
+	} catch (Exception e) {
+	    throw new CustomException("99", e.getMessage());
+	}
+    }
+
+    /**
+     * converte date stringa formattate parametro
+     * 
+     * @param data
+     * @return Double nel formato yyyyMMdd
+     */
+
+    public static Double dateToDouble(String data, String format) {
+
+	try {
+	    DateFormat originalFormat = new SimpleDateFormat(format);
+	    DateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
+	    Date date = originalFormat.parse(data);
+	    String formattedDate = targetFormat.format(date);
+	    return new Double(formattedDate);
+	} catch (Exception e) {
+	    throw new CustomException("99", e.getMessage());
+	}
+    }
+
+    public static Double convertLireEuro(Double lire) {
+	return round(lire / 1936.27, 2);
+    }
+
+    public static double round(double value, int places) {
+	if (places < 0)
+	    throw new IllegalArgumentException();
+
+	long factor = (long) Math.pow(10, places);
+	value = value * factor;
+	long tmp = Math.round(value);
+	return (double) tmp / factor;
+    }
+
+    public static Boolean checkDoubleFormat(String doubleValueString) {
+	String[] s = doubleValueString.split("\\.");
+	if (s.length != 2)
+	    return false;
+
+	try {
+	    new Integer(s[0]);
+	    new Integer(s[1]);
+	    if (s[1].length() > 2)
+		return false;
+	} catch (NumberFormatException e) {
+	    return false;
 	}
 
-	public static String dateToString(Date data) {
-		if (data == null)
-			return null;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
-		return dateFormat.format(data);
+	return true;
+    }
+
+    public static Boolean checkDoubleFormat(Double doubleValueString) {
+
+	try {
+	    new Double(doubleValueString);
+	} catch (NumberFormatException e) {
+	    return false;
 	}
 
-	public static boolean byteToBoolean(byte b) {
-		if (b == 0)
-			return false;
-		return true;
-	}
-
-	public static Date convertData(String dataDomanda) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
-		try {
-			return dateFormat.parse(dataDomanda);
-		} catch (ParseException e) {
-			throw new CustomException("99", e.getMessage());
-		}
-	}
-
-	public static Date convertData(String dataDomanda, String format) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-		try {
-			return dateFormat.parse(dataDomanda);
-		} catch (ParseException e) {
-			throw new CustomException("99", e.getMessage());
-		}
-	}
-
-	/**
-	 * converte date stringa formattate dd-MM-yyyy
-	 * 
-	 * @param data
-	 * @return Double nel formato yyyyMMdd
-	 */
-
-	public static Double dateToDouble(String data) {
-
-		try {
-			DateFormat originalFormat = new SimpleDateFormat("dd-MM-yyyy");
-			DateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
-			Date date = originalFormat.parse(data);
-			String formattedDate = targetFormat.format(date);
-			return new Double(formattedDate);
-		} catch (Exception e) {
-			throw new CustomException("99", e.getMessage());
-		}
-	}
-
-	/**
-	 * converte date stringa formattate parametro
-	 * 
-	 * @param data
-	 * @return Double nel formato yyyyMMdd
-	 */
-
-	public static Double dateToDouble(String data, String format) {
-
-		try {
-			DateFormat originalFormat = new SimpleDateFormat(format);
-			DateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
-			Date date = originalFormat.parse(data);
-			String formattedDate = targetFormat.format(date);
-			return new Double(formattedDate);
-		} catch (Exception e) {
-			throw new CustomException("99", e.getMessage());
-		}
-	}
-
-	public static Double convertLireEuro(Double lire) {
-		return round(lire / 1936.27, 2);
-	}
-
-	public static double round(double value, int places) {
-		if (places < 0)
-			throw new IllegalArgumentException();
-
-		long factor = (long) Math.pow(10, places);
-		value = value * factor;
-		long tmp = Math.round(value);
-		return (double) tmp / factor;
-	}
-
-	public static Boolean checkDoubleFormat(String doubleValueString) {
-		String[] s = doubleValueString.split("\\.");
-		if (s.length != 2)
-			return false;
-
-		try {
-			new Integer(s[0]);
-			new Integer(s[1]);
-			if (s[1].length() > 2)
-				return false;
-		} catch (NumberFormatException e) {
-			return false;
-		}
-
-		return true;
-	}
+	return true;
+    }
 }

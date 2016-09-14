@@ -80,7 +80,7 @@
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Data di nascita :
-					<td><form:input path="dataNascita" id="datepicker2" /></td>
+					<td><form:input path="dataNascita" id="datepicker1" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Provincia di nascita</td>

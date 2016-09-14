@@ -124,9 +124,9 @@ public class DatiAbusoService {
 	datiabuso.setTipoReddito(pojo.getTipoReddito());
 	datiabuso.setVolumeDirezionale(pojo.getVolumeDirezionale());
 	datiabuso.setVolumeUtile(pojo.getVolumeUtile());
-	if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getAutodeterminata()))
-	    datiabuso.setAutodeterminata(BigDecimal.valueOf(new Double(pojo
-		    .getAutodeterminata())));
+	if (pojo.getAutodeterminata() != null)
+	    datiabuso.setAutodeterminata(BigDecimal.valueOf(pojo
+		    .getAutodeterminata()));
 	datiAbusoHome.persist(datiabuso);
 
     }
@@ -169,8 +169,8 @@ public class DatiAbusoService {
 	target.setVolumeDirezionale(source.getVolumeDirezionale());
 	target.setVolumeUtile(source.getVolumeUtile());
 	if (source.getAutodeterminata() != null)
-	    target.setAutodeterminata(String.valueOf(source
-		    .getAutodeterminata()));
+	    target.setAutodeterminata(new Double(source.getAutodeterminata()
+		    .doubleValue()));
 	return target;
     }
 
@@ -213,8 +213,8 @@ public class DatiAbusoService {
 	target.setVolumeDirezionale(source.getVolumeDirezionale());
 	target.setVolumeUtile(source.getVolumeUtile());
 	if (source.getAutodeterminata() != null)
-	    target.setAutodeterminata(String.valueOf(source
-		    .getAutodeterminata()));
+	    target.setAutodeterminata(new Double(source.getAutodeterminata()
+		    .doubleValue()));
 	return target;
     }
 

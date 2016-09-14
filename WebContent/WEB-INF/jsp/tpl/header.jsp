@@ -59,23 +59,26 @@
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
+			yearRange: "1900:2026"
 		});
 		$("#datepicker1").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			//shortYearCutoff : 100
+			yearRange: "1900:2026"
 		});
 		$("#datepicker2").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
+			yearRange: "1900:2026"
 		
 		});
 		$("#datepicker3").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
+			yearRange: "1900:2026"
 		});
 
 		$("#effect").hide();

@@ -279,7 +279,8 @@ public class DatiVersamentiService {
 		Integer.valueOf(abusoDB.getProgressivo()));
 	Double importoVersValidi = getVersamentiValidi(dataAbuso, vers);
 	Double autoDetermina = new Double(0.0);
-	if (!StringUtils.isEmptyOrWhitespaceOnly(abusoDB.getAutodeterminata())) {
+	//if (!StringUtils.isEmptyOrWhitespaceOnly(abusoDB.getAutodeterminata())) {
+	if (abusoDB.getAutodeterminata() != null) {
 	    autoDetermina = new Double(abusoDB.getAutodeterminata());
 	}
 	Double delta = autoDetermina - importoVersValidi;
@@ -378,7 +379,7 @@ public class DatiVersamentiService {
 	List<DatiVersamento> versamentiValidi = new ArrayList<DatiVersamento>();
 	for (DatiVersamento versamento : vers) {
 	    String dataVersa = versamento.getDataVersamento();
-	    if (dataVersa != null && !"".equals(dataVersa)) {
+	    if (!StringUtils.isEmptyOrWhitespaceOnly(dataVersa)) {
 		Double dv = Converter.dateToDouble(dataVersa);
 		if (dv <= dataAbuso) {
 		    versamentiValidi.add(versamento);

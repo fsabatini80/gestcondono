@@ -56,7 +56,9 @@ public class DatiAbusoValidator implements Validator {
 	    validaDataUltimazioneLavori(arg1, pojo, dp);
 	}
 
-	if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getAutodeterminata())
+//	if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getAutodeterminata())
+//		&& !Converter.checkDoubleFormat(pojo.getAutodeterminata())) {
+	if (pojo.getAutodeterminata() != null
 		&& !Converter.checkDoubleFormat(pojo.getAutodeterminata())) {
 	    arg1.rejectValue("autodeterminata", "double.format");
 	}
