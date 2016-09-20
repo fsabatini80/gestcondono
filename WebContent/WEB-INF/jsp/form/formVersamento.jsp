@@ -22,14 +22,18 @@
 		<tr>
 			<td>Codice Versamento:</td>
 			<td><form:input path="codiceVersamento" /> <form:hidden
-					path="iddatipratica" /><form:hidden
-						path="idversamento" /></td>
+					path="iddatipratica" /> <form:hidden path="idversamento" /></td>
 			<td><form:errors path="codiceVersamento"
 					cssClass="ui-state-error" /></td>
 		</tr>
 		<tr>
 			<td>CC postale:</td>
-			<td><form:input path="ccPostale" /></td>
+			<!-- td><form:input path="ccPostale" /></td> -->
+			<td><form:select path="ccPostale">
+					<form:option value="" label="--seleziona conto--"></form:option>
+					<form:option value="1" label="1020723423"></form:option>
+					<form:option value="4" label="255000"></form:option>
+				</form:select></td>
 			<td><form:errors path="ccPostale" cssClass="ui-state-error" /></td>
 		</tr>
 		<tr>
@@ -49,7 +53,14 @@
 		</tr>
 		<tr>
 			<td>Causale:</td>
-			<td><form:input path="causale" /></td>
+			<!-- td><form:input path="causale" /></td> -->
+			<td><form:select path="causale">
+					<form:option value="" label="--seleziona causale--"></form:option>
+					<form:option value="1" label="Oblazione Comune"></form:option>
+					<form:option value="2" label="Oneri"></form:option>
+					<form:option value="3" label="Diritti Segreteria"></form:option>
+					<form:option value="4" label="Oblazione Ministero"></form:option>
+				</form:select></td>
 			<td><form:errors path="causale" cssClass="ui-state-error" /></td>
 		</tr>
 		<tr>

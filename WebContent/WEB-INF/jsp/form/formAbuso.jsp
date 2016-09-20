@@ -202,6 +202,18 @@
 			value="Indietro" name="Indietro" onclick="history.go(-1)" />
 	</form:form>
 </div>
+<div>
+	<form:form action="calcolaOblazione.htm" commandName="datiAbusoPojo">
+		<form:hidden path="iddatiabuso" />
+		<form:hidden path="progressivo" />
+		<form:hidden path="destinazioneUso" />
+		<form:hidden path="tipologiaAbuso" />
+		<form:hidden path="epocaAbuso" />
+		
+		<form:input path="oblazioneCalcolata" />
+		<form:button value="calcola" name="calcola">Calcola Oblazione</form:button>
+	</form:form>
+</div>
 
 </body>
 </html>
