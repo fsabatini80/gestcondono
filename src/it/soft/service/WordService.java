@@ -15,6 +15,7 @@ import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.RelSoggettoAbuso;
 import it.soft.domain.TipologiaDestinazioneUso;
+import it.soft.util.Constants;
 import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
@@ -98,9 +99,9 @@ public class WordService {
 		.getAutodeterminaOblazione(idabuso, progressivo);
 	importoOblazioneAut = Converter.round(importoOblazioneAut, 2);
 
-	Double importoVersato = datiVersamentiService
+	Double importoVersatoObl = datiVersamentiService
 		.getImportoVersatoOblazione(idpratica, progressivo);
-	importoVersato = Converter.round(importoVersato, 2);
+	importoVersatoObl = Converter.round(importoVersatoObl, 2);
 
 	EpocaAbuso epocaAbuso = epocaAbusoHome.findById(Integer
 		.parseInt(praticaDB.getLeggeCondono()));
@@ -113,7 +114,7 @@ public class WordService {
 			praticaDB.getLeggeCondono(), idabuso, abusoDB
 				.getDestinazioneUso());
 	importoCalcolato = Converter.round(importoCalcolato, 2);
-	
+
 	Double oblazioneDovuta = datiVersamentiService.getOblazioneDovuta(
 		importoCalcolato, abusoDB,
 		Converter.dateToDouble(praticaDB.getDataCreazione()),
@@ -122,8 +123,23 @@ public class WordService {
 
 	createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
 	createPage2(document, daocumentiDB);
+
+	Double oneriConcessVersato = datiVersamentiService.getOneriVersati(
+		idpratica, progressivo);
+	Double oneriConcessCalcolato = datiVersamentiService.getOneriCalcolati(
+		tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
+			.getTipologiaAbuso())), abusoDB, praticaDB, idabuso,
+		abusoDB.getDestinazioneUso());
+	Double dirittiIstrut;
+	Double oneriConcessSaldo;
+	Double dirittiRilPerm;
+	Double agibilita;
+	Double dirittiPareri;
+
 	createPage3(document, importoOblazioneAut, importoCalcolato,
-		importoVersato, oblazioneDovuta);
+		importoVersatoObl, oblazioneDovuta, oneriConcessVersato,
+		oneriConcessCalcolato, oneriConcessSaldo, dirittiIstrut,
+		dirittiRilPerm, dirittiPareri, agibilita);
 	createPage4(document);
 
 	createFooter(document, praticaDB, abusoDB);
@@ -214,7 +230,12 @@ public class WordService {
 
     public void createPage3(XWPFDocument document, Double importoOblazione,
 	    Double importoCalcolato, Double importoVersato,
-	    Double importoRediduo) {
+	    Double importoRediduo, Double oneriConcessVersato,
+	    Double oneriConcessCalcolato, Double oneriConcessSaldo,
+	    Double dirittiIstrut, Double dirittiRilPerm, Double dirittiPareri,
+	    Double agibilita) {
+
+	Double metaImportoResiduo = importoRediduo / 2;
 
 	document.createParagraph().createRun().addBreak(BreakType.PAGE);
 	addTextBoldBreakCenter(document.createParagraph().createRun(),
@@ -288,8 +309,9 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table4.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
+
 	addTableCellCenter(table4.getRow(0).getCell(2),
-		importoRediduo.toString(), true, ParagraphAlignment.RIGHT);
+		metaImportoResiduo.toString(), true, ParagraphAlignment.RIGHT);
 	table4.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -317,8 +339,8 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table6.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table6.getRow(0).getCell(2), "", false,
-		ParagraphAlignment.RIGHT);
+	addTableCellCenter(table6.getRow(0).getCell(2),
+		oneriConcessVersato.toString(), false, ParagraphAlignment.RIGHT);
 	table6.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -331,7 +353,8 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table7.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table7.getRow(0).getCell(2), "", false,
+	addTableCellCenter(table7.getRow(0).getCell(2),
+		oneriConcessCalcolato.toString(), false,
 		ParagraphAlignment.RIGHT);
 	table7.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
@@ -346,8 +369,8 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table8.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table8.getRow(0).getCell(2), "", true,
-		ParagraphAlignment.RIGHT);
+	addTableCellCenter(table8.getRow(0).getCell(2),
+		oneriConcessSaldo.toString(), true, ParagraphAlignment.RIGHT);
 	table8.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -375,8 +398,8 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table10.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table10.getRow(0).getCell(2), "", false,
-		ParagraphAlignment.RIGHT);
+	addTableCellCenter(table10.getRow(0).getCell(2),
+		dirittiIstrut.toString(), false, ParagraphAlignment.RIGHT);
 	table10.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -390,8 +413,8 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table11.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table11.getRow(0).getCell(2), "", false,
-		ParagraphAlignment.RIGHT);
+	addTableCellCenter(table11.getRow(0).getCell(2),
+		dirittiRilPerm.toString(), false, ParagraphAlignment.RIGHT);
 	table11.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -405,8 +428,8 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table12.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table12.getRow(0).getCell(2), "", false,
-		ParagraphAlignment.RIGHT);
+	addTableCellCenter(table12.getRow(0).getCell(2),
+		dirittiPareri.toString(), false, ParagraphAlignment.RIGHT);
 	table12.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -419,8 +442,8 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table13.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table13.getRow(0).getCell(2), "", false,
-		ParagraphAlignment.RIGHT);
+	addTableCellCenter(table13.getRow(0).getCell(2), agibilita.toString(),
+		false, ParagraphAlignment.RIGHT);
 	table13.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -447,7 +470,9 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table15.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table15.getRow(0).getCell(2), "", false,
+	addTableCellCenter(table15.getRow(0).getCell(2),
+		new Double(dirittiIstrut + dirittiPareri + dirittiRilPerm
+			+ agibilita).toString(), false,
 		ParagraphAlignment.RIGHT);
 	table15.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
@@ -486,8 +511,8 @@ public class WordService {
 		true, ParagraphAlignment.LEFT);
 	addTableCellCenter(table19.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
-	addTableCellCenter(table19.getRow(0).getCell(2), "", true,
-		ParagraphAlignment.RIGHT);
+	addTableCellCenter(table19.getRow(0).getCell(2),
+		metaImportoResiduo.toString(), true, ParagraphAlignment.RIGHT);
 
 	createCircolareInfo(document);
 
@@ -910,7 +935,8 @@ public class WordService {
 	String testo1 = "Protocollo Numero";
 	addTextSimple(paragraph.createRun(), testo1);
 	addTab(paragraph, 1);
-	String testo2 = "del ";// + praticaDB.getNumeroProtocollo()+ praticaDB.getDataProtocollo();
+	String testo2 = "del ";// + praticaDB.getNumeroProtocollo()+
+			       // praticaDB.getDataProtocollo();
 	addTextSimpleBreak(paragraph.createRun(), testo2);
 	paragraph.createRun().addBreak();
 	for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {

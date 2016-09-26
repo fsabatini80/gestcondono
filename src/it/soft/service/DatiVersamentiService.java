@@ -2,14 +2,18 @@ package it.soft.service;
 
 import it.soft.dao.DatiVersamentiHome;
 import it.soft.dao.InteressiLegaliHome;
+import it.soft.dao.OneriConcessoriHome;
 import it.soft.dao.RiduzioneRedditoHome;
 import it.soft.domain.DatiVersamento;
 import it.soft.domain.InteressiLegali;
+import it.soft.domain.OneriConcessori;
 import it.soft.domain.RiduzioneReddito;
 import it.soft.domain.TabCalcOblazione;
 import it.soft.domain.TipologiaAbuso;
+import it.soft.util.Constants;
 import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
+import it.soft.web.pojo.DatiPraticaPojo;
 import it.soft.web.pojo.DatiVersamentiPojo;
 
 import java.math.BigDecimal;
@@ -44,6 +48,9 @@ public class DatiVersamentiService {
 
     @Autowired
     RiduzioneRedditoHome riduzioneRedditoHome;
+
+    @Autowired
+    OneriConcessoriHome oneriConcessoriHome;
 
     public void persist(DatiVersamentiPojo pojo) {
 	DatiVersamento versamenti = new DatiVersamento();
@@ -118,23 +125,11 @@ public class DatiVersamentiService {
 		BigInteger.valueOf(Integer.valueOf(idPratica)),
 		Integer.valueOf(progressivo));
 
-	Double answer = new Double(0.0);
-
-	for (DatiVersamento datiVersamento : vers) {
-
-	    if (datiVersamento.getImporto() != null) {
-		answer = Math.abs(answer + datiVersamento.getImporto());
-	    } else if (datiVersamento.getImportoEuro() != null) {
-		answer = Math.abs(answer + datiVersamento.getImportoEuro());
-	    } else if (datiVersamento.getImportoLire() != null) {
-		answer = Math.abs(answer
-			+ Converter.convertLireEuro(datiVersamento
-				.getImportoLire()));
-	    } else {
-		answer = Math.abs(new Double(0.0));
-	    }
-	}
-	return answer;
+	List<String> causali = new ArrayList<String>();
+	causali.add(Constants.OBLAZIONE_COMUNE_CAUSALE_SEL);
+	causali.add(Constants.OBLAZIONE_MINISTERO_CAUSALE_SEL);
+	return getVersamentiValidi(Constants.DATA_ZERO_VERSAMENTI, vers,
+		causali);
     }
 
     public Double getAutodeterminaOblazione(String idAbuso,
@@ -277,9 +272,14 @@ public class DatiVersamentiService {
 	List<DatiVersamento> vers = datiVersamentiHome.findAll(
 		BigInteger.valueOf(Integer.valueOf(abusoDB.getIdPratica())),
 		Integer.valueOf(abusoDB.getProgressivo()));
-	Double importoVersValidi = getVersamentiValidi(dataAbuso, vers);
+	List<String> causali = new ArrayList<String>();
+	causali.add(Constants.OBLAZIONE_COMUNE_CAUSALE_SEL);
+	causali.add(Constants.OBLAZIONE_MINISTERO_CAUSALE_SEL);
+	Double importoVersValidi = getVersamentiValidi(dataAbuso, vers, causali);
 	Double autoDetermina = new Double(0.0);
-	//if (!StringUtils.isEmptyOrWhitespaceOnly(abusoDB.getAutodeterminata())) {
+	// if
+	// (!StringUtils.isEmptyOrWhitespaceOnly(abusoDB.getAutodeterminata()))
+	// {
 	if (abusoDB.getAutodeterminata() != null) {
 	    autoDetermina = new Double(abusoDB.getAutodeterminata());
 	}
@@ -288,8 +288,8 @@ public class DatiVersamentiService {
 	// calcolo interessi di mora
 	if ("1".equals(leggeCondono)) {
 	    if (delta > 0)
-		im = calcolaInteressiMoraL1(new Double(19960401), new Date(),
-			delta);
+		im = calcolaInteressiMoraL1(Constants.DATA_ZERO_VERSAMENTI,
+			new Date(), delta);
 	    oblazioneEIM = oblazioneCalcolata + im;
 	    System.out
 		    .println("oblazione calcolata + interessi di mora per la legge 1: "
@@ -375,7 +375,7 @@ public class DatiVersamentiService {
     }
 
     public Double getVersamentiValidi(Double dataAbuso,
-	    List<DatiVersamento> vers) {
+	    List<DatiVersamento> vers, List<String> causali) {
 	List<DatiVersamento> versamentiValidi = new ArrayList<DatiVersamento>();
 	for (DatiVersamento versamento : vers) {
 	    String dataVersa = versamento.getDataVersamento();
@@ -389,18 +389,21 @@ public class DatiVersamentiService {
 
 	Double answer = new Double(0.0);
 
-	for (DatiVersamento datiVersamento : versamentiValidi) {
-
-	    if (datiVersamento.getImporto() != null) {
-		answer = Math.abs(answer + datiVersamento.getImporto());
-	    } else if (datiVersamento.getImportoEuro() != null) {
-		answer = Math.abs(answer + datiVersamento.getImportoEuro());
-	    } else if (datiVersamento.getImportoLire() != null) {
-		answer = Math.abs(answer
-			+ Converter.convertLireEuro(datiVersamento
-				.getImportoLire()));
-	    } else {
-		answer = Math.abs(new Double(0.0));
+	for (String causale : causali) {
+	    for (DatiVersamento datiVersamento : versamentiValidi) {
+		if (causale.equals(datiVersamento.getCausale()))
+		    if (datiVersamento.getImporto() != null) {
+			answer = Math.abs(answer + datiVersamento.getImporto());
+		    } else if (datiVersamento.getImportoEuro() != null) {
+			answer = Math.abs(answer
+				+ datiVersamento.getImportoEuro());
+		    } else if (datiVersamento.getImportoLire() != null) {
+			answer = Math.abs(answer
+				+ Converter.convertLireEuro(datiVersamento
+					.getImportoLire()));
+		    } else {
+			answer = Math.abs(new Double(0.0));
+		    }
 	    }
 	}
 
@@ -531,5 +534,126 @@ public class DatiVersamentiService {
     public void remove(String id) {
 	datiVersamentiHome.remove(datiVersamentiHome.findById(BigInteger
 		.valueOf(Integer.parseInt(id))));
+    }
+
+    public Double getOneriVersati(String idpratica, String progressivo) {
+	List<DatiVersamento> vers = datiVersamentiHome.findAll(
+		BigInteger.valueOf(Integer.valueOf(idpratica)),
+		Integer.valueOf(progressivo));
+
+	List<String> causali = new ArrayList<String>();
+	causali.add(Constants.ONERI_CAUSALE_SEL);
+
+	return getVersamentiValidi(Constants.DATA_ZERO_VERSAMENTI, vers,
+		causali);
+    }
+
+    public Double getOneriCalcolati(TipologiaAbuso tipologiaAbuso,
+	    DatiAbusoPojo abusoDB, DatiPraticaPojo praticaDB, String idabuso,
+	    String destinazioneUso) {
+	// FIXME
+	Double answer = new Double(0);
+	// calcolo oneri 47/85
+	if (Constants.ID_LEGGE_47_85.equals(praticaDB.getLeggeCondono())) {
+	    if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
+		    || !(Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
+			    && Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
+				    .equals(destinazioneUso) && Constants.DEST_USO_AGRICOLO
+				.equals(destinazioneUso))) {
+		return calcolaOneriLegge1Residenziale(abusoDB);
+	    }
+	    if (Constants.DEST_USO_TURISTICO.equals(destinazioneUso)) {
+		return calcoloOneriDaTab(abusoDB, answer)
+			+ calcolaCostiCostruzione();
+	    }
+	    if (Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
+		    .equals(destinazioneUso)) {
+		return calcoloOneriDaTab(abusoDB, answer);
+	    }
+
+	}
+
+	return answer;
+    }
+
+    private Double calcolaOneriLegge1Residenziale(DatiAbusoPojo abusoDB) {
+	// FIXME
+	Double answer = new Double(0);
+	String idepocaabuso = abusoDB.getEpocaAbuso();
+	/**
+	 * - ABUSI 1° PERIODO NON SONO PREVISTI ONERI
+	 */
+	if (Constants.PERIODO_1_47_85.equals(idepocaabuso)) {
+	    return answer;
+	}
+	/**
+	 * - ABUSI 2° PERIODO SONO PREVISTI GLI ONERI DI URBANIZZAZIONE PRIMARIA
+	 * E SECONDARIA E SI CALCOLANO MOLTIPLICANDO LA SOMMATORIA DEI MC UTILI
+	 * ED ACCESSORI PER UN PARAMETRO DA TABELLA (ALLEGATO 2), CHE SI DIVIDE
+	 * PER ZONA URBANISTICA ED INTERVENTO E NON CI SONO INTERESSI
+	 */
+	if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+	    return calcoloOneriDaTab(abusoDB, answer);
+	}
+	/**
+	 * - ABUSI 3° PERIODO SONO PREVISTI GLI ONERI COME SOPRA, PIU' IL COSTO
+	 * DI COSTRUZIONE DELLE OPERE OGGETTO DELLA RICHIESTA CALCOLATI COME DA
+	 * ALLEGATO 3
+	 */
+	if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
+	    calcoloOneriDaTab(abusoDB, answer);
+	    calcolaCostiCostruzione();
+	    return answer;
+	}
+	return answer;
+    }
+
+    private Double calcoloOneriDaTab(DatiAbusoPojo abusoDB, Double answer) {
+	Double mcUtili = new Double(0);
+	Double mcAccessori = new Double(0);
+	if (abusoDB.getVolumeUtile() != null)
+	    mcUtili = Double.valueOf(abusoDB.getVolumeUtile());
+	if (abusoDB.getNonresidenzialeVuoto() != null)
+	    mcAccessori = Double.valueOf(abusoDB.getNonresidenzialeVuoto());
+
+	List<OneriConcessori> oneriTab = oneriConcessoriHome.findBy(abusoDB
+		.getLocalizzazione().getZonaUrbanizzazione(), abusoDB
+		.getDestinazioneUso());
+	for (OneriConcessori oneriConcessori : oneriTab) {
+	    Double parametroTab = oneriConcessori.getCosto().doubleValue();
+	    answer = (mcUtili + mcAccessori) * parametroTab;
+	}
+	return answer;
+    }
+
+    /**
+     * DECRETO MINISTERIALE 31 MAGGIO 1977 Art. 5 - Incremento relativo alla
+     * superficie utile abitabile (i1) L'incremento percentuale in funzione
+     * della superficie è stabilito in rapporto alle seguenti classi di
+     * superficie utile abitabile: 1) oltre 95 metri quadrati e fino a 110 metri
+     * quadrati inclusi: 5%; 2) oltre 110 metri quadrati e fino a 130 metri
+     * quadrati inclusi: 15%; 3) oltre 130 metri quadrati e fino a 160 metri
+     * quadrati inclusi: 30%; 4) oltre 160 metri quadrati: 50%. Per ciascun
+     * fabbricato l'incremento percentuale relativo alla superficie utile
+     * abitabile, è dato dalla somma dei valori ottenuti moltiplicando gli
+     * incrementi percentuali di cui al precedente comma per i rapporti tra la
+     * superficie utile abitabile degli alloggi compresi nelle rispettive classi
+     * e la superficie utile abitabile dell'intero edificio.
+     */
+    private Double calcolaCostiCostruzione(Double superficeUtile) {
+	// TODO Auto-generated method stub
+	Double answer = new Double(0);
+	if (superficeUtile > 95 && superficeUtile <= 110) {
+
+	} else if (superficeUtile > 110 && superficeUtile <= 130) {
+
+	} else if (superficeUtile > 130 && superficeUtile <= 160) {
+
+	} else if (superficeUtile > 160) {
+
+	} else {
+	    return answer;
+	}
+
     }
 }

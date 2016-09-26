@@ -132,6 +132,9 @@
 	<bean id="riduzioneRedditoHome" class="it.soft.dao.RiduzioneRedditoHome">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	<bean id="oneriConcessoriHome" class="it.soft.dao.OneriConcessoriHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
 
 	<!-- END MAP DAO -->
 
