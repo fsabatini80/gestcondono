@@ -156,12 +156,14 @@ public class DatiVersamentiService {
 	}
 
 	if (calcOblazione != null
-		&& ("1".equals(leggeCondono) || "2".equals(leggeCondono))) {
+		&& (Constants.ID_LEGGE_47_85.equals(leggeCondono) || Constants.ID_LEGGE_724_
+			.equals(leggeCondono))) {
 	    importoObla = Converter.convertLireEuro(new Double(calcOblazione
 		    .getImportoOblazione()));
 	    // se la destinazione uso è diversa da RESIDENZIALE, gli importi in
 	    // tabella vanno divisi per 2
-	    if ("1".equals(leggeCondono) && !"1".equals(destinazioneUso)) {
+	    if (Constants.ID_LEGGE_47_85.equals(leggeCondono)
+		    && !Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)) {
 		importoObla = importoObla / 2;
 	    }
 	}
@@ -351,12 +353,12 @@ public class DatiVersamentiService {
 		return new Double(importoVersato);
 	    }
 	}
+	Double oblazioneDovuta = im + (oblazioneCalcolata - importoVersato);
 	System.out.println("oblazioneCalcolata: " + oblazioneCalcolata);
 	System.out.println("importoVersato: " + importoVersato);
 	System.out.println("oblazione dovuta: "
-		+ Converter.round((im + (oblazioneCalcolata - importoVersato)),
-			2));
-	return Converter.round((im + (oblazioneCalcolata - importoVersato)), 2);
+		+ Converter.round(oblazioneDovuta, 2));
+	return oblazioneDovuta > 0 ? oblazioneDovuta : 0;
 
     }
 
@@ -391,6 +393,31 @@ public class DatiVersamentiService {
 
 	for (String causale : causali) {
 	    for (DatiVersamento datiVersamento : versamentiValidi) {
+		if (causale.equals(datiVersamento.getCausale()))
+		    if (datiVersamento.getImporto() != null) {
+			answer = Math.abs(answer + datiVersamento.getImporto());
+		    } else if (datiVersamento.getImportoEuro() != null) {
+			answer = Math.abs(answer
+				+ datiVersamento.getImportoEuro());
+		    } else if (datiVersamento.getImportoLire() != null) {
+			answer = Math.abs(answer
+				+ Converter.convertLireEuro(datiVersamento
+					.getImportoLire()));
+		    } else {
+			answer = Math.abs(new Double(0.0));
+		    }
+	    }
+	}
+
+	return answer;
+    }
+
+    public Double getVersamentiValidi(List<DatiVersamento> vers,
+	    List<String> causali) {
+	Double answer = new Double(0.0);
+
+	for (String causale : causali) {
+	    for (DatiVersamento datiVersamento : vers) {
 		if (causale.equals(datiVersamento.getCausale()))
 		    if (datiVersamento.getImporto() != null) {
 			answer = Math.abs(answer + datiVersamento.getImporto());
@@ -544,8 +571,7 @@ public class DatiVersamentiService {
 	List<String> causali = new ArrayList<String>();
 	causali.add(Constants.ONERI_CAUSALE_SEL);
 
-	return getVersamentiValidi(Constants.DATA_ZERO_VERSAMENTI, vers,
-		causali);
+	return getVersamentiValidi(vers, causali);
     }
 
     public Double getOneriCalcolati(TipologiaAbuso tipologiaAbuso,
@@ -558,17 +584,22 @@ public class DatiVersamentiService {
 	    if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
 		    || !(Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
 			    && Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
-				    .equals(destinazioneUso) && Constants.DEST_USO_AGRICOLO
+				    .equals(destinazioneUso)
+			    && Constants.DEST_USO_AGRICOLO
+				    .equals(destinazioneUso) && Constants.DEST_USO_COMMERCIALE
 				.equals(destinazioneUso))) {
 		return calcolaOneriLegge1Residenziale(abusoDB);
 	    }
-	    if (Constants.DEST_USO_TURISTICO.equals(destinazioneUso)) {
-		return calcoloOneriDaTab(abusoDB, answer)
-			+ calcolaCostiCostruzione();
+	    if (Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
+		    || Constants.DEST_USO_COMMERCIALE.equals(destinazioneUso)) {
+		answer = calcoloOneriDaTab(abusoDB)
+			+ calcolaCostiCostruzione(abusoDB.getSuperficeUtile() != null ? new Double(
+				abusoDB.getSuperficeUtile()) : new Double(0));
+		return answer;
 	    }
 	    if (Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
 		    .equals(destinazioneUso)) {
-		return calcoloOneriDaTab(abusoDB, answer);
+		return calcoloOneriDaTabAddetti(abusoDB, answer);
 	    }
 
 	}
@@ -593,7 +624,7 @@ public class DatiVersamentiService {
 	 * PER ZONA URBANISTICA ED INTERVENTO E NON CI SONO INTERESSI
 	 */
 	if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
-	    return calcoloOneriDaTab(abusoDB, answer);
+	    return calcoloOneriDaTab(abusoDB);
 	}
 	/**
 	 * - ABUSI 3° PERIODO SONO PREVISTI GLI ONERI COME SOPRA, PIU' IL COSTO
@@ -601,14 +632,15 @@ public class DatiVersamentiService {
 	 * ALLEGATO 3
 	 */
 	if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
-	    calcoloOneriDaTab(abusoDB, answer);
-	    calcolaCostiCostruzione();
+	    answer = calcoloOneriDaTab(abusoDB);
+	    calcolaCostiCostruzione(abusoDB.getSuperficeUtile() != null ? new Double(
+		    abusoDB.getSuperficeUtile()) : new Double(0));
 	    return answer;
 	}
 	return answer;
     }
 
-    private Double calcoloOneriDaTab(DatiAbusoPojo abusoDB, Double answer) {
+    private Double calcoloOneriDaTabAddetti(DatiAbusoPojo abusoDB, Double answer) {
 	Double mcUtili = new Double(0);
 	Double mcAccessori = new Double(0);
 	if (abusoDB.getVolumeUtile() != null)
@@ -618,7 +650,26 @@ public class DatiVersamentiService {
 
 	List<OneriConcessori> oneriTab = oneriConcessoriHome.findBy(abusoDB
 		.getLocalizzazione().getZonaUrbanizzazione(), abusoDB
-		.getDestinazioneUso());
+		.getDestinazioneUso(), abusoDB.getNumeroAddetti());
+	for (OneriConcessori oneriConcessori : oneriTab) {
+	    Double parametroTab = oneriConcessori.getCosto().doubleValue();
+	    answer = (mcUtili + mcAccessori) * parametroTab;
+	}
+	return answer;
+    }
+
+    private Double calcoloOneriDaTab(DatiAbusoPojo abusoDB) {
+	Double mcUtili = new Double(0);
+	Double mcAccessori = new Double(0);
+	Double answer = new Double(0);
+	if (abusoDB.getVolumeUtile() != null)
+	    mcUtili = Double.valueOf(abusoDB.getVolumeUtile());
+	if (abusoDB.getNonresidenzialeVuoto() != null)
+	    mcAccessori = Double.valueOf(abusoDB.getNonresidenzialeVuoto());
+
+	List<OneriConcessori> oneriTab = oneriConcessoriHome.findBy(abusoDB
+		.getLocalizzazione().getZonaUrbanizzazione(), abusoDB
+		.getDestinazioneUso(), null);
 	for (OneriConcessori oneriConcessori : oneriTab) {
 	    Double parametroTab = oneriConcessori.getCosto().doubleValue();
 	    answer = (mcUtili + mcAccessori) * parametroTab;
@@ -641,7 +692,7 @@ public class DatiVersamentiService {
      * e la superficie utile abitabile dell'intero edificio.
      */
     private Double calcolaCostiCostruzione(Double superficeUtile) {
-	// TODO Auto-generated method stub
+	// FIXME
 	Double answer = new Double(0);
 	if (superficeUtile > 95 && superficeUtile <= 110) {
 
@@ -654,6 +705,27 @@ public class DatiVersamentiService {
 	} else {
 	    return answer;
 	}
+	return answer;
+    }
+
+    public Double getDirittiRilPerm(DatiAbusoPojo abusoDB) {
+	Double answer = new Double(0);
+	Double superficeUtile = new Double(0);
+	if (abusoDB.getVolumeUtile() != null)
+	    superficeUtile = new Double(abusoDB.getVolumeUtile());
+	if (superficeUtile > 1 && superficeUtile <= 99) {
+	    answer = 150.0;
+	} else if (superficeUtile > 100 && superficeUtile <= 499) {
+	    answer = 200.0;
+	} else if (superficeUtile > 500 && superficeUtile <= 999) {
+	    answer = 250.0;
+	} else if (superficeUtile > 1000 && superficeUtile <= 1499) {
+	    answer = 400.0;
+	} else if (superficeUtile > 1500) {
+	    answer = 550.0;
+	}
+
+	return answer;
 
     }
 }

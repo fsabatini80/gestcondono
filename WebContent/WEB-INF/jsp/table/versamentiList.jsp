@@ -35,7 +35,7 @@
 					<td>${versamento.numeroBollettino}</td>
 					<td>${versamento.numeroProtocollo}</td>
 					<td>${versamento.dataVersamento}</td>
-					<td>${versamento.importo}</td>
+					<td>${versamento.importoEuro}</td>
 					<td><a
 						href="<c:url value="modificaVersamento.htm?idVersamento=${versamento.iddatiVersamento}" />"
 						title="modifica versamento"><img src="img/24/edit.png"

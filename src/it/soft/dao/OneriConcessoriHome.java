@@ -68,7 +68,7 @@ public class OneriConcessoriHome {
 
     @SuppressWarnings("unchecked")
     public List<OneriConcessori> findBy(String zonaUrbanizzazione,
-	    String destinazioneUso) {
+	    String destinazioneUso, String numeroAddetti) {
 	log.debug("getting OneriConcessori instance");
 	try {
 	    List<OneriConcessori> list = null;
@@ -76,8 +76,14 @@ public class OneriConcessoriHome {
 		    .getCurrentSession();
 	    sess.beginTransaction();
 	    Criteria cr = sess.createCriteria(OneriConcessori.class);
-	    cr.add(Restrictions.eq("zonaUrbanizzazione", zonaUrbanizzazione));
+	    if (zonaUrbanizzazione != null)
+		cr.add(Restrictions
+			.eq("zonaUrbanizzazione", zonaUrbanizzazione));
 	    cr.add(Restrictions.eq("destinazioneUso", destinazioneUso));
+	    if (numeroAddetti != null) {
+		cr.add(Restrictions.ge("addettiMin", numeroAddetti));
+		cr.add(Restrictions.le("addettiMax", numeroAddetti));
+	    }
 	    list = cr.list();
 	    log.debug("get successful");
 	    sess.close();

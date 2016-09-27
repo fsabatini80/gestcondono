@@ -15,7 +15,6 @@ import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.RelSoggettoAbuso;
 import it.soft.domain.TipologiaDestinazioneUso;
-import it.soft.util.Constants;
 import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
@@ -104,7 +103,7 @@ public class WordService {
 	importoVersatoObl = Converter.round(importoVersatoObl, 2);
 
 	EpocaAbuso epocaAbuso = epocaAbusoHome.findById(Integer
-		.parseInt(praticaDB.getLeggeCondono()));
+		.parseInt(abusoDB.getEpocaAbuso()));
 
 	Double importoCalcolato = datiVersamentiService
 		.getImportoCalcolatoOblazione(
@@ -130,11 +129,11 @@ public class WordService {
 		tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
 			.getTipologiaAbuso())), abusoDB, praticaDB, idabuso,
 		abusoDB.getDestinazioneUso());
-	Double dirittiIstrut;
-	Double oneriConcessSaldo;
-	Double dirittiRilPerm;
-	Double agibilita;
-	Double dirittiPareri;
+	Double oneriConcessSaldo = oneriConcessCalcolato - oneriConcessVersato;
+	Double dirittiIstrut = new Double(50);
+	Double dirittiRilPerm = datiVersamentiService.getDirittiRilPerm(abusoDB);
+	Double agibilita = new Double(0);
+	Double dirittiPareri = new Double(0);
 
 	createPage3(document, importoOblazioneAut, importoCalcolato,
 		importoVersatoObl, oblazioneDovuta, oneriConcessVersato,
@@ -635,9 +634,9 @@ public class WordService {
 	createListaSoggetti(document.createParagraph(), praticaDB, abusoDB,
 		listaSoggetti);
 	creaOggetto(document.createParagraph(), praticaDB, abusoDB);
-	addTextBoldBreakCenter(document.createParagraph().createRun(),
-		"A) AVVIO ISTRUTTORIA DELLA PRATICA");
-	creaPargraphADB(document, praticaDB, abusoDB);
+//	addTextBoldBreakCenter(document.createParagraph().createRun(),
+//		"A) AVVIO ISTRUTTORIA DELLA PRATICA");
+//	creaPargraphADB(document, praticaDB, abusoDB);
 
 	addTextBoldBreakCenter(document.createParagraph().createRun(),
 		"B) DESCRIZIONE DELL'ABUSO");
@@ -942,10 +941,10 @@ public class WordService {
 	for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
 	    addTab(paragraph, 7);
 	    addTextSimpleBreak(paragraph.createRun(),
-		    "COGOME E NOME: " + relSoggettoAbuso.getCognome() + " "
+		    "" + relSoggettoAbuso.getCognome() + " "
 			    + relSoggettoAbuso.getNome());
 	    addTab(paragraph, 7);
-	    addTextSimpleBreak(paragraph.createRun(), "INDIRIZZO: "
+	    addTextSimpleBreak(paragraph.createRun(), ""
 		    + relSoggettoAbuso.getIndirizzo());
 	    addTab(paragraph, 7);
 	    addTextSimpleBreak(paragraph.createRun(),

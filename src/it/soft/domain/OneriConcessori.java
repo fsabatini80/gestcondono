@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -28,13 +27,17 @@ public class OneriConcessori implements Serializable {
     @Column(name = "zona_urbanizzazione", length = 45)
     private String zonaUrbanizzazione;
 
-    @OneToOne
     @Column(name = "destinazione_uso", length = 45)
     private String destinazioneUso;
 
-    @OneToOne
     @Column(name = "costo")
     private BigDecimal costo;
+    
+    @Column(name = "addetti_min")
+    private Integer addettiMin;
+    
+    @Column(name = "addetti_max")
+    private Integer addettiMax;
 
     public String getZonaUrbanizzazione() {
 	return zonaUrbanizzazione;
@@ -66,6 +69,22 @@ public class OneriConcessori implements Serializable {
 
     public void setIdoneriConcessori(Integer idoneriConcessori) {
 	this.idoneriConcessori = idoneriConcessori;
+    }
+
+    public Integer getAddettiMin() {
+        return addettiMin;
+    }
+
+    public void setAddettiMin(Integer addettiMin) {
+        this.addettiMin = addettiMin;
+    }
+
+    public Integer getAddettiMax() {
+        return addettiMax;
+    }
+
+    public void setAddettiMax(Integer addettiMax) {
+        this.addettiMax = addettiMax;
     }
 
 }

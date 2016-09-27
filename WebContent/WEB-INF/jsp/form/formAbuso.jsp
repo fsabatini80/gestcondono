@@ -174,11 +174,11 @@
 					<tr>
 						<td>Zona urbanizzazione :</td>
 						<td><form:select path="localizzazione.zonaUrbanizzazione">
-								<form:option value="" />
-								<form:option value="ZONA E" />
-								<form:option value="ZONA B" />
-								<form:option value="ZONA A" />
+								<form:options items="${oneriConcessoris}"
+									itemLabel="zonaUrbanizzazione" itemValue="idoneriConcessori" />
 							</form:select></td>
+						<td><form:errors path="localizzazione.zonaUrbanizzazione"
+								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
 						<td>Immobile soggetto a vincoli di tutela :</td>
@@ -209,7 +209,7 @@
 		<form:hidden path="destinazioneUso" />
 		<form:hidden path="tipologiaAbuso" />
 		<form:hidden path="epocaAbuso" />
-		
+
 		<form:input path="oblazioneCalcolata" />
 		<form:button value="calcola" name="calcola">Calcola Oblazione</form:button>
 	</form:form>
