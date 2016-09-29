@@ -1,9 +1,11 @@
 package it.soft.service;
 
+import it.soft.dao.DatiAlloggioHome;
 import it.soft.dao.DatiVersamentiHome;
 import it.soft.dao.InteressiLegaliHome;
 import it.soft.dao.OneriConcessoriHome;
 import it.soft.dao.RiduzioneRedditoHome;
+import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiVersamento;
 import it.soft.domain.InteressiLegali;
 import it.soft.domain.OneriConcessori;
@@ -51,6 +53,9 @@ public class DatiVersamentiService {
 
     @Autowired
     OneriConcessoriHome oneriConcessoriHome;
+
+    @Autowired
+    DatiAlloggioHome datiAlloggioHome;
 
     public void persist(DatiVersamentiPojo pojo) {
 	DatiVersamento versamenti = new DatiVersamento();
@@ -592,9 +597,11 @@ public class DatiVersamentiService {
 	    }
 	    if (Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
 		    || Constants.DEST_USO_COMMERCIALE.equals(destinazioneUso)) {
+		List<DatiAlloggio> listaAlloggi = datiAlloggioHome
+			.findByIdAbuso(datiAbusoService
+				.findDatiAbusoById(abusoDB.getIddatiabuso()));
 		answer = calcoloOneriDaTab(abusoDB)
-			+ calcolaCostiCostruzione(abusoDB.getSuperficeUtile() != null ? new Double(
-				abusoDB.getSuperficeUtile()) : new Double(0));
+			+ calcolaCostiCostruzione(listaAlloggi, abusoDB);
 		return answer;
 	    }
 	    if (Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
@@ -633,8 +640,10 @@ public class DatiVersamentiService {
 	 */
 	if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
 	    answer = calcoloOneriDaTab(abusoDB);
-	    calcolaCostiCostruzione(abusoDB.getSuperficeUtile() != null ? new Double(
-		    abusoDB.getSuperficeUtile()) : new Double(0));
+	    List<DatiAlloggio> listaAlloggi = datiAlloggioHome
+		    .findByIdAbuso(datiAbusoService.findDatiAbusoById(abusoDB
+			    .getIddatiabuso()));
+	    calcolaCostiCostruzione(listaAlloggi, abusoDB);
 	    return answer;
 	}
 	return answer;
@@ -690,22 +699,208 @@ public class DatiVersamentiService {
      * incrementi percentuali di cui al precedente comma per i rapporti tra la
      * superficie utile abitabile degli alloggi compresi nelle rispettive classi
      * e la superficie utile abitabile dell'intero edificio.
+     * 
+     * @param abusoDB
      */
-    private Double calcolaCostiCostruzione(Double superficeUtile) {
+    private Double calcolaCostiCostruzione(List<DatiAlloggio> listaAlloggi,
+	    DatiAbusoPojo abusoDB) {
 	// FIXME
 	Double answer = new Double(0);
-	if (superficeUtile > 95 && superficeUtile <= 110) {
+	Double superficeUtileTotale = new Double(0);
+	Double superficeUtile = new Double(0);
+	Double superficeAccessoriaTotale = new Double(0);
+	Double superficeAccessoria = new Double(0);
+	Double percTotale = new Double(0);
+	Double perc = new Double(0);
+	Double percAccessori = new Double(0);
+	Integer caratteristicheSpecialiTotale = new Integer(0);
+	Double costoR1 = new Double(0);
+	Double costoR2 = new Double(0);
+	Double costoR3 = new Double(0);
 
-	} else if (superficeUtile > 110 && superficeUtile <= 130) {
+	Double costoCostruzioneMQ = new Double(260.81);
+	Double costoCostruzioneMQMagg = new Double(0);
+	Double costoCostruzioneNuovoEdificio = new Double(0);
 
-	} else if (superficeUtile > 130 && superficeUtile <= 160) {
+	Double suAbuso = Double.valueOf(abusoDB.getSuperficeUtile());
+	Double snrAbuso = Double.valueOf(abusoDB.getNonresidenziale());
 
-	} else if (superficeUtile > 160) {
+	for (DatiAlloggio datiAlloggio : listaAlloggi) {
+	    superficeUtileTotale = superficeUtileTotale
+		    + Double.valueOf(datiAlloggio.getSuperficieUtile());
+	    superficeAccessoriaTotale = superficeAccessoriaTotale
+		    + Double.valueOf(datiAlloggio.getSuperficieAccessoria());
 
-	} else {
-	    return answer;
+	    String csList = datiAlloggio.getCaratteriSpeciali();
+	    if (csList != null) {
+		caratteristicheSpecialiTotale = caratteristicheSpecialiTotale
+			+ csList.split(",").length;
+	    }
 	}
+
+	for (DatiAlloggio datiAlloggio : listaAlloggi) {
+	    superficeUtile = Double.valueOf(datiAlloggio.getSuperficieUtile());
+	    superficeAccessoria = Double.valueOf(datiAlloggio
+		    .getSuperficieAccessoria());
+
+	    perc = getincrementoSUAbitabile(superficeUtileTotale,
+		    superficeUtile);
+	    System.out.println("superficeUtile: " + superficeUtile);
+	    System.out.println("perc: " + perc);
+	    System.out.println("superficeAccessoria: " + superficeAccessoria);
+	    percTotale = percTotale + perc;
+
+	    costoR2 = getCostoR2(datiAlloggio.getTipologiaAlloggio()
+		    .getIdtipologiaAlloggio());
+	}
+
+	System.out
+		.println("percTotale getincrementoSUAbitabile: " + percTotale);
+
+	percAccessori = (superficeAccessoriaTotale / superficeUtileTotale) * 100;
+	System.out.println("superficeAccessoriaTotale : " + percTotale);
+	System.out
+		.println("percTotale getincrementoSUAbitabile: " + percTotale);
+
+	percTotale = percTotale
+		+ getPercIncrementoSUNonAbitabile(percTotale, percAccessori);
+
+	if (caratteristicheSpecialiTotale == 1) {
+	    percTotale = percTotale + 10;
+	} else if (caratteristicheSpecialiTotale == 2) {
+	    percTotale = percTotale + 20;
+	} else if (caratteristicheSpecialiTotale == 3) {
+	    percTotale = percTotale + 30;
+	} else if (caratteristicheSpecialiTotale == 4) {
+	    percTotale = percTotale + 40;
+	} else if (caratteristicheSpecialiTotale == 5) {
+	    percTotale = percTotale + 50;
+	}
+
+	if (percTotale <= 5) {
+	    percTotale = 0.0;
+	    costoR3 = 1.50;
+	} else if (percTotale > 5 && percTotale <= 10) {
+	    percTotale = 5.0;
+	    costoR3 = 1.50;
+	} else if (percTotale > 10 && percTotale <= 15) {
+	    percTotale = 10.0;
+	    costoR3 = 1.50;
+	} else if (percTotale > 15 && percTotale <= 20) {
+	    percTotale = 15.0;
+	    costoR3 = 1.50;
+	} else if (percTotale > 20 && percTotale <= 25) {
+	    percTotale = 20.0;
+	    costoR3 = 2.50;
+	} else if (percTotale > 25 && percTotale <= 30) {
+	    percTotale = 25.0;
+	    costoR3 = 2.50;
+	} else if (percTotale > 30 && percTotale <= 35) {
+	    percTotale = 30.0;
+	    costoR3 = 2.50;
+	} else if (percTotale > 35 && percTotale <= 40) {
+	    percTotale = 35.0;
+	    costoR3 = 2.50;
+	} else if (percTotale > 40 && percTotale <= 45) {
+	    percTotale = 40.0;
+	    costoR3 = 4.0;
+	} else if (percTotale > 45 && percTotale <= 50) {
+	    percTotale = 45.0;
+	    costoR3 = 4.0;
+	} else if (percTotale > 50) {
+	    percTotale = 50.0;
+	    costoR3 = 4.0;
+	}
+
+	costoCostruzioneMQMagg = costoCostruzioneMQ * (percTotale / 100);
+	costoCostruzioneNuovoEdificio = costoCostruzioneMQMagg
+		* (suAbuso + snrAbuso);
+
+	costoR1 = getCostoR1(abusoDB.getLocalizzazione()
+		.getZonaUrbanizzazione());
+
+	answer = ((costoR1 + costoR2 + costoR3) / 100)
+		* costoCostruzioneNuovoEdificio;
+
+	answer = Converter.round(answer, 2);
 	return answer;
+    }
+
+    private Double getCostoR2(int idtipologiaAlloggio) {
+
+	if (Constants.UNIFAMILIARI_SINGOLE.equals(String
+		.valueOf(idtipologiaAlloggio))) {
+	    return 2.25;
+	} else if (Constants.UNIFAMILIARI_AGGREGATE_FINO_A_2_PIANI_MAX_4
+		.equals(String.valueOf(idtipologiaAlloggio))) {
+	    return 2.0;
+	} else if (Constants.UNIFAMILIARI_AGGREGATE_FINO_A_2_PIANI_A_SCHIERA
+		.equals(String.valueOf(idtipologiaAlloggio))) {
+	    return 1.75;
+	} else if (Constants.PLURIFAMILIARI_FINO_A_3_PIANI_ABITABILI
+		.equals(String.valueOf(idtipologiaAlloggio))) {
+	    return 1.50;
+	} else if (Constants.PLURIFAMILIARI_OLTRE_3_PIANI_ABITABILI
+		.equals(String.valueOf(idtipologiaAlloggio))) {
+	    return 1.75;
+	}
+
+	return 0.0;
+    }
+
+    /**
+     * negli allegati 2 e 4 ci sono le seguenti classi: E C5 C4 C1 C12C3 C123 B
+     * B3 B2 B1 A no classi scusa ZONE PRG mentre nell'excel nel riquadro R1 ci
+     * sono solo le seguenti: A, B, C2, C1, E Luigi Acanfora
+     * (geom.acanforaluigi@gmail.com) Nell excel la zona b comprende tutte le b
+     * dell allegato 2 e 4 X la c La c1 gli dai il parametro c1 Dalla c2 in poi
+     * Gli dai il patametto c 2
+     * 
+     * @param zonaUrbanizzazione
+     * @return
+     */
+    private Double getCostoR1(String zonaUrbanizzazione) {
+	if (zonaUrbanizzazione.indexOf("A") > 0)
+	    return 2.75;
+	if (zonaUrbanizzazione.indexOf("B") > 0)
+	    return 2.50;
+	if (zonaUrbanizzazione.contains("C1")
+		|| zonaUrbanizzazione.indexOf("E") > 0)
+	    return 1.50;
+	if (zonaUrbanizzazione.contains("C2"))
+	    return 2.50;
+	return 0.0;
+    }
+
+    private Double getPercIncrementoSUNonAbitabile(Double percTotale,
+	    Double percAccessori) {
+	if (percAccessori < 50) {
+	    percTotale = percTotale + 0;
+	} else if (percAccessori > 50 && percAccessori <= 75) {
+	    percTotale = percTotale + 10;
+	} else if (percAccessori > 75 && percAccessori <= 100) {
+	    percTotale = percTotale + 20;
+	} else if (percAccessori > 100) {
+	    percTotale = percTotale + 30;
+	}
+	return percTotale;
+    }
+
+    private Double getincrementoSUAbitabile(Double superficeUtileTotale,
+	    Double superficeUtile) {
+	Double perc = new Double(0);
+	if (superficeUtile < 95) {
+	    perc = (superficeUtile / superficeUtileTotale) * 0;
+	} else if (superficeUtile > 95 && superficeUtile <= 110) {
+	    perc = (superficeUtile / superficeUtileTotale) * 5;
+	} else if (superficeUtile > 110 && superficeUtile <= 130) {
+	    perc = (superficeUtile / superficeUtileTotale) * 15;
+	} else if (superficeUtile > 130 && superficeUtile <= 160) {
+	    perc = (superficeUtile / superficeUtileTotale) * 30;
+	} else if (superficeUtile > 160) {
+	    perc = (superficeUtile / superficeUtileTotale) * 50;
+	}
+	return perc;
     }
 
     public Double getDirittiRilPerm(DatiAbusoPojo abusoDB) {

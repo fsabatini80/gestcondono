@@ -28,5 +28,11 @@ public class Constants {
     public static final String DEST_USO_SANITARIA = "9";
     public static final String DEST_USO_CULTO = "10";
     public static final String DEST_USO_ATTIVITA_SENZA_SCOPO_LUCRO = "11";
+    
+    public static final String UNIFAMILIARI_SINGOLE = "1";
+    public static final String UNIFAMILIARI_AGGREGATE_FINO_A_2_PIANI_MAX_4  = "2";
+    public static final String UNIFAMILIARI_AGGREGATE_FINO_A_2_PIANI_A_SCHIERA = "3";
+    public static final String PLURIFAMILIARI_FINO_A_3_PIANI_ABITABILI = "4";
+    public static final String PLURIFAMILIARI_OLTRE_3_PIANI_ABITABILI = "5";
 
 }
