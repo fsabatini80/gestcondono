@@ -34,5 +34,8 @@ public class Constants {
     public static final String UNIFAMILIARI_AGGREGATE_FINO_A_2_PIANI_A_SCHIERA = "3";
     public static final String PLURIFAMILIARI_FINO_A_3_PIANI_ABITABILI = "4";
     public static final String PLURIFAMILIARI_OLTRE_3_PIANI_ABITABILI = "5";
+    
+    public static final String RIDUZIONE_PRIMA_CASA_47_85 = "10";
+    public static final String RIDUZIONE_PRIMA_CASA_724_ = "20";
 
 }

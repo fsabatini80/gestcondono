@@ -151,7 +151,7 @@ public class DatiVersamentiService {
 	    String destinazioneUso) {
 
 	Integer tipoAbuso = tipologiaAbuso.getDescrizioneBreve();
-	// TODO calcolo legge 2 e calcolo legge 3
+	// TODO calcolo legge 3
 	List<TabCalcOblazione> tabOblList = datiVersamentiHome.findOblazione(
 		dataAbuso, leggeCondono, tipoAbuso);
 	TabCalcOblazione calcOblazione = null;
@@ -185,11 +185,11 @@ public class DatiVersamentiService {
 		supUtilNRDouble = new Double(abusoDB.getNonresidenziale());
 	}
 	// legge n. 47/85
-	if ("1".equals(leggeCondono)) {
+	if (Constants.ID_LEGGE_47_85.equals(leggeCondono)) {
 	    return calcolaLegge1(importoObla, abusoDB, supUtilDouble);
 	}
 	// legge n. 724/94
-	if ("2".equals(leggeCondono)) {
+	if (Constants.ID_LEGGE_724_.equals(leggeCondono)) {
 
 	    // tipo reddito 10 dipendente 20 non dipendente
 	    String reddito = abusoDB.getReddito();
@@ -205,35 +205,40 @@ public class DatiVersamentiService {
 	    if (tipoAbuso == 4 || tipoAbuso == 5 || tipoAbuso == 6
 		    || tipoAbuso == 7) {
 		importoObla = calcolaRiduzioniLegge2(importoObla,
-			supUtilDouble, "20".equals(abusoDB.getRiduzioni()),
-			abusoDB.getLocalizzazione().getAbitazioneLusso(),
-			abusoDB.getLocalizzazione()
+			supUtilDouble,
+			Constants.RIDUZIONE_PRIMA_CASA_724_.equals(abusoDB
+				.getRiduzioni()), abusoDB.getLocalizzazione()
+				.getAbitazioneLusso(), abusoDB
+				.getLocalizzazione()
 				.getConvenzione_urbanistica(),
 			abusoDB.getDestinazioneUso(), riduzioneRedditoBean,
 			abusoDB.getLocalizzazione().getZonaUrbanizzazione());
-		return importoObla;
+		return Converter.round(importoObla, 2);
 	    }
 	    importoObla = importoObla
 		    * (supUtilDouble + (supUtilNRDouble * 0.6));
 	    importoObla = calcolaRiduzioniLegge2(importoObla, supUtilDouble,
-		    "10".equals(abusoDB.getRiduzioni()), abusoDB
-			    .getLocalizzazione().getAbitazioneLusso(), abusoDB
-			    .getLocalizzazione().getConvenzione_urbanistica(),
+		    Constants.RIDUZIONE_PRIMA_CASA_724_.equals(abusoDB
+			    .getRiduzioni()), abusoDB.getLocalizzazione()
+			    .getAbitazioneLusso(), abusoDB.getLocalizzazione()
+			    .getConvenzione_urbanistica(),
 		    abusoDB.getDestinazioneUso(), riduzioneRedditoBean, abusoDB
 			    .getLocalizzazione().getZonaUrbanizzazione());
 	}
 
-	return importoObla;
+	return Converter.round(importoObla, 2);
     }
 
     private Double calcolaLegge1(Double importoObla, DatiAbusoPojo abusoDB,
 	    Double supUtilDouble) {
 	importoObla = importoObla * supUtilDouble;
 	importoObla = Converter.round(importoObla, 2);
-	calcolaRiduzioniLegge1(importoObla, supUtilDouble, "10".equals(abusoDB
-		.getRiduzioni()), abusoDB.getLocalizzazione()
-		.getAbitazioneLusso(), abusoDB.getLocalizzazione()
-		.getConvenzione_urbanistica(), abusoDB.getDestinazioneUso());
+	calcolaRiduzioniLegge1(importoObla, supUtilDouble,
+		Constants.RIDUZIONE_PRIMA_CASA_47_85.equals(abusoDB
+			.getRiduzioni()), abusoDB.getLocalizzazione()
+			.getAbitazioneLusso(), abusoDB.getLocalizzazione()
+			.getConvenzione_urbanistica(),
+		abusoDB.getDestinazioneUso());
 
 	System.out
 		.println("oblazione calcolata per la legge 1: " + importoObla);
@@ -258,11 +263,11 @@ public class DatiVersamentiService {
 	}
 	// riduzione/maggiorazione per zona urbanistica
 	if (supUtilDouble <= 150) {
-	    if ("ZONA E".equals(zonaUrbanizzazione)) {
+	    if ("E".equals(zonaUrbanizzazione)) {
 		importoObla = importoObla * 0.85;
-	    } else if ("ZONA B".equals(zonaUrbanizzazione)) {
+	    } else if ("B".equals(zonaUrbanizzazione)) {
 		importoObla = importoObla * 1.20;
-	    } else if ("ZONA A".equals(zonaUrbanizzazione)) {
+	    } else if ("A".equals(zonaUrbanizzazione)) {
 		importoObla = importoObla * 1.30;
 	    }
 	}
@@ -293,7 +298,7 @@ public class DatiVersamentiService {
 	Double delta = autoDetermina - importoVersValidi;
 
 	// calcolo interessi di mora
-	if ("1".equals(leggeCondono)) {
+	if (Constants.ID_LEGGE_47_85.equals(leggeCondono)) {
 	    if (delta > 0)
 		im = calcolaInteressiMoraL1(Constants.DATA_ZERO_VERSAMENTI,
 			new Date(), delta);
@@ -332,30 +337,16 @@ public class DatiVersamentiService {
 
 	    Double il = calcolaIL(dataInizioIL, Converter.dateToDouble(
 		    Converter.dateToString(new Date()), "yyyyMMdd"), t);
+	    System.out.println("interessi legali: " + il);
 	    t = delta + il + im;
 	    return new Double(t);
 	}
-	Double importoVersato = new Double(0.0);
-	for (DatiVersamento datiVersamento : vers) {
 
-	    if (datiVersamento.getImporto() != null) {
-		importoVersato = Math.abs(importoVersato
-			+ datiVersamento.getImporto());
-	    } else if (datiVersamento.getImportoEuro() != null) {
-		importoVersato = Math.abs(importoVersato
-			+ datiVersamento.getImportoEuro());
-	    } else if (datiVersamento.getImportoLire() != null) {
-		importoVersato = Math.abs(importoVersato
-			+ Converter.convertLireEuro(datiVersamento
-				.getImportoLire()));
-	    } else {
-		importoVersato = Math.abs(new Double(0.0));
-	    }
-	}
+	Double importoVersato = getVersamentiValidi(vers, causali);
 	if (importoVersValidi > autoDetermina) {
 	    Double b = oblazioneCalcolata - importoVersato;
 	    if (im + b < 0) {
-		return new Double(importoVersato);
+		return new Double(0.0);
 	    }
 	}
 	Double oblazioneDovuta = im + (oblazioneCalcolata - importoVersato);
@@ -742,7 +733,8 @@ public class DatiVersamentiService {
 	    superficeUtile = Double.valueOf(datiAlloggio.getSuperficieUtile());
 	    superficeAccessoria = Double.valueOf(datiAlloggio
 		    .getSuperficieAccessoria());
-
+	    // recupero percentuale incremento superfice abitabile per ogni
+	    // alloggio
 	    perc = getincrementoSUAbitabile(superficeUtileTotale,
 		    superficeUtile);
 	    System.out.println("superficeUtile: " + superficeUtile);
@@ -758,13 +750,13 @@ public class DatiVersamentiService {
 		.println("percTotale getincrementoSUAbitabile: " + percTotale);
 
 	percAccessori = (superficeAccessoriaTotale / superficeUtileTotale) * 100;
-	System.out.println("superficeAccessoriaTotale : " + percTotale);
+	System.out.println("superficeAccessoriaTotale : " + percAccessori);
 	System.out
 		.println("percTotale getincrementoSUAbitabile: " + percTotale);
+	// recupero percentuale incremento superfice non abitabile
+	percTotale = getPercIncrementoSUNonAbitabile(percTotale, percAccessori);
 
-	percTotale = percTotale
-		+ getPercIncrementoSUNonAbitabile(percTotale, percAccessori);
-
+	// recupero percentuale incremento caratteristiche speciali
 	if (caratteristicheSpecialiTotale == 1) {
 	    percTotale = percTotale + 10;
 	} else if (caratteristicheSpecialiTotale == 2) {
@@ -777,51 +769,56 @@ public class DatiVersamentiService {
 	    percTotale = percTotale + 50;
 	}
 
+	// recupero costo R3 + percentuale incremento in base alla classe
 	if (percTotale <= 5) {
 	    percTotale = 0.0;
-	    costoR3 = 1.50;
+	    costoR3 = 1.25;
 	} else if (percTotale > 5 && percTotale <= 10) {
 	    percTotale = 5.0;
-	    costoR3 = 1.50;
+	    costoR3 = 1.25;
 	} else if (percTotale > 10 && percTotale <= 15) {
 	    percTotale = 10.0;
-	    costoR3 = 1.50;
+	    costoR3 = 1.25;
 	} else if (percTotale > 15 && percTotale <= 20) {
 	    percTotale = 15.0;
-	    costoR3 = 1.50;
+	    costoR3 = 1.25;
 	} else if (percTotale > 20 && percTotale <= 25) {
 	    percTotale = 20.0;
-	    costoR3 = 2.50;
+	    costoR3 = 2.0;
 	} else if (percTotale > 25 && percTotale <= 30) {
 	    percTotale = 25.0;
-	    costoR3 = 2.50;
+	    costoR3 = 2.0;
 	} else if (percTotale > 30 && percTotale <= 35) {
 	    percTotale = 30.0;
-	    costoR3 = 2.50;
+	    costoR3 = 2.0;
 	} else if (percTotale > 35 && percTotale <= 40) {
 	    percTotale = 35.0;
-	    costoR3 = 2.50;
+	    costoR3 = 2.0;
 	} else if (percTotale > 40 && percTotale <= 45) {
 	    percTotale = 40.0;
-	    costoR3 = 4.0;
+	    costoR3 = 3.50;
 	} else if (percTotale > 45 && percTotale <= 50) {
 	    percTotale = 45.0;
-	    costoR3 = 4.0;
+	    costoR3 = 3.50;
 	} else if (percTotale > 50) {
 	    percTotale = 50.0;
-	    costoR3 = 4.0;
+	    costoR3 = 3.50;
 	}
 
 	costoCostruzioneMQMagg = costoCostruzioneMQ * (percTotale / 100);
 	costoCostruzioneNuovoEdificio = costoCostruzioneMQMagg
-		* (suAbuso + snrAbuso);
-
+		* (suAbuso + (snrAbuso * 0.6));
+	System.out.println("costoCostruzioneMQ: " + costoCostruzioneMQ);
+	System.out.println("costoCostruzioneMQMagg: " + costoCostruzioneMQMagg);
+	System.out.println("percTotale: " + percTotale);
+	System.out.println("costoCostruzioneNuovoEdificio: "
+		+ costoCostruzioneNuovoEdificio);
 	costoR1 = getCostoR1(abusoDB.getLocalizzazione()
 		.getZonaUrbanizzazione());
 
 	answer = ((costoR1 + costoR2 + costoR3) / 100)
 		* costoCostruzioneNuovoEdificio;
-
+	System.out.println("answer: " + answer);
 	answer = Converter.round(answer, 2);
 	return answer;
     }
@@ -833,13 +830,13 @@ public class DatiVersamentiService {
 	    return 2.25;
 	} else if (Constants.UNIFAMILIARI_AGGREGATE_FINO_A_2_PIANI_MAX_4
 		.equals(String.valueOf(idtipologiaAlloggio))) {
-	    return 2.0;
+	    return 1.75;
 	} else if (Constants.UNIFAMILIARI_AGGREGATE_FINO_A_2_PIANI_A_SCHIERA
 		.equals(String.valueOf(idtipologiaAlloggio))) {
-	    return 1.75;
+	    return 1.50;
 	} else if (Constants.PLURIFAMILIARI_FINO_A_3_PIANI_ABITABILI
 		.equals(String.valueOf(idtipologiaAlloggio))) {
-	    return 1.50;
+	    return 1.25;
 	} else if (Constants.PLURIFAMILIARI_OLTRE_3_PIANI_ABITABILI
 		.equals(String.valueOf(idtipologiaAlloggio))) {
 	    return 1.75;
@@ -861,14 +858,14 @@ public class DatiVersamentiService {
      */
     private Double getCostoR1(String zonaUrbanizzazione) {
 	if (zonaUrbanizzazione.indexOf("A") > 0)
-	    return 2.75;
+	    return 2.25;
 	if (zonaUrbanizzazione.indexOf("B") > 0)
-	    return 2.50;
+	    return 2.0;
 	if (zonaUrbanizzazione.contains("C1")
 		|| zonaUrbanizzazione.indexOf("E") > 0)
-	    return 1.50;
+	    return 1.25;
 	if (zonaUrbanizzazione.contains("C2"))
-	    return 2.50;
+	    return 2.0;
 	return 0.0;
     }
 

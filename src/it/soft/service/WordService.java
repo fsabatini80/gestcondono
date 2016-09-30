@@ -131,7 +131,8 @@ public class WordService {
 		abusoDB.getDestinazioneUso());
 	Double oneriConcessSaldo = oneriConcessCalcolato - oneriConcessVersato;
 	Double dirittiIstrut = new Double(50);
-	Double dirittiRilPerm = datiVersamentiService.getDirittiRilPerm(abusoDB);
+	Double dirittiRilPerm = datiVersamentiService
+		.getDirittiRilPerm(abusoDB);
 	Double agibilita = new Double(0);
 	Double dirittiPareri = new Double(0);
 
@@ -308,7 +309,6 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table4.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-
 	addTableCellCenter(table4.getRow(0).getCell(2),
 		metaImportoResiduo.toString(), true, ParagraphAlignment.RIGHT);
 	table4.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
@@ -465,15 +465,28 @@ public class WordService {
 		"Totale diritti di segreteria ", true, ParagraphAlignment.LEFT);
 	table15.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(5000));
-	addTableCellCenter(table15.getRow(0).getCell(1), "€", false,
+	addTableCellCenter(table15.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	table15.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table15.getRow(0).getCell(2),
 		new Double(dirittiIstrut + dirittiPareri + dirittiRilPerm
-			+ agibilita).toString(), false,
-		ParagraphAlignment.RIGHT);
+			+ agibilita).toString(), true, ParagraphAlignment.RIGHT);
 	table15.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+		.setW(BigInteger.valueOf(4500));
+
+	XWPFTable table99 = document.createTable(1, 3);
+	addTableCellCenter(table99.getRow(0).getCell(0), "", true,
+		ParagraphAlignment.LEFT);
+	table99.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+		.setW(BigInteger.valueOf(5000));
+	addTableCellCenter(table99.getRow(0).getCell(1), "€", false,
+		ParagraphAlignment.CENTER);
+	table99.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+		.setW(BigInteger.valueOf(499));
+	addTableCellCenter(table99.getRow(0).getCell(2), "", false,
+		ParagraphAlignment.RIGHT);
+	table99.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
 	XWPFTable table16 = document.createTable(1, 3);
@@ -486,7 +499,10 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table16.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table16.getRow(0).getCell(2), "", false,
+	addTableCellCenter(table16.getRow(0).getCell(2),
+		new Double(oneriConcessSaldo + metaImportoResiduo
+			+ dirittiIstrut + dirittiPareri + dirittiRilPerm
+			+ agibilita).toString(), false,
 		ParagraphAlignment.RIGHT);
 	table16.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
@@ -634,9 +650,9 @@ public class WordService {
 	createListaSoggetti(document.createParagraph(), praticaDB, abusoDB,
 		listaSoggetti);
 	creaOggetto(document.createParagraph(), praticaDB, abusoDB);
-//	addTextBoldBreakCenter(document.createParagraph().createRun(),
-//		"A) AVVIO ISTRUTTORIA DELLA PRATICA");
-//	creaPargraphADB(document, praticaDB, abusoDB);
+	// addTextBoldBreakCenter(document.createParagraph().createRun(),
+	// "A) AVVIO ISTRUTTORIA DELLA PRATICA");
+	// creaPargraphADB(document, praticaDB, abusoDB);
 
 	addTextBoldBreakCenter(document.createParagraph().createRun(),
 		"B) DESCRIZIONE DELL'ABUSO");
@@ -713,8 +729,11 @@ public class WordService {
 		abusoDB.getNonresidenziale());
 	addTextSimple(paragraphDatiTecniciTable.createRun(), "Mc VxP: ");
 	addTab(paragraphDatiTecniciTable, 3);
-	addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
-		abusoDB.getVolumeTotale());
+	addTextSimpleBreak(
+		paragraphDatiTecniciTable.createRun(),
+		new Double(Double.valueOf(abusoDB.getVolumeUtile())
+			+ Double.valueOf(abusoDB.getNonresidenzialeVuoto()))
+			.toString());
 	addTextSimple(paragraphDatiTecniciTable.createRun(), "Tipologia: ");
 	addTab(paragraphDatiTecniciTable, 3);
 	addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
@@ -940,12 +959,13 @@ public class WordService {
 	paragraph.createRun().addBreak();
 	for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
 	    addTab(paragraph, 7);
-	    addTextSimpleBreak(paragraph.createRun(),
+	    addTextSimpleBreak(
+		    paragraph.createRun(),
 		    "" + relSoggettoAbuso.getCognome() + " "
 			    + relSoggettoAbuso.getNome());
 	    addTab(paragraph, 7);
-	    addTextSimpleBreak(paragraph.createRun(), ""
-		    + relSoggettoAbuso.getIndirizzo());
+	    addTextSimpleBreak(paragraph.createRun(),
+		    "" + relSoggettoAbuso.getIndirizzo());
 	    addTab(paragraph, 7);
 	    addTextSimpleBreak(paragraph.createRun(),
 		    relSoggettoAbuso.getComuneResidenza() + " ("
