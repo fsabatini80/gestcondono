@@ -167,7 +167,7 @@ public class DatiPraticaHome {
 			throw re;
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Datipratica> findBy(String numeroPratica,
 			String numeroProtocollo, String dataDomanda,
@@ -184,7 +184,9 @@ public class DatiPraticaHome {
 				cr.add(Restrictions.eq("numeroProtocollo", numeroProtocollo));
 			if (!StringUtils.isEmptyOrWhitespaceOnly(dataDomanda))
 				cr.add(Restrictions.eq("dataDomanda", dataDomanda));
-			if (leggeCondono != null && !"".equals(leggeCondono))
+			if (leggeCondono != null
+					&& !"0".equals(String.valueOf(leggeCondono
+							.getIdleggiCondono())))
 				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
 
 			List<Datipratica> results = cr.list();

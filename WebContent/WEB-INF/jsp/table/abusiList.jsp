@@ -14,6 +14,7 @@
 		<img title="crea un nuovo abuso" src="img/add.png">
 	</a>
 </div>
+<div class="ui-state-error ui-widget">${error}</div>
 <div>
 	<table id="example10" class="display">
 		<thead>

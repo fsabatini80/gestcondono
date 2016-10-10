@@ -6,7 +6,7 @@
 <div>
 	<form:form action="salvaAbuso.htm" commandName="datiAbusoPojo"
 		cssClass="ui-widget">
-		<!-- form:errors path="*" cssClass="errorblock" element="div" /-->
+		<form:errors path="*" cssClass="errorblock" element="div" />
 		<div id="accordionDatAbuso">
 			<h3>Dati abuso</h3>
 			<div id="accordionDatAbuso1">

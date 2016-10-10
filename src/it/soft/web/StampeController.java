@@ -4,6 +4,8 @@ import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
 import it.soft.service.WordService;
 
+import java.io.IOException;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,6 +43,12 @@ public class StampeController extends BaseController {
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			String view = "abusiError.htm?idpratica=".concat(idpratica);
+			try {
+				response.sendRedirect(view);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 }

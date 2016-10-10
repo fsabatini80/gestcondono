@@ -5,7 +5,8 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <head>
-<link rel="stylesheet" href="css/start/jquery-ui.css" />
+<link rel="stylesheet" href="css/start/jquery-ui.theme.css" />
+<link rel="stylesheet" href="css/start/jquery-ui.min.css" />
 <link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
 
 <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
