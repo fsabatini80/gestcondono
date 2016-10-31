@@ -38,6 +38,9 @@ public class OneriConcessori implements Serializable {
     
     @Column(name = "addetti_max")
     private Integer addettiMax;
+    
+    @Column(name = "id_tipoopera", length = 45)
+    private String tipoopera;
 
     public String getZonaUrbanizzazione() {
 	return zonaUrbanizzazione;
@@ -86,5 +89,13 @@ public class OneriConcessori implements Serializable {
     public void setAddettiMax(Integer addettiMax) {
         this.addettiMax = addettiMax;
     }
+
+	public String getTipoopera() {
+		return tipoopera;
+	}
+
+	public void setTipoopera(String tipoopera) {
+		this.tipoopera = tipoopera;
+	}
 
 }

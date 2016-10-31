@@ -43,7 +43,7 @@ public class StampeController extends BaseController {
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			String view = "abusiError.htm?idpratica=".concat(idpratica);
+			String view = "abusiError.htm?idpratica=".concat(idpratica).concat("&idabuso=").concat(idabuso);
 			try {
 				response.sendRedirect(view);
 			} catch (IOException e1) {

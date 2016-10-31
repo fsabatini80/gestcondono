@@ -5,6 +5,7 @@ import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
 import it.soft.domain.Datipratica;
 import it.soft.domain.LeggiCondono;
+import it.soft.util.Converter;
 import it.soft.web.pojo.DatiPraticaPojo;
 
 import java.util.List;
@@ -43,15 +44,21 @@ public class DatiPraticaValidator implements Validator {
 			arg1.rejectValue("leggeCondono", "obbligatorio");
 
 		// date.legge.not.valid
-//		if (pojo.getLeggeCondono() != null
-//				&& !"0".equals(pojo.getLeggeCondono())
-//				&& !StringUtils.isEmptyOrWhitespaceOnly(pojo.getDataDomanda())) {
-//			validaDataDomanda(arg1, pojo);
-//		}
+		// if (pojo.getLeggeCondono() != null
+		// && !"0".equals(pojo.getLeggeCondono())
+		// && !StringUtils.isEmptyOrWhitespaceOnly(pojo.getDataDomanda())) {
+		// validaDataDomanda(arg1, pojo);
+		// }
 
 		verificaPraitcheDuplicate(arg1, pojo);
-		
-		
+
+		if (pojo.getPartitaIva() != null
+				&& !"".equals(pojo.getPartitaIva().trim())) {
+			if (pojo.getPartitaIva().length() != 11
+					|| !Converter.checkIntegerFormat(pojo.getPartitaIva())) {
+				arg1.rejectValue("partitaIva", "format.fields.not.valid");
+			}
+		}
 
 	}
 
@@ -77,37 +84,37 @@ public class DatiPraticaValidator implements Validator {
 		}
 	}
 
-    // private void validaDataDomanda(Errors arg1, DatiPraticaPojo pojo) {
-    // String dataDomandaString = pojo.getDataDomanda();
-    // SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    // try {
-    // Date dataDomanda = dateFormat.parse(dataDomandaString);
-    // List<EpocaAbuso> epocaDB = epocaAbusoHome.findAll(leggiCondonoHome
-    // .findById(Integer.valueOf(pojo.getLeggeCondono())));
-    // boolean rangeValid = false;
-    // Object[] errorParam = new String[2];
-    // for (EpocaAbuso epocaAbuso : epocaDB) {
-    // rangeValid = validDateForRange(dataDomanda,
-    // dateFormat.parse(epocaAbuso.getEpocaDa()),
-    // dateFormat.parse(epocaAbuso.getEpocaA()), rangeValid);
-    // if (!rangeValid) {
-    // errorParam[0] = epocaAbuso.getEpocaDa();
-    // errorParam[1] = epocaAbuso.getEpocaA();
-    // }
-    // }
-    // if (!rangeValid)
-    // arg1.rejectValue("dataDomanda", "date.legge.not.valid",
-    // errorParam, null);
-    // } catch (ParseException e1) {
-    // e1.printStackTrace();
-    // }
-    // }
-    //
-    // private boolean validDateForRange(Date data, Date dataafter,
-    // Date databefore, boolean rangeValid) {
-    // if (data.after(dataafter) && data.before(databefore))
-    // rangeValid = true;
-    // return rangeValid;
-    // }
+	// private void validaDataDomanda(Errors arg1, DatiPraticaPojo pojo) {
+	// String dataDomandaString = pojo.getDataDomanda();
+	// SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	// try {
+	// Date dataDomanda = dateFormat.parse(dataDomandaString);
+	// List<EpocaAbuso> epocaDB = epocaAbusoHome.findAll(leggiCondonoHome
+	// .findById(Integer.valueOf(pojo.getLeggeCondono())));
+	// boolean rangeValid = false;
+	// Object[] errorParam = new String[2];
+	// for (EpocaAbuso epocaAbuso : epocaDB) {
+	// rangeValid = validDateForRange(dataDomanda,
+	// dateFormat.parse(epocaAbuso.getEpocaDa()),
+	// dateFormat.parse(epocaAbuso.getEpocaA()), rangeValid);
+	// if (!rangeValid) {
+	// errorParam[0] = epocaAbuso.getEpocaDa();
+	// errorParam[1] = epocaAbuso.getEpocaA();
+	// }
+	// }
+	// if (!rangeValid)
+	// arg1.rejectValue("dataDomanda", "date.legge.not.valid",
+	// errorParam, null);
+	// } catch (ParseException e1) {
+	// e1.printStackTrace();
+	// }
+	// }
+	//
+	// private boolean validDateForRange(Date data, Date dataafter,
+	// Date databefore, boolean rangeValid) {
+	// if (data.after(dataafter) && data.before(databefore))
+	// rangeValid = true;
+	// return rangeValid;
+	// }
 
 }

@@ -199,16 +199,41 @@ public class PraticheController extends BaseController {
 		model.addAttribute("idpratica", this.praticaPojo.getIddatipratica());
 		return new ModelAndView(view, model);
 	}
-	
+
 	@RequestMapping(value = "/abusiError", method = RequestMethod.GET)
-	public ModelAndView abusiError(@RequestParam(value = "idpratica") String id,
-			ModelMap model) throws Exception {
+	public ModelAndView abusiError(
+			@RequestParam(value = "idpratica") String id,
+			@RequestParam(value = "idabuso") String idAbuso, ModelMap model)
+			throws Exception {
 		String view = "table/abusiList";
 		List<Datiabuso> list = datiAbusoService.findAll(id);
 		this.praticaPojo = datiPraticaService.findById(id);
+		DatiAbusoPojo datiabuso = datiAbusoService.findById(idAbuso);
 		model.addAttribute("abusi", list);
 		model.addAttribute("idpratica", this.praticaPojo.getIddatipratica());
-		model.addAttribute("error", "Attenzione! Stampa non abilitata.");
+		String error = "Attenzione! Stampa non abilitata. Campi mancanti: ";
+
+		error = error
+				.concat(datiabuso.getAutodeterminata() == null ? "Autoderminata "
+						: "");
+		error = error
+				.concat(datiabuso.getSuperficeUtile() == null
+						|| "".equals(datiabuso.getSuperficeUtile()) ? "Superficie utile mq "
+						: "");
+		error = error
+				.concat(datiabuso.getVolumeUtile() == null
+						|| "".equals(datiabuso.getVolumeUtile()) ? "Volume utile vuoto per pieno mc "
+						: "");
+		error = error
+				.concat(datiabuso.getNonresidenzialeVuoto() == null
+						|| "".equals(datiabuso.getNonresidenzialeVuoto()) ? "Non redenziale/accessori vuoto per pieno mc "
+						: "");
+		error = error
+				.concat(datiabuso.getNonresidenziale() == null
+						|| "".equals(datiabuso.getNonresidenziale()) ? "Non residenziale/accessori mq:"
+						: "");
+
+		model.addAttribute("error", error);
 		return new ModelAndView(view, model);
 	}
 
@@ -567,6 +592,14 @@ public class PraticheController extends BaseController {
 				.findAllTipologiaRiduzioneReddito();
 
 		this.oneriConcessoris = oneriConcessoriHome.findAll();
+		List<OneriConcessori> zoneUrbanistiche = new ArrayList<OneriConcessori>();
+		String cu = "";
+		for (OneriConcessori iterable_element : this.oneriConcessoris) {
+			if (cu != null
+					&& !cu.equals(iterable_element.getZonaUrbanizzazione()))
+				zoneUrbanistiche.add(iterable_element);
+			cu = iterable_element.getZonaUrbanizzazione();
+		}
 
 		model.addAttribute("tipoRedditos", tipoRedditos);
 		model.addAttribute("riduzionis", riduzionis);
@@ -574,7 +607,7 @@ public class PraticheController extends BaseController {
 		model.addAttribute("epocaAbusos", epocaAbusos);
 		model.addAttribute("tipoOperas", tipoOperas);
 		model.addAttribute("tipologiaAbusos", tipologiaAbusos);
-		model.addAttribute("oneriConcessoris", oneriConcessoris);
+		model.addAttribute("oneriConcessoris", zoneUrbanistiche);
 	}
 
 	private void initModelAlloggio(ModelMap model) {

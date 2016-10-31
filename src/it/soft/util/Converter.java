@@ -25,7 +25,7 @@ public class Converter {
     public static String dateToString(Date data) {
 	if (data == null)
 	    return null;
-	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	return dateFormat.format(data);
     }
 
@@ -129,6 +129,17 @@ public class Converter {
 	try {
 	    new Double(doubleValueString);
 	} catch (NumberFormatException e) {
+	    return false;
+	}
+
+	return true;
+    }
+    
+	public static Boolean checkIntegerFormat(String intValueString) {
+
+	try {
+			new Integer(intValueString);
+	} catch (Exception e) {
 	    return false;
 	}
 
