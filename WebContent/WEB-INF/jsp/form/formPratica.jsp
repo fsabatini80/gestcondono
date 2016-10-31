@@ -104,7 +104,9 @@
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Partita iva</td>
-					<td><form:input path="partitaIva" /></td>
+					<td><form:input path="partitaIva" maxlength="11"/></td>
+					<td><form:errors path="partitaIva"
+						cssClass="ui-state-error" /></td>
 				</tr>
 				<tr class="ui-widget-content">
 					<td>Codice fiscale :</td>

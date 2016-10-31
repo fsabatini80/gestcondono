@@ -16,7 +16,6 @@
 		</property>
 	</bean>
 	<!-- END Message error bind -->
-
 	<!-- BEGIN MAP DATASOURCE -->
 	<bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
