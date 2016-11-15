@@ -54,8 +54,8 @@
 			<c:forEach items="${fabbricati}" var="fabbricato">
 				<tr>
 					<td>${fabbricato.foglio}</td>
-					<td>${fabbricato.subalterno}</td>
 					<td>${fabbricato.particella}</td>
+					<td>${fabbricato.subalterno}</td>
 					<td>${fabbricato.sezione}</td>
 					<td><a
 						href="<c:url value="removeFabbricato.htm?idfabbricato=${fabbricato.iddatiFabbricati}" />">

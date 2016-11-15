@@ -19,6 +19,7 @@
 	<table id="example10" class="display">
 		<thead>
 			<tr>
+				<th>Sott.</th>
 				<th>Cod. Versamento</th>
 				<th>Numero Bollettino</th>
 				<th>Numero Protocollo</th>
@@ -31,6 +32,7 @@
 		<tbody align="center">
 			<c:forEach var="versamento" items="${versamenti}">
 				<tr>
+					<td>${versamento.progressivo_abuso}</td>
 					<td>${versamento.codiceVersamento}</td>
 					<td>${versamento.numeroBollettino}</td>
 					<td>${versamento.numeroProtocollo}</td>

@@ -174,8 +174,7 @@
 					<tr>
 						<td>Zona urbanizzazione :</td>
 						<td><form:select path="localizzazione.zonaUrbanizzazione">
-								<form:options items="${oneriConcessoris}"
-									itemLabel="zonaUrbanizzazione" itemValue="zonaUrbanizzazione" />
+								<form:options items="${oneriConcessoris}" />
 							</form:select></td>
 						<td><form:errors path="localizzazione.zonaUrbanizzazione"
 								cssClass="ui-state-error" /></td>
