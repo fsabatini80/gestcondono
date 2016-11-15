@@ -125,11 +125,13 @@ public class WordService {
 
 		Double oneriConcessVersato = datiVersamentiService.getOneriVersati(
 				idpratica, progressivo);
+		oneriConcessVersato = Converter.round(oneriConcessVersato, 2);
 		Double oneriConcessCalcolato = datiVersamentiService.getOneriCalcolati(
 				tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
 						.getTipologiaAbuso())), abusoDB, praticaDB, idabuso,
 				abusoDB.getDestinazioneUso());
 		Double oneriConcessSaldo = oneriConcessCalcolato - oneriConcessVersato;
+		oneriConcessSaldo = Converter.round(oneriConcessSaldo, 2);
 		Double dirittiIstrut = new Double(50);
 		Double dirittiRilPerm = datiVersamentiService
 				.getDirittiRilPerm(abusoDB);
@@ -211,12 +213,12 @@ public class WordService {
 	public void createPage4(XWPFDocument document) {
 		document.createParagraph().createRun().addBreak(BreakType.PAGE);
 		InputStream is = WordService.class
-				.getResourceAsStream("ultima pag statica.jpg");
+				.getResourceAsStream("ultima pag statica.png");
 		try {
 			document.createParagraph()
 					.createRun()
 					.addPicture(is, Document.PICTURE_TYPE_JPEG,
-							"ultima pag statica.jpg", Units.toEMU(450),
+							"ultima pag statica.png", Units.toEMU(450),
 							Units.toEMU(650));
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
@@ -236,6 +238,7 @@ public class WordService {
 			Double agibilita) {
 
 		Double metaImportoResiduo = importoRediduo / 2;
+		metaImportoResiduo = Converter.round(metaImportoResiduo, 2);
 
 		document.createParagraph().createRun().addBreak(BreakType.PAGE);
 		addTextBoldBreakCenter(document.createParagraph().createRun(),
@@ -950,9 +953,9 @@ public class WordService {
 			DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
 			List<RelSoggettoAbuso> listaSoggetti) {
 		addTab(paragraph, 7);
-		String testo1 = "Protocollo Numero";
+		String testo1 = "Prot. n°";
 		addTextSimple(paragraph.createRun(), testo1);
-		addTab(paragraph, 1);
+		addTab(paragraph, 2);
 		String testo2 = "del ";// + praticaDB.getNumeroProtocollo()+
 		// praticaDB.getDataProtocollo();
 		addTextSimpleBreak(paragraph.createRun(), testo2);

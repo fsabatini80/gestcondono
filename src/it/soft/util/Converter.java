@@ -109,14 +109,14 @@ public class Converter {
 
     public static Boolean checkDoubleFormat(String doubleValueString) {
 	String[] s = doubleValueString.split("\\.");
-	if (s.length != 2)
-	    return false;
+//	if (s.length != 2)
+//	    return false;
 
 	try {
 	    new Integer(s[0]);
-	    new Integer(s[1]);
-	    if (s[1].length() > 2)
-		return false;
+//	    new Integer(s[1]);
+//	    if (s[1].length() > 2)
+//		return false;
 	} catch (NumberFormatException e) {
 	    return false;
 	}

@@ -56,8 +56,8 @@ public class DatiAbusoValidator implements Validator {
 	    validaDataUltimazioneLavori(arg1, pojo, dp);
 	}
 
-//	if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getAutodeterminata())
-//		&& !Converter.checkDoubleFormat(pojo.getAutodeterminata())) {
+	// if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getAutodeterminata())
+	// && !Converter.checkDoubleFormat(pojo.getAutodeterminata())) {
 	if (pojo.getAutodeterminata() != null
 		&& !Converter.checkDoubleFormat(pojo.getAutodeterminata())) {
 	    arg1.rejectValue("autodeterminata", "double.format");
@@ -111,23 +111,30 @@ public class DatiAbusoValidator implements Validator {
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	try {
 	    Date data = dateFormat.parse(dataDomandaString);
-	    List<EpocaAbuso> epocaDB = epocaAbusoHome.findAll(leggiCondonoHome
-		    .findById(Integer.valueOf(String.valueOf(dp
-			    .getLeggeCondono().getIdleggiCondono()))));
+	    // List<EpocaAbuso> epocaDB =
+	    // epocaAbusoHome.findAll(leggiCondonoHome
+	    // .findById(Integer.valueOf(String.valueOf(dp
+	    // .getLeggeCondono().getIdleggiCondono()))));
+	    EpocaAbuso epocaDB = epocaAbusoHome.findById(Integer.valueOf(pojo
+		    .getEpocaAbuso()));
 	    boolean rangeValid = false;
-	    Object[] errorParam = new String[2];
-	    for (EpocaAbuso epocaAbuso : epocaDB) {
-		rangeValid = validDateForRange(data,
-			dateFormat.parse(epocaAbuso.getEpocaDa()),
-			dateFormat.parse(epocaAbuso.getEpocaA()), rangeValid);
-		if (!rangeValid) {
-		    errorParam[0] = epocaAbuso.getEpocaDa();
-		    errorParam[1] = epocaAbuso.getEpocaA();
-		}
-	    }
+	    rangeValid = validDateForRange(data,
+		    dateFormat.parse(epocaDB.getEpocaDa()),
+		    dateFormat.parse(epocaDB.getEpocaA()), rangeValid);
+	    Object[] errorParam = new String[1];
+	    errorParam[0] = epocaDB.toString();
+	    // for (EpocaAbuso epocaAbuso : epocaDB) {
+	    // rangeValid = validDateForRange(data,
+	    // dateFormat.parse(epocaAbuso.getEpocaDa()),
+	    // dateFormat.parse(epocaAbuso.getEpocaA()), rangeValid);
+	    // if (!rangeValid) {
+	    // errorParam[0] = epocaAbuso.getEpocaDa();
+	    // errorParam[1] = epocaAbuso.getEpocaA();
+	    // }
+	    // }
 	    if (!rangeValid)
-		arg1.rejectValue("dataUltimazioneLavori", "date.legge.not.valid",
-			errorParam, null);
+		arg1.rejectValue("dataUltimazioneLavori",
+			"date.legge.not.valid", errorParam, null);
 	} catch (ParseException e1) {
 	    e1.printStackTrace();
 	}

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -56,8 +57,26 @@ public class OneriConcessoriHome {
 					.getCurrentSession();
 			sess.beginTransaction();
 			Criteria cr = sess.createCriteria(OneriConcessori.class);
-			cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			list = cr.list();
+			log.debug("get successful");
+			sess.close();
+			return list;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> findAllDistinct() {
+		log.debug("getting OneriConcessori instance");
+		try {
+			List<String> list = null;
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Query q = sess.createQuery("select distinct o.zonaUrbanizzazione from OneriConcessori o order by o.zonaUrbanizzazione");
+			list = q.list();
 			log.debug("get successful");
 			sess.close();
 			return list;
