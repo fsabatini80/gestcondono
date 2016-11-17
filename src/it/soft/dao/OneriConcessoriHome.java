@@ -20,99 +20,100 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
  */
 public class OneriConcessoriHome {
 
-	private static final Log log = LogFactory.getLog(OneriConcessoriHome.class);
+    private static final Log log = LogFactory.getLog(OneriConcessoriHome.class);
 
-	private static HibernateTemplate hibernateTemplate;
+    private static HibernateTemplate hibernateTemplate;
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		OneriConcessoriHome.hibernateTemplate = new HibernateTemplate(
-				sessionFactory);
-	}
+    public void setSessionFactory(SessionFactory sessionFactory) {
+	OneriConcessoriHome.hibernateTemplate = new HibernateTemplate(
+		sessionFactory);
+    }
 
-	public OneriConcessori findById(Integer id) {
-		log.debug("getting OneriConcessori instance with id: " + id);
-		try {
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
-			sess.beginTransaction();
-			Criteria criteria = sess.createCriteria(OneriConcessori.class);
-			criteria.add(Restrictions.eq("idoneriConcessori", id));
-			@SuppressWarnings("unchecked")
-			List<OneriConcessori> l = criteria.list();
-			log.debug("get successful");
-			sess.close();
-			return l.get(0);
-		} catch (RuntimeException re) {
-			log.error("get failed", re);
-			throw re;
-		}
+    public OneriConcessori findById(Integer id) {
+	log.debug("getting OneriConcessori instance with id: " + id);
+	try {
+	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+		    .getCurrentSession();
+	    sess.beginTransaction();
+	    Criteria criteria = sess.createCriteria(OneriConcessori.class);
+	    criteria.add(Restrictions.eq("idoneriConcessori", id));
+	    @SuppressWarnings("unchecked")
+	    List<OneriConcessori> l = criteria.list();
+	    log.debug("get successful");
+	    sess.close();
+	    return l.get(0);
+	} catch (RuntimeException re) {
+	    log.error("get failed", re);
+	    throw re;
 	}
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<OneriConcessori> findAll() {
-		log.debug("getting OneriConcessori instance");
-		try {
-			List<OneriConcessori> list = null;
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
-			sess.beginTransaction();
-			Criteria cr = sess.createCriteria(OneriConcessori.class);
-			list = cr.list();
-			log.debug("get successful");
-			sess.close();
-			return list;
-		} catch (RuntimeException re) {
-			log.error("get failed", re);
-			throw re;
-		}
+    @SuppressWarnings("unchecked")
+    public List<OneriConcessori> findAll() {
+	log.debug("getting OneriConcessori instance");
+	try {
+	    List<OneriConcessori> list = null;
+	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+		    .getCurrentSession();
+	    sess.beginTransaction();
+	    Criteria cr = sess.createCriteria(OneriConcessori.class);
+	    list = cr.list();
+	    log.debug("get successful");
+	    sess.close();
+	    return list;
+	} catch (RuntimeException re) {
+	    log.error("get failed", re);
+	    throw re;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public List<String> findAllDistinct() {
-		log.debug("getting OneriConcessori instance");
-		try {
-			List<String> list = null;
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
-			sess.beginTransaction();
-			Query q = sess.createQuery("select distinct o.zonaUrbanizzazione from OneriConcessori o order by o.zonaUrbanizzazione");
-			list = q.list();
-			log.debug("get successful");
-			sess.close();
-			return list;
-		} catch (RuntimeException re) {
-			log.error("get failed", re);
-			throw re;
-		}
-	}
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<OneriConcessori> findBy(String zonaUrbanizzazione,
-			String destinazioneUso, String numeroAddetti, String tipoOpera) {
-		log.debug("getting OneriConcessori instance");
-		try {
-			List<OneriConcessori> list = null;
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
-			sess.beginTransaction();
-			Criteria cr = sess.createCriteria(OneriConcessori.class);
-			if (zonaUrbanizzazione != null)
-				cr.add(Restrictions
-						.eq("zonaUrbanizzazione", zonaUrbanizzazione));
-			cr.add(Restrictions.eq("destinazioneUso", destinazioneUso));
-			if (numeroAddetti != null) {
-				cr.add(Restrictions.ge("addettiMin", numeroAddetti));
-				cr.add(Restrictions.le("addettiMax", numeroAddetti));
-			}
-			if (tipoOpera != null)
-				cr.add(Restrictions.eq("tipoopera", tipoOpera));
-			list = cr.list();
-			log.debug("get successful");
-			sess.close();
-			return list;
-		} catch (RuntimeException re) {
-			log.error("get failed", re);
-			throw re;
-		}
+    @SuppressWarnings("unchecked")
+    public List<String> findAllDistinct() {
+	log.debug("getting OneriConcessori instance");
+	try {
+	    List<String> list = null;
+	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+		    .getCurrentSession();
+	    sess.beginTransaction();
+	    Query q = sess
+		    .createQuery("select distinct o.zonaUrbanizzazione from OneriConcessori o order by o.zonaUrbanizzazione");
+	    list = q.list();
+	    log.debug("get successful");
+	    sess.close();
+	    return list;
+	} catch (RuntimeException re) {
+	    log.error("get failed", re);
+	    throw re;
 	}
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<OneriConcessori> findBy(String zonaUrbanizzazione,
+	    String destinazioneUso, Integer numeroAddetti, String tipoOpera) {
+	log.debug("getting OneriConcessori instance");
+	try {
+	    List<OneriConcessori> list = null;
+	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+		    .getCurrentSession();
+	    sess.beginTransaction();
+	    Criteria cr = sess.createCriteria(OneriConcessori.class);
+	    if (zonaUrbanizzazione != null)
+		cr.add(Restrictions
+			.eq("zonaUrbanizzazione", zonaUrbanizzazione));
+	    cr.add(Restrictions.eq("destinazioneUso", destinazioneUso));
+	    if (numeroAddetti != null) {
+		cr.add(Restrictions.le("addettiMin", numeroAddetti));
+		cr.add(Restrictions.ge("addettiMax", numeroAddetti));
+	    }
+	    if (tipoOpera != null)
+		cr.add(Restrictions.eq("tipoopera", tipoOpera));
+	    list = cr.list();
+	    log.debug("get successful");
+	    sess.close();
+	    return list;
+	} catch (RuntimeException re) {
+	    log.error("get failed", re);
+	    throw re;
+	}
+    }
 }

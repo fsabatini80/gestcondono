@@ -28,6 +28,9 @@ public class TipologiaDocumento implements Serializable {
 
 	@Column(length=120)
 	private String descrizione;
+	
+	@Column(length=520)
+	private String desc_word;
 
 	@OneToOne
 	@JoinColumn(name="id_leggi_condono")
@@ -78,6 +81,14 @@ public class TipologiaDocumento implements Serializable {
 
 	public void setRichiedibile(byte richiedibile) {
 		this.richiedibile = richiedibile;
+	}
+
+	public String getDesc_word() {
+	    return desc_word;
+	}
+
+	public void setDesc_word(String desc_word) {
+	    this.desc_word = desc_word;
 	}
 
 }

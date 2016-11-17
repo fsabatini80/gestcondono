@@ -41,6 +41,20 @@ public class OneriConcessori implements Serializable {
     
     @Column(name = "id_tipoopera", length = 45)
     private String tipoopera;
+    
+    @Column(name = "up1")
+    private BigDecimal up1;
+    @Column(name = "up2")
+    private BigDecimal up2;
+    @Column(name = "us")
+    private BigDecimal us;
+    @Column(name = "uc")
+    private BigDecimal uc;
+    @Column(name = "d")
+    private BigDecimal d;
+    @Column(name = "c1")
+    private BigDecimal c1;
+    
 
     public String getZonaUrbanizzazione() {
 	return zonaUrbanizzazione;
@@ -96,6 +110,54 @@ public class OneriConcessori implements Serializable {
 
 	public void setTipoopera(String tipoopera) {
 		this.tipoopera = tipoopera;
+	}
+
+	public BigDecimal getUp1() {
+	    return up1;
+	}
+
+	public void setUp1(BigDecimal up1) {
+	    this.up1 = up1;
+	}
+
+	public BigDecimal getUp2() {
+	    return up2;
+	}
+
+	public void setUp2(BigDecimal up2) {
+	    this.up2 = up2;
+	}
+
+	public BigDecimal getUs() {
+	    return us;
+	}
+
+	public void setUs(BigDecimal us) {
+	    this.us = us;
+	}
+
+	public BigDecimal getUc() {
+	    return uc;
+	}
+
+	public void setUc(BigDecimal uc) {
+	    this.uc = uc;
+	}
+
+	public BigDecimal getD() {
+	    return d;
+	}
+
+	public void setD(BigDecimal d) {
+	    this.d = d;
+	}
+
+	public BigDecimal getC1() {
+	    return c1;
+	}
+
+	public void setC1(BigDecimal c1) {
+	    this.c1 = c1;
 	}
 
 }

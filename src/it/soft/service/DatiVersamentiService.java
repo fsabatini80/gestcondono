@@ -238,7 +238,9 @@ public class DatiVersamentiService {
 			.getRiduzioni()), abusoDB.getLocalizzazione()
 			.getAbitazioneLusso(), abusoDB.getLocalizzazione()
 			.getConvenzione_urbanistica(),
-		abusoDB.getDestinazioneUso());
+		abusoDB.getDestinazioneUso(),
+		Constants.RIDUZIONE_ATTIVITA_47_85.equals(abusoDB
+			.getRiduzioni()));
 
 	System.out
 		.println("oblazione calcolata per la legge 1: " + importoObla);
@@ -251,7 +253,7 @@ public class DatiVersamentiService {
 	    RiduzioneReddito riduzioneRedditoBean, String zonaUrbanizzazione) {
 
 	calcolaRiduzioniLegge1(importoObla, supUtilDouble, primacasa,
-		abitazioneLusso, convenzioneUrbanistica, destinazioneUso);
+		abitazioneLusso, convenzioneUrbanistica, destinazioneUso, false);
 
 	// riduzione per reddito
 	if (riduzioneRedditoBean != null) {
@@ -364,12 +366,12 @@ public class DatiVersamentiService {
 	    Date dataOdierna, Double delta) {
 
 	Double interessi = new Double(0.0);
-//	Double oblaIM = delta * 4;
-//	String dataOdiernaString = Converter.dateToString(dataOdierna);
-//	interessi = oblaIM
-//		+ calcolaIL(dataInizioMora,
-//			Converter.dateToDouble(dataOdiernaString, "dd-MM-yyyy"),
-//			oblaIM);
+	// Double oblaIM = delta * 4;
+	// String dataOdiernaString = Converter.dateToString(dataOdierna);
+	// interessi = oblaIM
+	// + calcolaIL(dataInizioMora,
+	// Converter.dateToDouble(dataOdiernaString, "dd-MM-yyyy"),
+	// oblaIM);
 	interessi = delta * 3;
 	return interessi;
     }
@@ -440,16 +442,21 @@ public class DatiVersamentiService {
      */
     private void calcolaRiduzioniLegge1(Double importoObla,
 	    Double supUtilDouble, boolean primacasa, boolean abitazioneLusso,
-	    boolean convenzioneUrbanistica, String destinazioneUso) {
-	// Se 400< abuso mq< 800 allora L. x 1.2 Se 800< abuso mq< 1200 allora
-	// L. x
-	// 2 Se abuso mq > 1200 allora L. x 3
-	if (supUtilDouble > 400 && supUtilDouble <= 800) {
-	    importoObla = importoObla * new Double(1.2);
-	} else if (supUtilDouble > 800 && supUtilDouble <= 1200) {
-	    importoObla = importoObla * new Double(2);
-	} else if (supUtilDouble > 1200) {
-	    importoObla = importoObla * new Double(3);
+	    boolean convenzioneUrbanistica, String destinazioneUso,
+	    boolean scontoAttivita) {
+
+	if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)) {
+	    // Se 400< abuso mq< 800 allora L. x 1.2 Se 800< abuso mq< 1200
+	    // allora
+	    // L. x
+	    // 2 Se abuso mq > 1200 allora L. x 3
+	    if (supUtilDouble > 400 && supUtilDouble <= 800) {
+		importoObla = importoObla * new Double(1.2);
+	    } else if (supUtilDouble > 800 && supUtilDouble <= 1200) {
+		importoObla = importoObla * new Double(2);
+	    } else if (supUtilDouble > 1200) {
+		importoObla = importoObla * new Double(3);
+	    }
 	}
 	// Se abuso è prima casa e residente o
 	// non ancora abitabile allora oblazione = -1/3 (NO abitazioni di
@@ -467,39 +474,49 @@ public class DatiVersamentiService {
 	// • - 1/3 costruzione industriale o artigianale fino a 3000 mq, ma se >
 	// 6000
 	// mq allora x 1.5
-	if (destinazioneUso.equals("3") && supUtilDouble <= 3000) {
+	if (destinazioneUso.equals(Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE)
+		&& supUtilDouble <= 3000 && scontoAttivita) {
 	    importoObla = importoObla - (importoObla * new Double(0.3));
-	} else if (destinazioneUso.equals("3") && supUtilDouble > 6000) {
+	}
+	if (destinazioneUso.equals(Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE)
+		&& supUtilDouble > 6000) {
 	    importoObla = importoObla * new Double(1.5);
 	}
 
 	// • - 1/3 attività commerciale < 50 mq, ma se >500mq allora x*
 	// * 1.5 e se >1500 allora x2
-	if (destinazioneUso.equals("2") && supUtilDouble <= 50) {
+	if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
+		&& supUtilDouble <= 50 && scontoAttivita) {
 	    importoObla = importoObla - (importoObla * new Double(0.3));
-	} else if (destinazioneUso.equals("2") && supUtilDouble > 500
-		&& supUtilDouble <= 1500) {
+	} else if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
+		&& supUtilDouble > 500 && supUtilDouble <= 1500) {
 	    importoObla = importoObla * new Double(1.5);
-	} else if (destinazioneUso.equals("2") && supUtilDouble > 500
-		&& supUtilDouble > 1500) {
+	} else if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
+		&& supUtilDouble > 500 && supUtilDouble > 1500) {
 	    importoObla = importoObla * new Double(2.0);
 	}
 	// • - 1/3 attività sportiva – culturale –
 	// * sanitaria - culto
-	if (destinazioneUso.equals("4") || destinazioneUso.equals("8")
-		|| destinazioneUso.equals("9") || destinazioneUso.equals("10")) {
-	    importoObla = importoObla - (importoObla * new Double(0.3));
+	if (scontoAttivita) {
+	    if (destinazioneUso.equals(Constants.DEST_USO_SPORTIVO)
+		    || destinazioneUso.equals(Constants.DEST_USO_CULTURALE)
+		    || destinazioneUso.equals(Constants.DEST_USO_SANITARIA)
+		    || destinazioneUso.equals(Constants.DEST_USO_CULTO)) {
+		importoObla = importoObla - (importoObla * new Double(0.3));
+	    }
 	}
-
 	// • - 1/3 se attività turistica e se <500 mq, ma se > 800
 	// * mq allora x1.5
-	if (destinazioneUso.equals("7") && supUtilDouble <= 500) {
+	if (destinazioneUso.equals(Constants.DEST_USO_TURISTICO)
+		&& supUtilDouble <= 500 && scontoAttivita) {
 	    importoObla = importoObla - (importoObla * new Double(0.3));
-	} else if (destinazioneUso.equals("7") && supUtilDouble > 800) {
+	} else if (destinazioneUso.equals(Constants.DEST_USO_TURISTICO)
+		&& supUtilDouble > 800) {
 	    importoObla = importoObla * new Double(1.5);
 	}
 	// • - 1/3 se in zona agricola
-	if (destinazioneUso.equals("5")) {
+	if (destinazioneUso.equals(Constants.DEST_USO_AGRICOLO)
+		&& scontoAttivita) {
 	    importoObla = importoObla - (importoObla * new Double(0.3));
 	}
     }
@@ -575,18 +592,29 @@ public class DatiVersamentiService {
     public Double getOneriCalcolati(TipologiaAbuso tipologiaAbuso,
 	    DatiAbusoPojo abusoDB, DatiPraticaPojo praticaDB, String idabuso,
 	    String destinazioneUso) {
-	// FIXME
 	Double answer = new Double(0);
 	// calcolo oneri 47/85
 	if (Constants.ID_LEGGE_47_85.equals(praticaDB.getLeggeCondono())) {
+	    /**
+	     * calcolo per destinazioni: DEST_USO_RESIDENZIALE = "1";
+	     * DEST_USO_SPORTIVO = "4"; DEST_USO_ALTRE_ATTIVITA = "6";
+	     * DEST_USO_CULTURALE = "8"; DEST_USO_SANITARIA = "9";
+	     * DEST_USO_CULTO = "10"; DEST_USO_ATTIVITA_SENZA_SCOPO_LUCRO =
+	     * "11";
+	     */
 	    if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
 		    || !(Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
-			    && Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
+			    || Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
 				    .equals(destinazioneUso)
-			    && Constants.DEST_USO_AGRICOLO
-				    .equals(destinazioneUso) && Constants.DEST_USO_COMMERCIALE
+			    || Constants.DEST_USO_AGRICOLO
+				    .equals(destinazioneUso) || Constants.DEST_USO_COMMERCIALE
 				.equals(destinazioneUso))) {
-		return calcolaOneriLegge1Residenziale(abusoDB);
+		answer = calcolaOneriLegge1Residenziale(abusoDB);
+		if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
+			&& Constants.RIDUZIONE_PRIMA_CASA_47_85.equals(abusoDB
+				.getRiduzioni()))
+		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		return answer;
 	    }
 	    if (Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
 		    || Constants.DEST_USO_COMMERCIALE.equals(destinazioneUso)) {
@@ -595,13 +623,102 @@ public class DatiVersamentiService {
 				.findDatiAbusoById(abusoDB.getIddatiabuso()));
 		answer = calcoloOneriDaTab(abusoDB)
 			+ calcolaCostiCostruzione(listaAlloggi, abusoDB);
+		if (Constants.RIDUZIONE_ATTIVITA_47_85.equals(abusoDB
+			.getRiduzioni())) {
+		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		}
 		return answer;
 	    }
 	    if (Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
 		    .equals(destinazioneUso)) {
+		answer = calcoloOneriDaTabAddetti(abusoDB, answer);
+		if (Constants.RIDUZIONE_ATTIVITA_47_85.equals(abusoDB
+			.getRiduzioni())) {
+		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		}
 		return calcoloOneriDaTabAddetti(abusoDB, answer);
 	    }
+	    if (Constants.DEST_USO_AGRICOLO.equals(destinazioneUso)) {
+		answer = calcolaOneriLegge1Agricolo(abusoDB);
+		if (Constants.RIDUZIONE_ATTIVITA_47_85.equals(abusoDB
+			.getRiduzioni())) {
+		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		}
+		return answer;
+	    }
 
+	}
+
+	return answer;
+    }
+
+    private Double calcolaRiduzioniOneriLegge(DatiAbusoPojo abusoDB,
+	    Double answer) {
+	String destUso = abusoDB.getDestinazioneUso();
+	Double su = new Double(abusoDB.getSuperficeUtile());
+	String idepocaabuso = abusoDB.getEpocaAbuso();
+	if (Constants.DEST_USO_RESIDENZIALE.equals(destUso)
+		|| Constants.DEST_USO_AGRICOLO.equals(destUso)
+		|| Constants.DEST_USO_COMMERCIALE.equals(destUso)
+		|| Constants.DEST_USO_TURISTICO.equals(destUso)) {
+	    if (su < 400) {
+		if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.1;
+		} else if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.5;
+		} else if (Constants.PERIODO_1_724_.equals(idepocaabuso)
+			|| Constants.PERIODO_2_724_.equals(idepocaabuso)) {
+		    answer = answer * 0.7;
+		}
+	    } else if (su >= 400 && su < 800) {
+		if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.3;
+		} else if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.65;
+		} else if (Constants.PERIODO_1_724_.equals(idepocaabuso)
+			|| Constants.PERIODO_2_724_.equals(idepocaabuso)) {
+		    answer = answer * 0.85;
+		}
+	    } else if (su > 800) {
+		if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.5;
+		} else if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.8;
+		} else if (Constants.PERIODO_1_724_.equals(idepocaabuso)
+			|| Constants.PERIODO_2_724_.equals(idepocaabuso)) {
+		    answer = answer * 1;
+		}
+	    }
+
+	} else if (Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE.equals(destUso)) {
+	    if (su < 1000) {
+		if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.1;
+		} else if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.5;
+		} else if (Constants.PERIODO_1_724_.equals(idepocaabuso)
+			|| Constants.PERIODO_2_724_.equals(idepocaabuso)) {
+		    answer = answer * 0.7;
+		}
+	    } else if (su >= 1000 && su < 3000) {
+		if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.3;
+		} else if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.65;
+		} else if (Constants.PERIODO_1_724_.equals(idepocaabuso)
+			|| Constants.PERIODO_2_724_.equals(idepocaabuso)) {
+		    answer = answer * 0.85;
+		}
+	    } else if (su > 3000) {
+		if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.5;
+		} else if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
+		    answer = answer * 0.8;
+		} else if (Constants.PERIODO_1_724_.equals(idepocaabuso)
+			|| Constants.PERIODO_2_724_.equals(idepocaabuso)) {
+		    answer = answer * 1;
+		}
+	    }
 	}
 
 	return answer;
@@ -626,6 +743,7 @@ public class DatiVersamentiService {
 	 * INTERESSI
 	 */
 	if (Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+	    answer = calcoloOneriDaTab(abusoDB);
 	    return calcoloOneriDaTab(abusoDB);
 	}
 	/**
@@ -648,21 +766,67 @@ public class DatiVersamentiService {
 	return answer;
     }
 
-    private Double calcoloOneriDaTabAddetti(DatiAbusoPojo abusoDB, Double answer) {
-	Double mcUtili = new Double(0);
-	Double mcAccessori = new Double(0);
-	if (abusoDB.getVolumeUtile() != null)
-	    mcUtili = Double.valueOf(abusoDB.getVolumeUtile());
-	if (abusoDB.getNonresidenzialeVuoto() != null)
-	    mcAccessori = Double.valueOf(abusoDB.getNonresidenzialeVuoto());
-
-	List<OneriConcessori> oneriTab = oneriConcessoriHome.findBy(abusoDB
-		.getLocalizzazione().getZonaUrbanizzazione(), abusoDB
-		.getDestinazioneUso(), abusoDB.getNumeroAddetti(), null);
-	for (OneriConcessori oneriConcessori : oneriTab) {
-	    Double parametroTab = oneriConcessori.getCosto().doubleValue();
-	    answer = (mcUtili + mcAccessori) * parametroTab;
+    private Double calcolaOneriLegge1Agricolo(DatiAbusoPojo abusoDB) {
+	Double answer = new Double(0);
+	String idepocaabuso = abusoDB.getEpocaAbuso();
+	if (Constants.PERIODO_1_47_85.equals(idepocaabuso)
+		|| Constants.PERIODO_2_47_85.equals(idepocaabuso)) {
+	    return answer;
 	}
+	if (Constants.PERIODO_3_47_85.equals(idepocaabuso)) {
+	    List<DatiAlloggio> listaAlloggi = datiAlloggioHome
+		    .findByIdAbuso(datiAbusoService.findDatiAbusoById(abusoDB
+			    .getIddatiabuso()));
+	    answer = answer + calcolaCostiCostruzione(listaAlloggi, abusoDB);
+	    System.out
+		    .println("oneri calcolati da tabella + costi di cotruzione: "
+			    + answer);
+	    return answer;
+	}
+	return answer;
+    }
+
+    private Double calcoloOneriDaTabAddetti(DatiAbusoPojo abusoDB, Double answer) {
+
+	Double superficeUtile = new Double(0);
+	Double superficeTotaleInsediamento = new Double(0);
+	Double volumeDirezionale = new Double(0);
+
+	Double ks = new Double(0);
+	Double k1 = new Double(0);
+	Double kc = new Double(0);
+	Double k2 = new Double(0);
+	Double d = new Double(0);
+	Double c1 = new Double(0);
+
+	if (abusoDB.getSuperficeUtile() != null) {
+	    superficeUtile = new Double(abusoDB.getSuperficeUtile());
+	}
+	if (abusoDB.getSuperficeTotale() != null) {
+	    superficeTotaleInsediamento = new Double(
+		    abusoDB.getSuperficeTotale());
+	}
+	if (abusoDB.getVolumeDirezionale() != null) {
+	    volumeDirezionale = new Double(abusoDB.getVolumeDirezionale());
+	}
+
+	List<OneriConcessori> oneriTab = oneriConcessoriHome.findBy(null,
+		abusoDB.getDestinazioneUso(),
+		Integer.valueOf(abusoDB.getNumeroAddetti()), null);
+	for (OneriConcessori oneriConcessori : oneriTab) {
+	    d = oneriConcessori.getD().doubleValue();
+	    c1 = oneriConcessori.getC1().doubleValue();
+	    k1 = oneriConcessori.getUp1().doubleValue() * d * c1
+		    * superficeUtile;
+	    k2 = oneriConcessori.getUp2().doubleValue() * d * c1
+		    * superficeTotaleInsediamento;
+	    ks = oneriConcessori.getUs().doubleValue() * d * c1
+		    * superficeTotaleInsediamento;
+	    kc = oneriConcessori.getUc().doubleValue() * d * c1
+		    * volumeDirezionale;
+	}
+
+	answer = k1 + k2 + ks + kc;
 	return answer;
     }
 
@@ -930,17 +1094,22 @@ public class DatiVersamentiService {
     public Double getDirittiRilPerm(DatiAbusoPojo abusoDB) {
 	Double answer = new Double(0);
 	Double superficeUtile = new Double(0);
+	Double superficeUtileNR = new Double(0);
+	Double superficeTot = new Double(0);
 	if (abusoDB.getVolumeUtile() != null)
 	    superficeUtile = new Double(abusoDB.getVolumeUtile());
-	if (superficeUtile > 1 && superficeUtile <= 99) {
+	if (abusoDB.getNonresidenzialeVuoto() != null)
+	    superficeUtileNR = new Double(abusoDB.getNonresidenzialeVuoto());
+	superficeTot = superficeUtile + superficeUtileNR;
+	if (superficeTot > 1 && superficeTot <= 99) {
 	    answer = 150.0;
-	} else if (superficeUtile > 100 && superficeUtile <= 499) {
+	} else if (superficeTot >= 100 && superficeTot <= 499) {
 	    answer = 200.0;
-	} else if (superficeUtile > 500 && superficeUtile <= 999) {
+	} else if (superficeTot >= 500 && superficeTot <= 999) {
 	    answer = 250.0;
-	} else if (superficeUtile > 1000 && superficeUtile <= 1499) {
+	} else if (superficeTot >= 1000 && superficeTot <= 1499) {
 	    answer = 400.0;
-	} else if (superficeUtile > 1500) {
+	} else if (superficeTot >= 1500) {
 	    answer = 550.0;
 	}
 
