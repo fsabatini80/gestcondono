@@ -11,9 +11,7 @@
 	<!-- Message error bind -->
 	<bean id="messageSource"
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basename">
-			<value>classpath:error-messages</value>
-		</property>
+		<property name="basename" value="/WEB-INF/error-messages" />
 	</bean>
 	<!-- END Message error bind -->
 	<!-- BEGIN MAP DATASOURCE -->

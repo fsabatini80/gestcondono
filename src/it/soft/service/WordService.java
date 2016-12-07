@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
@@ -76,6 +78,9 @@ public class WordService {
     DatiVersamentiService datiVersamentiService;
     @Autowired
     TipologiaAbusoHome tipologiaAbusoHome;
+
+    @Autowired
+    ServletContext context;
 
     public XWPFDocument createDoc(XWPFDocument document,
 	    DatiPraticaService praticaService, DatiAbusoService abusoService,
@@ -212,13 +217,13 @@ public class WordService {
 
     public void createPage4(XWPFDocument document) {
 	document.createParagraph().createRun().addBreak(BreakType.PAGE);
-	InputStream is = WordService.class
-		.getResourceAsStream("ultima pag statica.png");
+	InputStream is = context
+		.getResourceAsStream("/WEB-INF/ultima pag statica.png");
 	try {
 	    document.createParagraph()
 		    .createRun()
-		    .addPicture(is, Document.PICTURE_TYPE_JPEG,
-			    "ultima pag statica.png", Units.toEMU(450),
+		    .addPicture(is, Document.PICTURE_TYPE_PNG,
+			    "ultima pag statica.png", Units.toEMU(550),
 			    Units.toEMU(650));
 	} catch (InvalidFormatException e) {
 	    e.printStackTrace();
@@ -243,7 +248,7 @@ public class WordService {
 	document.createParagraph().createRun().addBreak(BreakType.PAGE);
 	addTextBoldBreakCenter(document.createParagraph().createRun(),
 		"2) ATTESTAZIONI DI VERSAMENTO");
-
+//FIXME AMPLIARE ALTEZZA DELLE CELLE, METTERE 2 CIFRE DECIMALI
 	// OBLAZIONE
 	XWPFTable table = document.createTable(1, 3);
 	addTableCellCenter(table.getRow(0).getCell(0), "OBLAZIONE ", true,
@@ -498,14 +503,14 @@ public class WordService {
 		ParagraphAlignment.LEFT);
 	table16.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(5000));
-	addTableCellCenter(table16.getRow(0).getCell(1), "€", false,
+	addTableCellCenter(table16.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	table16.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	Double d = Converter.round(new Double(oneriConcessSaldo
 		+ metaImportoResiduo + dirittiIstrut + dirittiPareri
 		+ dirittiRilPerm + agibilita), 2);
-	addTableCellCenter(table16.getRow(0).getCell(2), d.toString(), false,
+	addTableCellCenter(table16.getRow(0).getCell(2), d.toString(), true,
 		ParagraphAlignment.RIGHT);
 	table16.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
@@ -605,7 +610,7 @@ public class WordService {
 	addTextSimple(parag.createRun(),
 		"I versamenti delle somme dovute a saldo al cui causale dovrà riportare ");
 	addTextBold(parag.createRun(),
-		"il numero di pratica e il numero di protocollo di cui al punto A");
+		"il numero di pratica e il numero di protocollo di cui all'oggetto");
 	addTextSimple(parag.createRun(),
 		" della presente nota, dovranno essere effettuati ");
 	addTextBoldUnderlineBreak(parag.createRun(),
@@ -657,8 +662,8 @@ public class WordService {
 	// "A) AVVIO ISTRUTTORIA DELLA PRATICA");
 	// creaPargraphADB(document, praticaDB, abusoDB);
 
-	addTextBoldBreakCenter(document.createParagraph().createRun(),
-		"B) DESCRIZIONE DELL'ABUSO");
+//	addTextBoldBreakCenter(document.createParagraph().createRun(),
+//		"B) DESCRIZIONE DELL'ABUSO");
 
 	XWPFTable table = document.createTable(1, 1);
 	addTableCellCenter(table.getRow(0).getCell(0),
@@ -789,7 +794,6 @@ public class WordService {
 
     private void creaParagraphDatiCatastaliDB(BigDecimal idalloggio,
 	    XWPFDocument document, XWPFTable table) {
-
 	List<DatiFabbricati> listFabbric = datiFabbricatiHome
 		.findAll(idalloggio.intValue());
 	for (DatiFabbricati datiFabbricati : listFabbric) {
@@ -806,6 +810,7 @@ public class WordService {
 	    addTableCellCenter(tableRowTwo.getCell(3),
 		    datiFabbricati.getSubalterno(), false,
 		    ParagraphAlignment.CENTER);
+	  //FIXME INSERIRE ZONA URBANISTICA DA ABUSO
 	    addTableCellCenter(tableRowTwo.getCell(4), "E3", false,
 		    ParagraphAlignment.CENTER);
 	}
@@ -931,6 +936,8 @@ public class WordService {
 
     private void creaOggetto(XWPFParagraph paragraphggetto,
 	    DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
+	
+	//FIXME VERIFICA FONT, INSERIMENTO COMUNE PROVINCIA E CAP SU INDIRIZZO
 	addTextBold(paragraphggetto.createRun(), "Oggetto: ");
 	String oggetto = "Avvio dell'attività di istruttoria della Istanza di Sanatoria Edilizia richiesta ai sensi della legge n."
 		.concat(praticaDB.getLeggeCondono() != null ? leggiCondonoHome
@@ -955,7 +962,7 @@ public class WordService {
 	addTab(paragraph, 7);
 	String testo1 = "Prot. n°";
 	addTextSimple(paragraph.createRun(), testo1);
-	addTab(paragraph, 2);
+	addTab(paragraph, 3);
 	String testo2 = "del ";// + praticaDB.getNumeroProtocollo()+
 	// praticaDB.getDataProtocollo();
 	addTextSimpleBreak(paragraph.createRun(), testo2);
@@ -979,8 +986,9 @@ public class WordService {
     }
 
     private void createHeader(XWPFParagraph paragraph) {
-	InputStream is = WordService.class
-		.getResourceAsStream("logoCondono.png");
+	//FIXME verificare font  e grandezza
+	InputStream is = context
+		.getResourceAsStream("/WEB-INF/logoCondono.png");
 	try {
 	    paragraph.createRun().addPicture(is, Document.PICTURE_TYPE_PNG,
 		    "logoCondono.png", Units.toEMU(262), Units.toEMU(66));
@@ -1008,7 +1016,7 @@ public class WordService {
 	addTextSimple(paragraphInfoDoc.createRun(),
 		"La documentazione richiesta che dovrà riportare ");
 	addTextBold(paragraphInfoDoc.createRun(),
-		"il numero di pratica e il numero di protocollo di cui al punto A");
+		"il numero di pratica e il numero di protocollo di cui all'oggetto");
 	addTextSimple(paragraphInfoDoc.createRun(),
 		" della presente nota, dovrà pervenire ");
 	addTextBold(paragraphInfoDoc.createRun(),
@@ -1048,7 +1056,7 @@ public class WordService {
 	    List<DocumentiAbuso> daocumentiDB) {
 	XWPFRun paragraphAOneRunOne = paragraphDocTable.createRun();
 	for (DocumentiAbuso documentiAbuso : daocumentiDB) {
-	   // paragraphAOneRunOne.addTab();
+	    // paragraphAOneRunOne.addTab();
 	    addTextSimpleBreak(paragraphAOneRunOne, "- ".concat(documentiAbuso
 		    .getIdTipoDocumento().getDesc_word()));
 	}
