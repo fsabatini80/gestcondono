@@ -57,9 +57,15 @@
 						<td><form:errors path="tipoOpera" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
-						<td>Autodetermina:</td>
+						<td>Autodetermina Oblazione:</td>
 						<td><form:input path="autodeterminata" /></td>
 						<td><form:errors path="autodeterminata"
+								cssClass="ui-state-error" /></td>
+					</tr>
+					<tr>
+						<td>Autodetermina Oneri:</td>
+						<td><form:input path="autodeterminataOneri" /></td>
+						<td><form:errors path="autodeterminataOneri"
 								cssClass="ui-state-error" /></td>
 					</tr>
 				</table>
@@ -137,6 +143,19 @@
 						<td><form:errors path="riduzioni" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
+						<td>Immobile soggetto a vincoli di tutela :</td>
+						<td><form:checkbox path="localizzazione.vincoliTutela" /></td>
+					</tr>
+					<tr>
+						<td>Abitazione di lusso :</td>
+						<td><form:checkbox path="localizzazione.abitazioneLusso" /></td>
+					</tr>
+					<tr>
+						<td>Immobile con convenzione urbanistica :</td>
+						<td><form:checkbox
+								path="localizzazione.convenzione_urbanistica" /></td>
+					</tr>
+					<tr>
 						<td>Tipo reddito:</td>
 						<td><form:select path="tipoReddito">
 								<form:options items="${tipoRedditos}" itemLabel="descrizione"
@@ -178,19 +197,6 @@
 							</form:select></td>
 						<td><form:errors path="localizzazione.zonaUrbanizzazione"
 								cssClass="ui-state-error" /></td>
-					</tr>
-					<tr>
-						<td>Immobile soggetto a vincoli di tutela :</td>
-						<td><form:checkbox path="localizzazione.vincoliTutela" /></td>
-					</tr>
-					<tr>
-						<td>Abitazione di lusso :</td>
-						<td><form:checkbox path="localizzazione.abitazioneLusso" /></td>
-					</tr>
-					<tr>
-						<td>Immobile con convenzione urbanistica :</td>
-						<td><form:checkbox
-								path="localizzazione.convenzione_urbanistica" /></td>
 					</tr>
 				</table>
 			</div>

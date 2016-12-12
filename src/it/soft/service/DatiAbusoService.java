@@ -128,6 +128,9 @@ public class DatiAbusoService {
 	if (pojo.getAutodeterminata() != null)
 	    datiabuso.setAutodeterminata(BigDecimal.valueOf(pojo
 		    .getAutodeterminata()));
+	if (pojo.getAutodeterminataOneri() != null)
+	    datiabuso.setAutodeterminataOneri(BigDecimal.valueOf(pojo
+		    .getAutodeterminataOneri()));
 	datiAbusoHome.persist(datiabuso);
 
     }
@@ -135,6 +138,11 @@ public class DatiAbusoService {
     public DatiAbusoPojo findById(String id) {
 	Datiabuso source = datiAbusoHome.findById(BigDecimal.valueOf(Integer
 		.parseInt(id)));
+	DatiAbusoPojo target = bindBean(id, source);
+	return target;
+    }
+
+    private DatiAbusoPojo bindBean(String id, Datiabuso source) {
 	DatiAbusoPojo target = new DatiAbusoPojo();
 	target.setIddatiabuso(id);
 	target.setProgressivo(String.valueOf(source.getProgressivo()));
@@ -173,6 +181,9 @@ public class DatiAbusoService {
 	if (source.getAutodeterminata() != null)
 	    target.setAutodeterminata(new Double(source.getAutodeterminata()
 		    .doubleValue()));
+	if (source.getAutodeterminataOneri() != null)
+	    target.setAutodeterminataOneri(new Double(source
+		    .getAutodeterminataOneri().doubleValue()));
 	return target;
     }
 
@@ -180,44 +191,7 @@ public class DatiAbusoService {
 	Datiabuso source = datiAbusoHome.findById(
 		BigDecimal.valueOf(Integer.parseInt(id)),
 		Integer.parseInt(progressivoAbuso));
-	DatiAbusoPojo target = new DatiAbusoPojo();
-	target.setIddatiabuso(id);
-	target.setProgressivo(String.valueOf(source.getProgressivo()));
-	target.setDataUltimazioneLavori(source.getDataUltimazioneLavori());
-	target.setDescrizione(source.getDescrizione());
-	if (source.getTipologiaAbuso() != null)
-	    target.setTipologiaAbuso(String.valueOf(source.getTipologiaAbuso()
-		    .getIdtipologiaAbuso()));
-	if (source.getDestinazioneUso() != null)
-	    target.setDestinazioneUso(String.valueOf(source
-		    .getDestinazioneUso().getIdtipologiaDestinazioneUso()));
-	if (source.getEpocaAbuso() != null)
-	    target.setEpocaAbuso(String.valueOf(source.getEpocaAbuso()
-		    .getIdepocaAbuso()));
-	target.setEsenzioniPagamenti(source.getEsenzioniPagamenti());
-	if (source.getDatiPratica() != null)
-	    target.setIdPratica(String.valueOf(source.getDatiPratica()
-		    .getIddatipratica()));
-	if (source.getLocalizzazione() != null)
-	    target.setLocalizzazione(datiLocalizzazioneHome.findById((source
-		    .getLocalizzazione().getIddatiLocalizzazione())));
-	target.setNonresidenziale(source.getNonresidenziale());
-	target.setNonresidenzialeVuoto(source.getNonresidenzialeVuoto());
-	target.setNumeroAddetti(source.getNumeroAddetti());
-	target.setReddito(source.getReddito());
-	target.setRiduzioni(source.getRiduzioni());
-	target.setSuperficeTotale(source.getSuperficeTotale());
-	target.setSuperficeUtile(source.getSuperficeUtile());
-	if (source.getTipoOpera() != null)
-	    target.setTipoOpera(String.valueOf(source.getTipoOpera()
-		    .getIdtipoOpera()));
-	target.setTipoReddito(source.getTipoReddito());
-	target.setVolumeDirezionale(source.getVolumeDirezionale());
-	target.setVolumeUtile(source.getVolumeUtile());
-	target.setVolumeTotale(source.getVolumeTotale());
-	if (source.getAutodeterminata() != null)
-	    target.setAutodeterminata(new Double(source.getAutodeterminata()
-		    .doubleValue()));
+	DatiAbusoPojo target = bindBean(id, source);
 	return target;
     }
 

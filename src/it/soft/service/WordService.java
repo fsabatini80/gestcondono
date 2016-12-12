@@ -15,6 +15,7 @@ import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.RelSoggettoAbuso;
 import it.soft.domain.TipologiaDestinazioneUso;
+import it.soft.util.Constants;
 import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
@@ -135,18 +136,26 @@ public class WordService {
 		tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
 			.getTipologiaAbuso())), abusoDB, praticaDB, idabuso,
 		abusoDB.getDestinazioneUso());
+	if (Constants.ID_LEGGE_724_.equals(praticaDB.getLeggeCondono()))
+	    oneriConcessCalcolato = datiVersamentiService
+		    .getOneriInteressiLegali(oneriConcessVersato,
+			    oneriConcessCalcolato, abusoDB, praticaDB);
 	Double oneriConcessSaldo = oneriConcessCalcolato - oneriConcessVersato;
+	if (oneriConcessSaldo < 0)
+	    oneriConcessSaldo = new Double(0.0);
 	oneriConcessSaldo = Converter.round(oneriConcessSaldo, 2);
 	Double dirittiIstrut = new Double(50);
 	Double dirittiRilPerm = datiVersamentiService
 		.getDirittiRilPerm(abusoDB);
 	Double agibilita = new Double(0);
 	Double dirittiPareri = new Double(0);
+	Double oneriAutodeterminata = abusoDB.getAutodeterminataOneri();
 
 	createPage3(document, importoOblazioneAut, importoCalcolato,
 		importoVersatoObl, oblazioneDovuta, oneriConcessVersato,
 		oneriConcessCalcolato, oneriConcessSaldo, dirittiIstrut,
-		dirittiRilPerm, dirittiPareri, agibilita);
+		dirittiRilPerm, dirittiPareri, agibilita, oneriAutodeterminata,
+		praticaDB.getLeggeCondono());
 	createPage4(document);
 
 	createFooter(document, praticaDB, abusoDB);
@@ -240,7 +249,7 @@ public class WordService {
 	    Double importoRediduo, Double oneriConcessVersato,
 	    Double oneriConcessCalcolato, Double oneriConcessSaldo,
 	    Double dirittiIstrut, Double dirittiRilPerm, Double dirittiPareri,
-	    Double agibilita) {
+	    Double agibilita, Double oneriAutodeterminata, Object leggeCondono) {
 
 	Double metaImportoResiduo = importoRediduo / 2;
 	metaImportoResiduo = Converter.round(metaImportoResiduo, 2);
@@ -248,7 +257,7 @@ public class WordService {
 	document.createParagraph().createRun().addBreak(BreakType.PAGE);
 	addTextBoldBreakCenter(document.createParagraph().createRun(),
 		"2) ATTESTAZIONI DI VERSAMENTO");
-//FIXME AMPLIARE ALTEZZA DELLE CELLE, METTERE 2 CIFRE DECIMALI
+	// FIXME AMPLIARE ALTEZZA DELLE CELLE, METTERE 2 CIFRE DECIMALI
 	// OBLAZIONE
 	XWPFTable table = document.createTable(1, 3);
 	addTableCellCenter(table.getRow(0).getCell(0), "OBLAZIONE ", true,
@@ -337,6 +346,22 @@ public class WordService {
 	table5.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(2500));
 
+	if (Constants.ID_LEGGE_724_.equals(leggeCondono)) {
+	    XWPFTable table06 = document.createTable(1, 3);
+	    addTableCellCenter(table06.getRow(0).getCell(0),
+		    "Importo autodeterminato", false, ParagraphAlignment.LEFT);
+	    table06.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+		    .setW(BigInteger.valueOf(5000));
+	    addTableCellCenter(table06.getRow(0).getCell(1), "€", false,
+		    ParagraphAlignment.CENTER);
+	    table06.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+		    .setW(BigInteger.valueOf(499));
+	    addTableCellCenter(table06.getRow(0).getCell(2),
+		    oneriAutodeterminata.toString(), false,
+		    ParagraphAlignment.RIGHT);
+	    table06.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+		    .setW(BigInteger.valueOf(4500));
+	}
 	XWPFTable table6 = document.createTable(1, 3);
 	addTableCellCenter(table6.getRow(0).getCell(0), "Importo versato",
 		false, ParagraphAlignment.LEFT);
@@ -662,8 +687,8 @@ public class WordService {
 	// "A) AVVIO ISTRUTTORIA DELLA PRATICA");
 	// creaPargraphADB(document, praticaDB, abusoDB);
 
-//	addTextBoldBreakCenter(document.createParagraph().createRun(),
-//		"B) DESCRIZIONE DELL'ABUSO");
+	// addTextBoldBreakCenter(document.createParagraph().createRun(),
+	// "B) DESCRIZIONE DELL'ABUSO");
 
 	XWPFTable table = document.createTable(1, 1);
 	addTableCellCenter(table.getRow(0).getCell(0),
@@ -698,9 +723,12 @@ public class WordService {
 	spanCellsAcrossRow(table3, 1, 0, 5);
 
 	XWPFTable tableHeader = createHeaderTableDatiCatastali(document);
+	String zonaUrbanistica = abusoDB.getLocalizzazione()
+		.getZonaUrbanizzazione() != null ? abusoDB.getLocalizzazione()
+		.getZonaUrbanizzazione() : "";
 	for (DatiAlloggio datiAlloggio : alloggi) {
 	    creaParagraphDatiCatastaliDB(datiAlloggio.getIddatiAlloggio(),
-		    document, tableHeader);
+		    document, tableHeader, zonaUrbanistica);
 	}
 	XWPFParagraph paragDatiTecnici = document.createParagraph();
 	paragDatiTecnici.createRun().addBreak();
@@ -793,7 +821,7 @@ public class WordService {
     }
 
     private void creaParagraphDatiCatastaliDB(BigDecimal idalloggio,
-	    XWPFDocument document, XWPFTable table) {
+	    XWPFDocument document, XWPFTable table, String zonaUrbanistica) {
 	List<DatiFabbricati> listFabbric = datiFabbricatiHome
 		.findAll(idalloggio.intValue());
 	for (DatiFabbricati datiFabbricati : listFabbric) {
@@ -810,8 +838,7 @@ public class WordService {
 	    addTableCellCenter(tableRowTwo.getCell(3),
 		    datiFabbricati.getSubalterno(), false,
 		    ParagraphAlignment.CENTER);
-	  //FIXME INSERIRE ZONA URBANISTICA DA ABUSO
-	    addTableCellCenter(tableRowTwo.getCell(4), "E3", false,
+	    addTableCellCenter(tableRowTwo.getCell(4), zonaUrbanistica, false,
 		    ParagraphAlignment.CENTER);
 	}
 	List<DatiTerreni> listTerreni = datiTerreniHome.findAll(idalloggio
@@ -896,48 +923,47 @@ public class WordService {
 	}
     }
 
-    private void creaPargraphADB(XWPFDocument document,
-	    DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
-
-	XWPFTable table = document.createTable(1, 6);
-
-	addTableCellCenter(table.getRow(0).getCell(0), "Numero interno", true,
-		ParagraphAlignment.CENTER);
-	table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4000));
-
-	addTableCellCenter(table.getRow(0).getCell(1),
-		"00" + praticaDB.getNumeroPratica(), true,
-		ParagraphAlignment.CENTER);
-	table.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(1500));
-
-	addTableCellCenter(table.getRow(0).getCell(2), "Sottonumero", true,
-		ParagraphAlignment.CENTER);
-	table.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4000));
-
-	addTableCellCenter(table.getRow(0).getCell(3),
-		abusoDB.getProgressivo(), true, ParagraphAlignment.CENTER);
-	table.getRow(0).getCell(3).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(1000));
-
-	addTableCellCenter(table.getRow(0).getCell(4), "Numero Protocollo",
-		true, ParagraphAlignment.CENTER);
-	table.getRow(0).getCell(4).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
-
-	addTableCellCenter(table.getRow(0).getCell(5),
-		praticaDB.getNumeroProtocollo(), true,
-		ParagraphAlignment.CENTER);
-	table.getRow(0).getCell(5).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(1000));
-    }
+    // private void creaPargraphADB(XWPFDocument document,
+    // DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
+    //
+    // XWPFTable table = document.createTable(1, 6);
+    //
+    // addTableCellCenter(table.getRow(0).getCell(0), "Numero interno", true,
+    // ParagraphAlignment.CENTER);
+    // table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+    // .setW(BigInteger.valueOf(4000));
+    //
+    // addTableCellCenter(table.getRow(0).getCell(1),
+    // "00" + praticaDB.getNumeroPratica(), true,
+    // ParagraphAlignment.CENTER);
+    // table.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
+    // .setW(BigInteger.valueOf(1500));
+    //
+    // addTableCellCenter(table.getRow(0).getCell(2), "Sottonumero", true,
+    // ParagraphAlignment.CENTER);
+    // table.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
+    // .setW(BigInteger.valueOf(4000));
+    //
+    // addTableCellCenter(table.getRow(0).getCell(3),
+    // abusoDB.getProgressivo(), true, ParagraphAlignment.CENTER);
+    // table.getRow(0).getCell(3).getCTTc().addNewTcPr().addNewTcW()
+    // .setW(BigInteger.valueOf(1000));
+    //
+    // addTableCellCenter(table.getRow(0).getCell(4), "Numero Protocollo",
+    // true, ParagraphAlignment.CENTER);
+    // table.getRow(0).getCell(4).getCTTc().addNewTcPr().addNewTcW()
+    // .setW(BigInteger.valueOf(4500));
+    //
+    // addTableCellCenter(table.getRow(0).getCell(5),
+    // praticaDB.getNumeroProtocollo(), true,
+    // ParagraphAlignment.CENTER);
+    // table.getRow(0).getCell(5).getCTTc().addNewTcPr().addNewTcW()
+    // .setW(BigInteger.valueOf(1000));
+    // }
 
     private void creaOggetto(XWPFParagraph paragraphggetto,
 	    DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
-	
-	//FIXME VERIFICA FONT, INSERIMENTO COMUNE PROVINCIA E CAP SU INDIRIZZO
+
 	addTextBold(paragraphggetto.createRun(), "Oggetto: ");
 	String oggetto = "Avvio dell'attività di istruttoria della Istanza di Sanatoria Edilizia richiesta ai sensi della legge n."
 		.concat(praticaDB.getLeggeCondono() != null ? leggiCondonoHome
@@ -953,7 +979,7 @@ public class WordService {
 	oggetto += " residente in " + praticaDB.getIndirizzo();
 
 	XWPFRun run = paragraphggetto.createRun();
-	run.setText(oggetto);
+	addTextSimple(run, oggetto);
     }
 
     private void createListaSoggetti(XWPFParagraph paragraph,
@@ -986,12 +1012,11 @@ public class WordService {
     }
 
     private void createHeader(XWPFParagraph paragraph) {
-	//FIXME verificare font  e grandezza
 	InputStream is = context
 		.getResourceAsStream("/WEB-INF/logoCondono.png");
 	try {
 	    paragraph.createRun().addPicture(is, Document.PICTURE_TYPE_PNG,
-		    "logoCondono.png", Units.toEMU(262), Units.toEMU(66));
+		    "logoCondono.png", Units.toEMU(454), Units.toEMU(85));
 	} catch (InvalidFormatException e) {
 	    e.printStackTrace();
 	} catch (FileNotFoundException e) {

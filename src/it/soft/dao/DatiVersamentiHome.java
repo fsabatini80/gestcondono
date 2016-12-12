@@ -160,6 +160,25 @@ public class DatiVersamentiHome {
 			throw re;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<DatiVersamento> findAll(BigInteger idPratica,
+			Integer progressivo, String causale) {
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(DatiVersamento.class);
+			cr.add(Restrictions.eq("iddatipratica", idPratica));
+			cr.add(Restrictions.eq("progressivo_abuso", progressivo));
+			cr.add(Restrictions.eq("causale", causale));
+			List<DatiVersamento> results = cr.list();
+			return results;
+		} catch (RuntimeException re) {
+			log.error("findAll(BigInteger idPratica)  failed", re);
+			throw re;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<DatiVersamento> findByIdAbuso(Datiabuso id) {

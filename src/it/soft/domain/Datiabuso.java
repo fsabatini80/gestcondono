@@ -101,6 +101,9 @@ public class Datiabuso implements Serializable {
 
 	@Column(name = "autodetermina")
 	private BigDecimal autodeterminata;
+	
+	@Column(name = "autodetermina_oneri")
+	private BigDecimal autodeterminataOneri;
 
 	public Datiabuso() {
 	}
@@ -295,6 +298,14 @@ public class Datiabuso implements Serializable {
 
 	public void setAutodeterminata(BigDecimal autodeterminata) {
 		this.autodeterminata = autodeterminata;
+	}
+
+	public BigDecimal getAutodeterminataOneri() {
+	    return autodeterminataOneri;
+	}
+
+	public void setAutodeterminataOneri(BigDecimal autodeterminataOneri) {
+	    this.autodeterminataOneri = autodeterminataOneri;
 	}
 
 }

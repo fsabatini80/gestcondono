@@ -34,6 +34,7 @@ public class DatiAbusoPojo implements Serializable {
 	private DatiLocalizzazione localizzazione;
 	private List<SoggettiAbuso> soggettiAbuso;
 	private Double autodeterminata;
+	private Double autodeterminataOneri;
 	private Double oblazioneCalcolata;
 
 	public String getIddatiabuso() {
@@ -234,6 +235,14 @@ public class DatiAbusoPojo implements Serializable {
 
 	public void setOblazioneCalcolata(Double oblazioneCalcolata) {
 		this.oblazioneCalcolata = oblazioneCalcolata;
+	}
+
+	public Double getAutodeterminataOneri() {
+	    return autodeterminataOneri;
+	}
+
+	public void setAutodeterminataOneri(Double autodeterminataOneri) {
+	    this.autodeterminataOneri = autodeterminataOneri;
 	}
 
 }

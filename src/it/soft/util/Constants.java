@@ -41,5 +41,10 @@ public class Constants {
     public static final String RIDUZIONE_PRIMA_CASA_47_85 = "10";
     public static final String RIDUZIONE_ATTIVITA_47_85 = "12";
     public static final String RIDUZIONE_PRIMA_CASA_724_ = "20";
+    public static final String RIDUZIONE_ATTIVITA_724_ = "21";
+    
+    public static final Double PERC_ZONA_E = 0.85;
+    public static final Double PERC_ZONA_B = 1.20;
+    public static final Double PERC_ZONA_A = 1.30;
 
 }

@@ -32,10 +32,6 @@ import com.mysql.jdbc.StringUtils;
 @Service
 public class DatiVersamentiService {
 
-    public static final Double PERC_ZONA_E = 0.85;
-    public static final Double PERC_ZONA_B = 1.20;
-    public static final Double PERC_ZONA_A = 1.30;
-
     @Autowired
     DatiVersamentiHome datiVersamentiHome;
 
@@ -265,11 +261,11 @@ public class DatiVersamentiService {
 	}
 	// riduzione/maggiorazione per zona urbanistica
 	if (supUtilDouble <= 150) {
-	    if ("E".equals(zonaUrbanizzazione)) {
+	    if (Constants.PERC_ZONA_E.equals(zonaUrbanizzazione)) {
 		importoObla = importoObla * 0.85;
-	    } else if ("B".equals(zonaUrbanizzazione)) {
+	    } else if (Constants.PERC_ZONA_B.equals(zonaUrbanizzazione)) {
 		importoObla = importoObla * 1.20;
-	    } else if ("A".equals(zonaUrbanizzazione)) {
+	    } else if (Constants.PERC_ZONA_A.equals(zonaUrbanizzazione)) {
 		importoObla = importoObla * 1.30;
 	    }
 	}
@@ -313,28 +309,7 @@ public class DatiVersamentiService {
 	Double t = oblazioneCalcolata - autoDetermina;
 	if (t > 0) {// && importoVersValidi < autoDetermina
 
-	    // se esiste prendo la data dell'ultimo versamento
-	    Date dataConfronto = null;
-	    Date dataUltimoVersamento = null;
-	    for (DatiVersamento datiVersamento : vers) {
-		String dataVersamento = datiVersamento.getDataVersamento();
-		if (dataConfronto == null) {
-		    dataConfronto = Converter.stringToDate(dataVersamento);
-		    dataUltimoVersamento = Converter
-			    .stringToDate(dataVersamento);
-		}
-		if (dataConfronto.before(dataUltimoVersamento)) {
-		    dataUltimoVersamento = dataConfronto;
-		}
-
-	    }
-	    Double dataInizioIL = null;
-	    if (dataUltimoVersamento == null) {
-		dataInizioIL = new Double(dataAbuso);
-	    } else {
-		dataInizioIL = new Double(Converter.dateToDouble(Converter
-			.dateToString(dataUltimoVersamento)));
-	    }
+	    Double dataInizioIL = getDataUltimoVersamento(dataAbuso, vers);
 
 	    // calcolo interessi legali
 	    String dtOdiernastr = Converter.dateToString(dtOdierna);
@@ -360,6 +335,32 @@ public class DatiVersamentiService {
 		+ Converter.round(oblazioneDovuta, 2));
 	return oblazioneDovuta > 0 ? oblazioneDovuta : 0;
 
+    }
+
+    private Double getDataUltimoVersamento(Double dataAbuso,
+	    List<DatiVersamento> vers) {
+	// se esiste prendo la data dell'ultimo versamento
+	Date dataConfronto = null;
+	Date dataUltimoVersamento = null;
+	for (DatiVersamento datiVersamento : vers) {
+	    String dataVersamento = datiVersamento.getDataVersamento();
+	    if (dataConfronto == null) {
+		dataConfronto = Converter.stringToDate(dataVersamento);
+		dataUltimoVersamento = Converter.stringToDate(dataVersamento);
+	    }
+	    if (dataConfronto.before(dataUltimoVersamento)) {
+		dataUltimoVersamento = dataConfronto;
+	    }
+
+	}
+	Double dataInizioIL = null;
+	if (dataUltimoVersamento == null) {
+	    dataInizioIL = new Double(dataAbuso);
+	} else {
+	    dataInizioIL = new Double(Converter.dateToDouble(Converter
+		    .dateToString(dataUltimoVersamento)));
+	}
+	return dataInizioIL;
     }
 
     private Double calcolaInteressiMoraL1(Double dataInizioMora,
@@ -659,6 +660,56 @@ public class DatiVersamentiService {
 
 	}
 
+	// calcolo oneri 724/94
+	if (Constants.ID_LEGGE_724_.equals(praticaDB.getLeggeCondono())) {
+
+	    if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
+		    || !(Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
+			    || Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
+				    .equals(destinazioneUso)
+			    || Constants.DEST_USO_AGRICOLO
+				    .equals(destinazioneUso) || Constants.DEST_USO_COMMERCIALE
+				.equals(destinazioneUso))) {
+		answer = calcolaOneriLegge2Residenziale(abusoDB);
+		if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
+			&& Constants.RIDUZIONE_PRIMA_CASA_724_.equals(abusoDB
+				.getRiduzioni()))
+		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		return answer;
+	    }
+	    if (Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
+		    || Constants.DEST_USO_COMMERCIALE.equals(destinazioneUso)) {
+		List<DatiAlloggio> listaAlloggi = datiAlloggioHome
+			.findByIdAbuso(datiAbusoService
+				.findDatiAbusoById(abusoDB.getIddatiabuso()));
+		answer = calcoloOneriDaTab(abusoDB)
+			+ calcolaCostiCostruzione(listaAlloggi, abusoDB);
+		if (Constants.RIDUZIONE_ATTIVITA_724_.equals(abusoDB
+			.getRiduzioni())) {
+		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		}
+		return answer;
+	    }
+	    if (Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
+		    .equals(destinazioneUso)) {
+		answer = calcoloOneriDaTabAddetti(abusoDB, answer);
+		if (Constants.RIDUZIONE_ATTIVITA_724_.equals(abusoDB
+			.getRiduzioni())) {
+		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		}
+		return calcoloOneriDaTabAddetti(abusoDB, answer);
+	    }
+	    if (Constants.DEST_USO_AGRICOLO.equals(destinazioneUso)) {
+		answer = calcolaOneriLegge1Agricolo(abusoDB);
+		if (Constants.RIDUZIONE_ATTIVITA_724_.equals(abusoDB
+			.getRiduzioni())) {
+		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		}
+		return answer;
+	    }
+
+	}
+
 	return answer;
     }
 
@@ -735,7 +786,6 @@ public class DatiVersamentiService {
     }
 
     private Double calcolaOneriLegge1Residenziale(DatiAbusoPojo abusoDB) {
-	// FIXME
 	Double answer = new Double(0);
 	String idepocaabuso = abusoDB.getEpocaAbuso();
 	/**
@@ -773,6 +823,33 @@ public class DatiVersamentiService {
 			    + answer);
 	    return answer;
 	}
+
+	if (Constants.PERIODO_1_724_.equals(idepocaabuso)
+		|| Constants.PERIODO_2_724_.equals(idepocaabuso)) {
+	    answer = calcoloOneriDaTab(abusoDB);
+	    List<DatiAlloggio> listaAlloggi = datiAlloggioHome
+		    .findByIdAbuso(datiAbusoService.findDatiAbusoById(abusoDB
+			    .getIddatiabuso()));
+	    System.out.println("oneri calcolati da tabella: " + answer);
+	    answer = answer + calcolaCostiCostruzione(listaAlloggi, abusoDB);
+	    System.out
+		    .println("oneri calcolati da tabella + costi di cotruzione: "
+			    + answer);
+	    return answer;
+	}
+	return answer;
+    }
+
+    private Double calcolaOneriLegge2Residenziale(DatiAbusoPojo abusoDB) {
+	Double answer = new Double(0);
+	answer = calcoloOneriDaTab(abusoDB);
+	List<DatiAlloggio> listaAlloggi = datiAlloggioHome
+		.findByIdAbuso(datiAbusoService.findDatiAbusoById(abusoDB
+			.getIddatiabuso()));
+	System.out.println("oneri calcolati da tabella: " + answer);
+	answer = answer + calcolaCostiCostruzione(listaAlloggi, abusoDB);
+	System.out.println("oneri calcolati da tabella + costi di cotruzione: "
+		+ answer);
 	return answer;
     }
 
@@ -849,7 +926,6 @@ public class DatiVersamentiService {
 	    mcUtili = Double.valueOf(abusoDB.getVolumeUtile());
 	if (abusoDB.getNonresidenzialeVuoto() != null)
 	    mcAccessori = Double.valueOf(abusoDB.getNonresidenzialeVuoto());
-	// FIXME INSERIRE TIPO OPERA IN QUERY
 	List<OneriConcessori> oneriTab = oneriConcessoriHome.findBy(abusoDB
 		.getLocalizzazione().getZonaUrbanizzazione(), abusoDB
 		.getDestinazioneUso(), null, abusoDB.getTipoOpera());
@@ -878,7 +954,6 @@ public class DatiVersamentiService {
      */
     private Double calcolaCostiCostruzione(List<DatiAlloggio> listaAlloggi,
 	    DatiAbusoPojo abusoDB) {
-	// FIXME
 	Double answer = new Double(0);
 	Double superficeUtileTotale = new Double(0);
 	Double superficeUtile = new Double(0);
@@ -1125,5 +1200,59 @@ public class DatiVersamentiService {
 
 	return answer;
 
+    }
+
+    public Double getOneriInteressiLegali(Double oneriConcessVersato,
+	    Double oneriConcessCalcolato, DatiAbusoPojo abusoDB,
+	    DatiPraticaPojo praticaDB) {
+	String idepocaabuso = abusoDB.getEpocaAbuso();
+	Double autodeterminataOnere = abusoDB.getAutodeterminataOneri();
+	if (!Constants.PERIODO_1_724_.equals(idepocaabuso)
+		&& !Constants.PERIODO_2_724_.equals(idepocaabuso)) {
+	    return oneriConcessCalcolato;
+	}
+	if (oneriConcessVersato == autodeterminataOnere) {
+	    oneriConcessCalcolato = oneriConcessCalcolato
+		    - autodeterminataOnere;
+	}
+	if (oneriConcessVersato < autodeterminataOnere) {
+	    Double delta = new Double(0.0);
+	    if (autodeterminataOnere > oneriConcessCalcolato) {
+		delta = oneriConcessCalcolato - oneriConcessVersato;
+	    } else {
+		delta = autodeterminataOnere - oneriConcessVersato;
+	    }
+	    Date dtOdierna = new Date();
+	    String dtOdiernastr = Converter.dateToString(dtOdierna);
+	    Double dataOdierna = Converter.dateToDouble(dtOdiernastr,
+		    "dd-MM-yyyy");
+	    List<DatiVersamento> vers = datiVersamentiHome.findAll(BigInteger
+		    .valueOf(Integer.parseInt(praticaDB.getIddatipratica())),
+		    Integer.valueOf(abusoDB.getProgressivo()),
+		    Constants.ONERI_CAUSALE_SEL);
+	    Double dataInizioIM = getDataUltimoVersamento(
+		    Converter.dateToDouble(praticaDB.getDataCreazione()), vers);
+	    String dataInizioIMString = String.valueOf(dataInizioIM);
+	    String dataOdiernaString = String.valueOf(dataOdierna);
+
+	    dataInizioIMString = dataInizioIMString.replace(".", "");
+	    dataOdiernaString = dataOdiernaString.replace(".", "");
+
+	    Integer annoInizioIM = Integer.parseInt(dataInizioIMString
+		    .substring(0, 4));
+	    Integer annoOdierna = Integer.parseInt(dataOdiernaString.substring(
+		    0, 4));
+	    Double interessiMora = new Double(0.0);
+	    Integer totaleAnniIM = annoOdierna - annoInizioIM;
+	    interessiMora = (delta * 0.10) * totaleAnniIM;
+
+	    if (autodeterminataOnere <= oneriConcessCalcolato) {
+		oneriConcessCalcolato = (interessiMora + delta)
+			+ (oneriConcessCalcolato - autodeterminataOnere);
+	    } else {
+		oneriConcessCalcolato = interessiMora + delta;
+	    }
+	}
+	return oneriConcessCalcolato;
     }
 }
