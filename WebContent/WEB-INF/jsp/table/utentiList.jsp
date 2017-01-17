@@ -12,7 +12,7 @@
 			<th>Cognome</th>
 			<th>Nome</th>
 			<th>Tipo Utenza</th>
-			<th>Cancella Utente</th>
+			<sec:authorize access="hasRole('admin')"><th>Cancella Utente</th></sec:authorize>
 		</tr>
 	</thead>
 	<tbody align="center">
@@ -23,10 +23,10 @@
 				<td>${utente.cognome}</td>
 				<td>${utente.nome}</td>
 				<td>${utente.ruolo}</td>
-				<td><a
+				<sec:authorize access="hasRole('admin')"><td><a
 					href="<c:url value="removeUtente.htm?user=${utente.idUtenti}" />">
 						<img title="rimuovi utente" src="img/32/user_delete.png">
-				</a></td>
+				</a></td></sec:authorize>
 			</tr>
 		</c:forEach>
 	</tbody>

@@ -109,14 +109,14 @@ public class Converter {
 
     public static Boolean checkDoubleFormat(String doubleValueString) {
 	String[] s = doubleValueString.split("\\.");
-//	if (s.length != 2)
-//	    return false;
+	// if (s.length != 2)
+	// return false;
 
 	try {
 	    new Integer(s[0]);
-//	    new Integer(s[1]);
-//	    if (s[1].length() > 2)
-//		return false;
+	    // new Integer(s[1]);
+	    // if (s[1].length() > 2)
+	    // return false;
 	} catch (NumberFormatException e) {
 	    return false;
 	}
@@ -134,15 +134,29 @@ public class Converter {
 
 	return true;
     }
-    
-	public static Boolean checkIntegerFormat(String intValueString) {
+
+    public static Boolean checkIntegerFormat(String intValueString) {
 
 	try {
-			new Integer(intValueString);
+	    new Integer(intValueString);
 	} catch (Exception e) {
 	    return false;
 	}
 
 	return true;
+    }
+
+    public static String doubleToString(Double input) {
+
+	if (input == null)
+	    return "0.00";
+	String inputstr = input.toString();
+	if (inputstr.indexOf(".") > 0) {
+	    if (inputstr.substring(inputstr.indexOf(".")+1).length() < 2) {
+		inputstr = inputstr.concat("0");
+	    }
+	}
+
+	return inputstr;
     }
 }

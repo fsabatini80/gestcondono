@@ -5,7 +5,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <head>
-<link rel="stylesheet" href="css/start/jquery-ui.theme.css" />
+<link rel="stylesheet" href="css/start/jquery.ui.theme.css" />
 <link rel="stylesheet" href="css/start/jquery-ui.min.css" />
 <link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
 
@@ -60,26 +60,26 @@
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			yearRange: "1900:2026"
+			yearRange : "1900:2026"
 		});
 		$("#datepicker1").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			yearRange: "1900:2026"
+			yearRange : "1900:2026"
 		});
 		$("#datepicker2").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			yearRange: "1900:2026"
-		
+			yearRange : "1900:2026"
+
 		});
 		$("#datepicker3").datepicker({
 			dateFormat : "dd-mm-yy",
 			changeYear : true,
 			changeMonth : true,
-			yearRange: "1900:2026"
+			yearRange : "1900:2026"
 		});
 
 		$("#effect").hide();
@@ -115,6 +115,15 @@
 		nome.submit();
 	}
 
+	function textToUpperCase() {
+		var listInput = document.getElementsByTagName("input");
+		var listInputLenght = document.getElementsByTagName("input").length;
+		for (i = 0; i < listInputLenght; i++) {
+			document.getElementsByTagName("input").item(i).value = document.getElementsByTagName("input").item(i).value.toUpperCase();
+		}
+	}
+
+
 	/**
 	Expression	Description
 	hasRole([role])	Returns true if the current principal has the specified role.
@@ -132,7 +141,7 @@
 
 <title>Gestione Condoni</title>
 </head>
-<body>
+<body onkeypress="textToUpperCase();" onkeyup="textToUpperCase();">
 	<div id="barra" class="ui-widget-header" align="right">
 
 		<h3>

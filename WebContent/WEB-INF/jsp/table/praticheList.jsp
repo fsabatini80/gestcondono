@@ -50,5 +50,5 @@
 </div>
 <div>
 	<a href="<c:url value="ricercaPratica.htm" />" title="INDIETRO">
-		INDIETRO </a>
+		Indietro </a>
 </div>

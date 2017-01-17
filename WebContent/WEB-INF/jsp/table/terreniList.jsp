@@ -72,5 +72,5 @@
 </div>
 <div>
 	<a href="<c:url value="alloggi.htm?idabuso=${idabuso}" />"
-		title="INDIETRO"> INDIETRO </a>
+		title="INDIETRO"> Indietro </a>
 </div>

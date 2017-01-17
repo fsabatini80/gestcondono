@@ -283,7 +283,8 @@ public class WordService {
 	table1.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table1.getRow(0).getCell(2),
-		importoOblazione.toString(), false, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(importoOblazione), false,
+		ParagraphAlignment.RIGHT);
 	table1.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -297,7 +298,8 @@ public class WordService {
 	table2.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table2.getRow(0).getCell(2),
-		importoVersato.toString(), false, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(importoVersato), false,
+		ParagraphAlignment.RIGHT);
 	table2.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -311,7 +313,8 @@ public class WordService {
 	table3.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table3.getRow(0).getCell(2),
-		importoCalcolato.toString(), false, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(importoCalcolato), false,
+		ParagraphAlignment.RIGHT);
 	table3.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -327,7 +330,8 @@ public class WordService {
 	table4.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table4.getRow(0).getCell(2),
-		importoRediduo.toString(), true, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(importoRediduo), true,
+		ParagraphAlignment.RIGHT);
 	table4.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -357,7 +361,7 @@ public class WordService {
 	    table06.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		    .setW(BigInteger.valueOf(499));
 	    addTableCellCenter(table06.getRow(0).getCell(2),
-		    oneriAutodeterminata.toString(), false,
+		    Converter.doubleToString(oneriAutodeterminata), false,
 		    ParagraphAlignment.RIGHT);
 	    table06.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		    .setW(BigInteger.valueOf(4500));
@@ -372,7 +376,8 @@ public class WordService {
 	table6.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table6.getRow(0).getCell(2),
-		oneriConcessVersato.toString(), false, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(oneriConcessVersato), false,
+		ParagraphAlignment.RIGHT);
 	table6.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -386,7 +391,7 @@ public class WordService {
 	table7.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table7.getRow(0).getCell(2),
-		oneriConcessCalcolato.toString(), false,
+		Converter.doubleToString(oneriConcessCalcolato), false,
 		ParagraphAlignment.RIGHT);
 	table7.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
@@ -402,7 +407,8 @@ public class WordService {
 	table8.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table8.getRow(0).getCell(2),
-		oneriConcessSaldo.toString(), true, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(oneriConcessSaldo), true,
+		ParagraphAlignment.RIGHT);
 	table8.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -431,7 +437,8 @@ public class WordService {
 	table10.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table10.getRow(0).getCell(2),
-		dirittiIstrut.toString(), false, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(dirittiIstrut), false,
+		ParagraphAlignment.RIGHT);
 	table10.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -446,7 +453,8 @@ public class WordService {
 	table11.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table11.getRow(0).getCell(2),
-		dirittiRilPerm.toString(), false, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(dirittiRilPerm), false,
+		ParagraphAlignment.RIGHT);
 	table11.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -461,7 +469,8 @@ public class WordService {
 	table12.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
 	addTableCellCenter(table12.getRow(0).getCell(2),
-		dirittiPareri.toString(), false, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(dirittiPareri), false,
+		ParagraphAlignment.RIGHT);
 	table12.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -474,8 +483,9 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table13.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table13.getRow(0).getCell(2), agibilita.toString(),
-		false, ParagraphAlignment.RIGHT);
+	addTableCellCenter(table13.getRow(0).getCell(2),
+		Converter.doubleToString(agibilita), false,
+		ParagraphAlignment.RIGHT);
 	table13.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -502,9 +512,11 @@ public class WordService {
 		ParagraphAlignment.CENTER);
 	table15.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(499));
-	addTableCellCenter(table15.getRow(0).getCell(2),
-		new Double(dirittiIstrut + dirittiPareri + dirittiRilPerm
-			+ agibilita).toString(), true, ParagraphAlignment.RIGHT);
+	addTableCellCenter(
+		table15.getRow(0).getCell(2),
+		Converter.doubleToString(new Double(dirittiIstrut
+			+ dirittiPareri + dirittiRilPerm + agibilita)), true,
+		ParagraphAlignment.RIGHT);
 	table15.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -535,8 +547,8 @@ public class WordService {
 	Double d = Converter.round(new Double(oneriConcessSaldo
 		+ metaImportoResiduo + dirittiIstrut + dirittiPareri
 		+ dirittiRilPerm + agibilita), 2);
-	addTableCellCenter(table16.getRow(0).getCell(2), d.toString(), true,
-		ParagraphAlignment.RIGHT);
+	addTableCellCenter(table16.getRow(0).getCell(2),
+		Converter.doubleToString(d), true, ParagraphAlignment.RIGHT);
 	table16.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(4500));
 
@@ -560,7 +572,8 @@ public class WordService {
 	addTableCellCenter(table19.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	addTableCellCenter(table19.getRow(0).getCell(2),
-		metaImportoResiduo.toString(), true, ParagraphAlignment.RIGHT);
+		Converter.doubleToString(metaImportoResiduo), true,
+		ParagraphAlignment.RIGHT);
 
 	createCircolareInfo(document);
 

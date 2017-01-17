@@ -27,7 +27,7 @@ public class HomeController extends BaseController {
 	private UtentiHome utentiHome;
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public ModelAndView home(ModelMap model) {
+	public ModelAndView home(ModelMap model) throws Exception{
 
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
@@ -45,7 +45,7 @@ public class HomeController extends BaseController {
 
 	@RequestMapping(value = "/modificaUtente", method = RequestMethod.POST)
 	public ModelAndView modificaDatiUtente(HttpServletRequest request,
-			HttpServletResponse response, Utenti utente) {
+			HttpServletResponse response, Utenti utente) throws Exception{
 
 		ModelMap model = new ModelMap();
 
@@ -61,7 +61,7 @@ public class HomeController extends BaseController {
 
 	@RequestMapping(value = "/addUtente", method = RequestMethod.POST)
 	public ModelAndView addUtente(HttpServletRequest request,
-			HttpServletResponse response, Utenti u) {
+			HttpServletResponse response, Utenti u) throws Exception{
 		ModelMap model = new ModelMap();
 
 		utentiHome.persist(u);
@@ -72,7 +72,7 @@ public class HomeController extends BaseController {
 	@RequestMapping(value = "/removeUtente", method = RequestMethod.GET)
 	public ModelAndView removeUtente(HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(value = "user") String id) {
+			@RequestParam(value = "user") String id) throws Exception{
 		ModelMap model = new ModelMap();
 		try {
 			utentiHome.remove(utentiHome.findById(new BigDecimal(id)));

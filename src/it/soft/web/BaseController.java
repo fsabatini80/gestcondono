@@ -29,8 +29,8 @@ public class BaseController {
 	@ExceptionHandler(Exception.class)
 	public ModelAndView handleAllException(Exception ex) {
 
-		mailService.sendMail(MailService.from, MailService.to,
-				MailService.oggetto, ex.getMessage());
+		//mailService.sendMail(MailService.from, MailService.to,
+		//		MailService.oggetto, ex.getMessage());
 
 		ModelAndView model = new ModelAndView("error/exception_error");
 		model.addObject("exception", ex);

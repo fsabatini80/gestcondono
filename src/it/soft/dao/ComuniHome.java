@@ -30,39 +30,41 @@ public class ComuniHome {
 
 	public void persist(Comune transientInstance) {
 		log.debug("persisting Comune instance");
+		org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+			.getCurrentSession();
 		try {
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
 			sess.beginTransaction();
 			sess.saveOrUpdate(transientInstance);
 			sess.getTransaction().commit();
 			log.debug("persist successful");
 		} catch (RuntimeException re) {
 			log.error("persist failed", re);
+			sess.close();
 			throw re;
 		}
 	}
 
 	public void remove(Comune persistentInstance) {
 		log.debug("removing Comune instance");
+		org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+			.getCurrentSession();
 		try {
-			org.hibernate.Session sess2 = hibernateTemplate.getSessionFactory()
-					.openSession();
-			sess2.beginTransaction();
-			sess2.delete(persistentInstance);
-			sess2.getTransaction().commit();
+			sess.beginTransaction();
+			sess.delete(persistentInstance);
+			sess.getTransaction().commit();
 			log.debug("remove successful");
 		} catch (RuntimeException re) {
 			log.error("remove failed", re);
+			sess.close();
 			throw re;
 		}
 	}
 
 	public Comune merge(Comune detachedInstance) {
 		log.debug("merging Comune instance");
+		org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+			.getCurrentSession();
 		try {
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
 			sess.beginTransaction();
 			Comune result = (Comune) sess.merge(detachedInstance);
 			sess.getTransaction().commit();
@@ -70,15 +72,16 @@ public class ComuniHome {
 			return result;
 		} catch (RuntimeException re) {
 			log.error("merge failed", re);
+			sess.close();
 			throw re;
 		}
 	}
 
 	public Comune findById(Integer id) {
 		log.debug("getting Comune instance with id: " + id);
+		org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+			.getCurrentSession();
 		try {
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
 			sess.beginTransaction();
 			Criteria criteria = sess.createCriteria(Comune.class);
 			criteria.add(Restrictions.eq("idcomuni", id));
@@ -88,6 +91,7 @@ public class ComuniHome {
 			return l.get(0);
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
+			sess.close();
 			throw re;
 		}
 	}
@@ -95,11 +99,11 @@ public class ComuniHome {
 	@SuppressWarnings("unchecked")
 	public Comune findByDescrizione(String comuneStr) {
 		log.debug("getting Comune instance with user: " + comuneStr);
+		org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+			.getCurrentSession();
 		try {
 			Comune comune = new Comune();
 			comune.setComune(comuneStr);
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
 			sess.beginTransaction();
 			Criteria cr = sess.createCriteria(Comune.class);
 			cr.add(Restrictions.eq("comune", comuneStr));
@@ -118,6 +122,7 @@ public class ComuniHome {
 			return comune;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
+			sess.close();
 			throw re;
 		}
 	}
@@ -125,10 +130,10 @@ public class ComuniHome {
 	@SuppressWarnings("unchecked")
 	public List<Comune> findAll() {
 		log.debug("getting Legenda instance");
+		org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+			.getCurrentSession();
 		try {
 			List<Comune> list = null;
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
 			sess.beginTransaction();
 			Criteria cr = sess.createCriteria(Comune.class);
 			list = cr.list();
@@ -136,6 +141,7 @@ public class ComuniHome {
 			return list;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
+			sess.close();
 			throw re;
 		}
 	}

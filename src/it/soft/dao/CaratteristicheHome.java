@@ -33,9 +33,9 @@ public class CaratteristicheHome {
 	@SuppressWarnings("unchecked")
 	public CaratteristicheSpeciali findById(int id) {
 		log.debug("getting CaratteristicheSpeciali instance with id: " + id);
+		org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+			.getCurrentSession();
 		try {
-			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-					.getCurrentSession();
 			sess.beginTransaction();
 			CaratteristicheSpeciali caratteristicheSpeciali = new CaratteristicheSpeciali();
 			caratteristicheSpeciali.setIdcaratteristicheSpeciali(id);
@@ -56,6 +56,7 @@ public class CaratteristicheHome {
 			return caratteristicheSpeciali;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
+			sess.close();
 			throw re;
 		}
 	}
