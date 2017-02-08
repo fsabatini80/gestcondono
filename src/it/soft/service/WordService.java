@@ -14,6 +14,7 @@ import it.soft.domain.DatiTerreni;
 import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.RelSoggettoAbuso;
+import it.soft.domain.TipologiaAbuso;
 import it.soft.domain.TipologiaDestinazioneUso;
 import it.soft.util.Constants;
 import it.soft.util.Converter;
@@ -111,30 +112,31 @@ public class WordService {
 	EpocaAbuso epocaAbuso = epocaAbusoHome.findById(Integer
 		.parseInt(abusoDB.getEpocaAbuso()));
 
+	TipologiaAbuso tipologiaAbuso = tipologiaAbusoHome.findById(Integer
+		.valueOf(abusoDB.getTipologiaAbuso()));
+
 	Double importoCalcolato = datiVersamentiService
-		.getImportoCalcolatoOblazione(
-			tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
-				.getTipologiaAbuso())), Converter
-				.dateToDouble(epocaAbuso.getEpocaDa()),
-			praticaDB.getLeggeCondono(), idabuso, abusoDB
-				.getDestinazioneUso());
+		.getImportoCalcolatoOblazione(tipologiaAbuso,
+			Converter.dateToDouble(epocaAbuso.getEpocaDa()),
+			praticaDB.getLeggeCondono(), idabuso,
+			abusoDB.getDestinazioneUso());
 	importoCalcolato = Converter.round(importoCalcolato, 2);
 
 	Double oblazioneDovuta = datiVersamentiService.getOblazioneDovuta(
 		importoCalcolato, abusoDB,
-		Converter.dateToDouble(praticaDB.getDataCreazione()),
+		Converter.dateToDouble(praticaDB.getDataDomanda()),
 		praticaDB.getLeggeCondono());
 	oblazioneDovuta = Converter.round(oblazioneDovuta, 2);
 
-	createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi);
+	createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi,
+		tipologiaAbuso);
 	createPage2(document, daocumentiDB);
 
 	Double oneriConcessVersato = datiVersamentiService.getOneriVersati(
 		idpratica, progressivo);
 	oneriConcessVersato = Converter.round(oneriConcessVersato, 2);
 	Double oneriConcessCalcolato = datiVersamentiService.getOneriCalcolati(
-		tipologiaAbusoHome.findById(Integer.valueOf(abusoDB
-			.getTipologiaAbuso())), abusoDB, praticaDB, idabuso,
+		tipologiaAbuso, abusoDB, praticaDB, idabuso,
 		abusoDB.getDestinazioneUso());
 	if (Constants.ID_LEGGE_724_.equals(praticaDB.getLeggeCondono()))
 	    oneriConcessCalcolato = datiVersamentiService
@@ -688,7 +690,8 @@ public class WordService {
 
     public XWPFDocument createPage1(XWPFDocument document,
 	    DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
-	    List<RelSoggettoAbuso> listaSoggetti, List<DatiAlloggio> alloggi) {
+	    List<RelSoggettoAbuso> listaSoggetti, List<DatiAlloggio> alloggi,
+	    TipologiaAbuso tipologiaAbuso) {
 
 	// create header
 	createHeader(document.createParagraph());
@@ -746,7 +749,8 @@ public class WordService {
 	XWPFParagraph paragDatiTecnici = document.createParagraph();
 	paragDatiTecnici.createRun().addBreak();
 	addTextBoldBreak(paragDatiTecnici.createRun(), "Dati Tecnici: ");
-	creaParagraphDatiTecniciTable(paragDatiTecnici, abusoDB, praticaDB);
+	creaParagraphDatiTecniciTable(paragDatiTecnici, abusoDB, praticaDB,
+		tipologiaAbuso);
 	addTextSimple(
 		document.createParagraph().createRun(),
 		"Dall'istruttoria preliminare dell'istanza in oggetto, ai fini di poter completare le attività di disamina tecnico-amministrativo e procedere con il rilascio della Concessione in sanatoria la stessa, dovrà essere integrata con i documenti previsti dalle normative vigenti di cui al punto 1 e dalle attestazioni di versamento di cui al punto 2.");
@@ -755,7 +759,7 @@ public class WordService {
 
     private void creaParagraphDatiTecniciTable(
 	    XWPFParagraph paragraphDatiTecniciTable, DatiAbusoPojo abusoDB,
-	    DatiPraticaPojo praticaDB) {
+	    DatiPraticaPojo praticaDB, TipologiaAbuso tipologiaAbuso) {
 	String testo1 = "";
 	addTextSimple(paragraphDatiTecniciTable.createRun(),
 		"Destinazione d'uso: ");
@@ -786,7 +790,7 @@ public class WordService {
 	addTextSimple(paragraphDatiTecniciTable.createRun(), "Tipologia: ");
 	addTab(paragraphDatiTecniciTable, 3);
 	addTextSimpleBreak(paragraphDatiTecniciTable.createRun(),
-		abusoDB.getTipologiaAbuso());
+		String.valueOf(tipologiaAbuso.getDescrizioneBreve()));
 	addTextSimple(paragraphDatiTecniciTable.createRun(), "Epoca d'abuso: ");
 	addTab(paragraphDatiTecniciTable, 3);
 	addTextSimpleBreak(

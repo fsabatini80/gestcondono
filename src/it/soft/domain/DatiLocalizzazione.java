@@ -40,6 +40,12 @@ public class DatiLocalizzazione implements Serializable {
 
 	@Column(length = 45)
 	private String provincia;
+	
+	@Column(name = "iscrizione_camera")
+	private boolean iscrizioneCamera;
+	
+	@Column(name = "isprima_casa")
+	private boolean isprimaCasa;
 
 	@Column(name = "vincoli_tutela")
 	private boolean vincoliTutela;
@@ -146,6 +152,22 @@ public class DatiLocalizzazione implements Serializable {
 
 	public void setConvenzione_urbanistica(boolean convenzione_urbanistica) {
 		this.convenzione_urbanistica = convenzione_urbanistica;
+	}
+
+	public boolean isIscrizioneCamera() {
+	    return iscrizioneCamera;
+	}
+
+	public void setIscrizioneCamera(boolean iscrizioneCamera) {
+	    this.iscrizioneCamera = iscrizioneCamera;
+	}
+
+	public boolean isIsprimaCasa() {
+	    return isprimaCasa;
+	}
+
+	public void setIsprimaCasa(boolean isprimaCasa) {
+	    this.isprimaCasa = isprimaCasa;
 	}
 
 }

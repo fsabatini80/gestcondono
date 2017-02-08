@@ -150,13 +150,38 @@ public class Converter {
 
 	if (input == null)
 	    return "0.00";
+	input = round(input, 2);
 	String inputstr = input.toString();
 	if (inputstr.indexOf(".") > 0) {
-	    if (inputstr.substring(inputstr.indexOf(".")+1).length() < 2) {
+	    if (inputstr.substring(inputstr.indexOf(".") + 1).length() < 2) {
 		inputstr = inputstr.concat("0");
 	    }
 	}
 
 	return inputstr;
+    }
+
+    /**
+     * Per i parametri di urbanizzazione tranne che per le destinazioni
+     * residenziali commerciale turistiche idustriale artigianale che hanno
+     * delle tabelle specifiche utilizzare i parametri della tabella
+     * residenziale
+     * 
+     * @param destinazioneUso
+     * @return
+     */
+    public static String parseDestinazioneUsoPerUrbanizzazione(
+	    String destinazioneUso) {
+
+	if (!Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
+		&& !Constants.DEST_USO_COMMERCIALE.equals(destinazioneUso)
+		&& !Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
+		&& !Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE
+			.equals(destinazioneUso)) {
+	    return Constants.DEST_USO_RESIDENZIALE;
+
+	}
+	
+	return destinazioneUso;
     }
 }

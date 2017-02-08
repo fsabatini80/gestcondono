@@ -134,13 +134,21 @@
 						<td><form:errors path="esenzioniPagamenti"
 								cssClass="ui-state-error" /></td>
 					</tr>
-					<tr>
+					<!--<tr>
 						<td>Riduzioni:</td>
 						<td><form:select path="riduzioni">
 								<form:options items="${riduzionis}" itemLabel="descrizione"
 									itemValue="idtipoRiduzione" />
 							</form:select></td>
 						<td><form:errors path="riduzioni" cssClass="ui-state-error" /></td>
+					</tr> -->
+					<tr>
+						<td>Prima casa :</td>
+						<td><form:checkbox path="localizzazione.isprimaCasa" /></td>
+					</tr>
+					<tr>
+						<td>Iscrizione alla camera di commercio :</td>
+						<td><form:checkbox path="localizzazione.iscrizioneCamera" /></td>
 					</tr>
 					<tr>
 						<td>Immobile soggetto a vincoli di tutela :</td>

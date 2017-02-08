@@ -139,7 +139,7 @@ public class DatiAbusoValidator implements Validator {
 
     private boolean validDateForRange(Date data, Date dataafter,
 	    Date databefore, boolean rangeValid) {
-	if (data.after(dataafter) && data.before(databefore))
+	if (data.compareTo(dataafter) >= 0 && data.compareTo(databefore) <= 0)
 	    rangeValid = true;
 	return rangeValid;
     }

@@ -73,8 +73,8 @@ public class EpocaAbuso implements Serializable {
     @Override
     public String toString() {
 	String string = "";
-	if (epocaDa.equals("02-01-1967"))
-	    string = ("Fino al ").concat(epocaA);
+	if (epocaDa.equals("01-01-1900"))
+	    string = ("Fino al ").concat("01-01-1967");
 	else
 	    string = "Da ".concat(epocaDa).concat(" a ").concat(epocaA);
 	return string;
