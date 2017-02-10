@@ -116,7 +116,7 @@ public class WordService {
 		.valueOf(abusoDB.getTipologiaAbuso()));
 
 	Double importoCalcolato = datiVersamentiService
-		.getImportoCalcolatoOblazione(tipologiaAbuso,
+		.getOblazioneCalcolata(tipologiaAbuso,
 			Converter.dateToDouble(epocaAbuso.getEpocaDa()),
 			praticaDB.getLeggeCondono(), idabuso,
 			abusoDB.getDestinazioneUso());
@@ -138,11 +138,12 @@ public class WordService {
 	Double oneriConcessCalcolato = datiVersamentiService.getOneriCalcolati(
 		tipologiaAbuso, abusoDB, praticaDB, idabuso,
 		abusoDB.getDestinazioneUso());
-	if (Constants.ID_LEGGE_724_.equals(praticaDB.getLeggeCondono()))
-	    oneriConcessCalcolato = datiVersamentiService
-		    .getOneriInteressiLegali(oneriConcessVersato,
-			    oneriConcessCalcolato, abusoDB, praticaDB);
 	Double oneriConcessSaldo = oneriConcessCalcolato - oneriConcessVersato;
+	if (Constants.ID_LEGGE_724_.equals(praticaDB.getLeggeCondono())){
+	    oneriConcessSaldo = datiVersamentiService
+		    .getOneriConcessSaldoLegge2(oneriConcessVersato,
+			    oneriConcessCalcolato, abusoDB, praticaDB);
+	}
 	if (oneriConcessSaldo < 0)
 	    oneriConcessSaldo = new Double(0.0);
 	oneriConcessSaldo = Converter.round(oneriConcessSaldo, 2);

@@ -279,7 +279,7 @@ public class PraticheController extends BaseController {
 	    EpocaAbuso epoca = epocaAbusoHome.findById(Integer.parseInt(pojo
 		    .getEpocaAbuso()));
 	    this.abusoPojo.setOblazioneCalcolata(datiVersamentiService
-		    .getImportoCalcolatoOblazione(
+		    .getOblazioneCalcolata(
 			    tipologiaAbusoHome.findById(Integer.valueOf(pojo
 				    .getTipologiaAbuso())), Converter
 				    .dateToDouble(epoca.getEpocaDa()),

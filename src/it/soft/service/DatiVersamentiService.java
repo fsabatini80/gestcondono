@@ -141,7 +141,7 @@ public class DatiVersamentiService {
 		abuso.getAutodeterminata()) : new Double(0.0));
     }
 
-    public Double getImportoCalcolatoOblazione(TipologiaAbuso tipologiaAbuso,
+    public Double getOblazioneCalcolata(TipologiaAbuso tipologiaAbuso,
 	    Double dataAbuso, String leggeCondono, String idAbuso,
 	    String destinazioneUso) {
 
@@ -149,8 +149,15 @@ public class DatiVersamentiService {
 	// TODO calcolo legge 3
 	List<TabCalcOblazione> tabOblList = datiVersamentiHome.findOblazione(
 		dataAbuso, leggeCondono, tipoAbuso);
+	List<TabCalcOblazione> tabOblListDefault = datiVersamentiHome
+		.findOblazione(dataAbuso, leggeCondono, 7);
 	TabCalcOblazione calcOblazione = null;
+	TabCalcOblazione calcOblazioneDefaul = null;
+	Double importoOblaDefault = new Double(0.0);
 	Double importoObla = new Double(0.0);
+	for (TabCalcOblazione element : tabOblListDefault) {
+	    calcOblazioneDefaul = element;
+	}
 	for (TabCalcOblazione tabCalcOblazione : tabOblList) {
 	    calcOblazione = tabCalcOblazione;
 	}
@@ -160,6 +167,8 @@ public class DatiVersamentiService {
 			.equals(leggeCondono))) {
 	    importoObla = Converter.convertLireEuro(new Double(calcOblazione
 		    .getImportoOblazione()));
+	    importoOblaDefault = Converter.convertLireEuro(new Double(
+		    calcOblazioneDefaul.getImportoOblazione()));
 	    // se la destinazione uso è diversa da RESIDENZIALE, gli importi in
 	    // tabella vanno divisi per 2
 	    if (Constants.ID_LEGGE_47_85.equals(leggeCondono)
@@ -181,8 +190,12 @@ public class DatiVersamentiService {
 	}
 	// legge n. 47/85
 	if (Constants.ID_LEGGE_47_85.equals(leggeCondono)) {
-	    return calcolaLegge1(importoObla, abusoDB, supUtilDouble
+	    importoObla = calcolaLegge1(importoObla, abusoDB, supUtilDouble
 		    + (supUtilNRDouble * 0.6));
+	    if (importoObla < importoOblaDefault) {
+		importoObla = importoOblaDefault;
+	    }
+	    return Converter.round(importoObla, 2);
 	}
 	// legge n. 724/94
 	if (Constants.ID_LEGGE_724_.equals(leggeCondono)) {
@@ -196,7 +209,7 @@ public class DatiVersamentiService {
 	    RiduzioneReddito riduzioneRedditoBean = riduzioneRedditoHome
 		    .findByRedditoSuperfice(
 			    Integer.valueOf(abusoDB.getTipoReddito()),
-			    redditoDouble, supUtilDouble);
+			    redditoDouble);
 
 	    if (tipoAbuso == 4 || tipoAbuso == 5 || tipoAbuso == 6
 		    || tipoAbuso == 7) {
@@ -209,6 +222,9 @@ public class DatiVersamentiService {
 			abusoDB.getDestinazioneUso(), riduzioneRedditoBean,
 			abusoDB.getLocalizzazione().getZonaUrbanizzazione(),
 			abusoDB.getLocalizzazione().isIscrizioneCamera());
+		if (importoObla < importoOblaDefault) {
+		    importoObla = importoOblaDefault;
+		}
 		return Converter.round(importoObla, 2);
 	    }
 	    importoObla = importoObla
@@ -220,6 +236,9 @@ public class DatiVersamentiService {
 		    abusoDB.getDestinazioneUso(), riduzioneRedditoBean, abusoDB
 			    .getLocalizzazione().getZonaUrbanizzazione(),
 		    abusoDB.getLocalizzazione().isIscrizioneCamera());
+	    if (importoObla < importoOblaDefault) {
+		importoObla = importoOblaDefault;
+	    }
 	}
 
 	return Converter.round(importoObla, 2);
@@ -247,7 +266,12 @@ public class DatiVersamentiService {
 	    RiduzioneReddito riduzioneRedditoBean, String zonaUrbanizzazione,
 	    boolean iscrizioneCamera) {
 
-	importoObla = calcolaRiduzioniLegge2(importoObla, supUtilDouble,
+	// importoObla = calcolaRiduzioniLegge2(importoObla, supUtilDouble,
+	// primacasa, abitazioneLusso, convenzioneUrbanistica,
+	// destinazioneUso, iscrizioneCamera);
+
+	// RIMANGONO LE STESSE RIDUZIONI/MAGGIORAZIONI DELLA 47.85
+	importoObla = calcolaRiduzioniLegge1(importoObla, supUtilDouble,
 		primacasa, abitazioneLusso, convenzioneUrbanistica,
 		destinazioneUso, iscrizioneCamera);
 
@@ -255,18 +279,54 @@ public class DatiVersamentiService {
 	if (riduzioneRedditoBean != null) {
 	    BigDecimal riduzioneRedditoPerc = riduzioneRedditoBean
 		    .getRiduzione();
-	    if (riduzioneRedditoPerc != null)
-		importoObla = importoObla * riduzioneRedditoPerc.doubleValue()
-			/ 100;
+	    if (riduzioneRedditoPerc != null) {
+		if (supUtilDouble <= 150) {
+		    importoObla = importoObla
+			    - (importoObla * riduzioneRedditoPerc.doubleValue() / 100);
+		} else {
+		    Double costoUnitarioOblaz = importoObla / supUtilDouble;
+		    Double partePrezzoPieno = costoUnitarioOblaz
+			    * (supUtilDouble - 150);
+		    Double parteSconto = (costoUnitarioOblaz * 150);
+		    importoObla = partePrezzoPieno
+			    + (parteSconto - (parteSconto
+				    * riduzioneRedditoPerc.doubleValue() / 100));
+		}
+	    }
 	}
 	// riduzione/maggiorazione per zona urbanistica
-	if (supUtilDouble <= 150) {
-	    if (Constants.PERC_ZONA_E.equals(zonaUrbanizzazione)) {
-		importoObla = importoObla * 0.85;
-	    } else if (Constants.PERC_ZONA_B.equals(zonaUrbanizzazione)) {
-		importoObla = importoObla * 1.20;
-	    } else if (Constants.PERC_ZONA_A.equals(zonaUrbanizzazione)) {
-		importoObla = importoObla * 1.30;
+	if (Constants.ZONA_E.equals(zonaUrbanizzazione)) {
+	    if (supUtilDouble <= 150) {
+		importoObla = importoObla * Constants.PERC_ZONA_E;
+	    } else {
+		Double costoUnitarioOblaz = importoObla / supUtilDouble;
+		Double partePrezzoPieno = costoUnitarioOblaz
+			* (supUtilDouble - 150);
+		Double parteSconto = (costoUnitarioOblaz * 150);
+		importoObla = partePrezzoPieno
+			+ (parteSconto * Constants.PERC_ZONA_E);
+	    }
+	} else if (Constants.ZONA_B.equals(zonaUrbanizzazione)) {
+	    if (supUtilDouble <= 150) {
+		importoObla = importoObla * Constants.PERC_ZONA_B;
+	    } else {
+		Double costoUnitarioOblaz = importoObla / supUtilDouble;
+		Double partePrezzoPieno = costoUnitarioOblaz
+			* (supUtilDouble - 150);
+		Double parteSconto = (costoUnitarioOblaz * 150);
+		importoObla = partePrezzoPieno
+			+ (parteSconto * Constants.PERC_ZONA_B);
+	    }
+	} else if (Constants.ZONA_A.equals(zonaUrbanizzazione)) {
+	    if (supUtilDouble <= 150) {
+		importoObla = importoObla * Constants.PERC_ZONA_A;
+	    } else {
+		Double costoUnitarioOblaz = importoObla / supUtilDouble;
+		Double partePrezzoPieno = costoUnitarioOblaz
+			* (supUtilDouble - 150);
+		Double parteSconto = (costoUnitarioOblaz * 150);
+		importoObla = partePrezzoPieno
+			+ (parteSconto * Constants.PERC_ZONA_A);
 	    }
 	}
 
@@ -332,31 +392,35 @@ public class DatiVersamentiService {
 	if (importoVersValidi > autoDetermina) {
 	    t = oblazioneCalcolata - importoVersValidi;
 	}
+	if (Constants.ID_LEGGE_724_.equals(leggeCondono)) {
+	    t = oblazioneCalcolata - importoVersValidi;
+	}
 	// entro solo se il calcolato maggiore del autoderminata
 	if (t > 0) {// && importoVersValidi < autoDetermina
-
 	    Double dataInizioIL = getDataUltimoVersamento(dataAbuso, vers);
-
 	    // calcolo interessi legali
 	    String dtOdiernastr = Converter.dateToString(dtOdierna);
 	    Double dtOdiernadbl = Converter.dateToDouble(dtOdiernastr,
 		    "dd-MM-yyyy");
 	    Double il = calcolaIL(dataInizioIL, dtOdiernadbl, t);
 	    System.out.println("interessi legali: " + il);
-	    t = delta + il + im;
+	    if (Constants.ID_LEGGE_724_.equals(leggeCondono)) {
+		t = t + il;
+	    } else {
+		t = delta + il + im;
+	    }
 	    return new Double(t);
 	}
 
-	Double importoVersato = getVersamentiValidi(vers, causali);
 	if (importoVersValidi > autoDetermina) {
-	    Double b = oblazioneCalcolata - importoVersato;
+	    Double b = oblazioneCalcolata - importoVersValidi;
 	    if (im + b < 0) {
 		return new Double(0.0);
 	    }
 	}
-	Double oblazioneDovuta = im + (oblazioneCalcolata - importoVersato);
+	Double oblazioneDovuta = im + (oblazioneCalcolata - importoVersValidi);
 	System.out.println("oblazioneCalcolata: " + oblazioneCalcolata);
-	System.out.println("importoVersato: " + importoVersato);
+	System.out.println("importoVersato: " + importoVersValidi);
 	System.out.println("oblazione dovuta: "
 		+ Converter.round(oblazioneDovuta, 2));
 	return oblazioneDovuta > 0 ? oblazioneDovuta : 0;
@@ -377,7 +441,6 @@ public class DatiVersamentiService {
 	    if (dataConfronto.before(dataUltimoVersamento)) {
 		dataConfronto = dataUltimoVersamento;
 	    }
-
 	}
 	Double dataInizioIL = null;
 	if (dataUltimoVersamento == null) {
@@ -569,7 +632,7 @@ public class DatiVersamentiService {
     private Double calcolaIL(Double dataInizioIM, Double dataOdierna,
 	    Double delta) {
 
-	Double sommaimportoDeltaOblaCalcAut = new Double(delta);
+	Double sommaimportoDeltaOblaCalcAut = new Double(0.0);
 
 	String dataInizioIMString = String.valueOf(dataInizioIM);
 	String dataOdiernaString = String.valueOf(dataOdierna);
@@ -585,6 +648,7 @@ public class DatiVersamentiService {
 	long ggInteroAnno = 0;
 
 	Double interessiAnno = new Double(0.0);
+	Double sommainteressiAnno = new Double(0.0);
 
 	Integer annoStart = annoInizioIM;
 	Integer annoEnd = annoOdierna;
@@ -598,18 +662,26 @@ public class DatiVersamentiService {
 		ggInteroAnno = interessiLegali.getGiorni();
 		interessiAnno = interessiLegali.getPercentuale();
 	    }
+	    sommainteressiAnno = applicaPercentuale(delta, ggInteroAnno,
+		    ggInteroAnno, interessiAnno);
 	    sommaimportoDeltaOblaCalcAut = sommaimportoDeltaOblaCalcAut
-		    + applicaPercentuale(delta, ggInteroAnno, ggInteroAnno,
-			    interessiAnno);
+		    + sommainteressiAnno;
+	    System.out.println("interessi applicati a " + delta + " perc "
+		    + interessiAnno + " per giorni " + ggInteroAnno
+		    + " dell'anno " + annoStart + " sommati euro: "
+		    + sommainteressiAnno);
+
+	    System.out.println("sommaimportoDeltaOblaCalcAut: "
+		    + sommaimportoDeltaOblaCalcAut + "sommainteressiAnno: "
+		    + sommainteressiAnno);
 	}
 	return sommaimportoDeltaOblaCalcAut;
     }
 
-    private static Double applicaPercentuale(Double importoDeltaOblaCalcAut,
-	    long ggInteroAnno, long ggPrimoAnno, Double interessiAnno) {
+    private static Double applicaPercentuale(Double delta, long ggInteroAnno,
+	    long ggPrimoAnno, Double interessiAnno) {
 
-	Double importoAnnoIntero = importoDeltaOblaCalcAut
-		* (interessiAnno / 100);
+	Double importoAnnoIntero = delta * (interessiAnno / 100);
 	Double percAnnoFraz = (((new Double(ggPrimoAnno) * new Double(100)) / new Double(
 		ggInteroAnno)) / new Double(100));
 	if (percAnnoFraz.intValue() != 1) {
@@ -705,9 +777,7 @@ public class DatiVersamentiService {
 				    .equals(destinazioneUso) || Constants.DEST_USO_COMMERCIALE
 				.equals(destinazioneUso))) {
 		answer = calcolaOneriLegge2Residenziale(abusoDB);
-		if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
-			&& abusoDB.getLocalizzazione().isIsprimaCasa())
-		    answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
+		answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
 		return answer;
 	    }
 	    if (Constants.DEST_USO_TURISTICO.equals(destinazioneUso)
@@ -724,7 +794,7 @@ public class DatiVersamentiService {
 		    .equals(destinazioneUso)) {
 		answer = calcoloOneriDaTabAddetti(abusoDB, answer);
 		answer = calcolaRiduzioniOneriLegge(abusoDB, answer);
-		return calcoloOneriDaTabAddetti(abusoDB, answer);
+		return answer;
 	    }
 	    if (Constants.DEST_USO_AGRICOLO.equals(destinazioneUso)) {
 		answer = calcolaOneriLegge1Agricolo(abusoDB);
@@ -1254,7 +1324,7 @@ public class DatiVersamentiService {
 
     }
 
-    public Double getOneriInteressiLegali(Double oneriConcessVersato,
+    public Double getOneriConcessSaldoLegge2(Double oneriConcessVersato,
 	    Double oneriConcessCalcolato, DatiAbusoPojo abusoDB,
 	    DatiPraticaPojo praticaDB) {
 	String idepocaabuso = abusoDB.getEpocaAbuso();
@@ -1263,7 +1333,8 @@ public class DatiVersamentiService {
 		&& !Constants.PERIODO_2_724_.equals(idepocaabuso)) {
 	    return oneriConcessCalcolato;
 	}
-	if (oneriConcessVersato == autodeterminataOnere) {
+	if (oneriConcessVersato.doubleValue() == autodeterminataOnere
+		.doubleValue()) {
 	    oneriConcessCalcolato = oneriConcessCalcolato
 		    - autodeterminataOnere;
 	}
@@ -1283,7 +1354,7 @@ public class DatiVersamentiService {
 		    Integer.valueOf(abusoDB.getProgressivo()),
 		    Constants.ONERI_CAUSALE_SEL);
 	    Double dataInizioIM = getDataUltimoVersamento(
-		    Converter.dateToDouble(praticaDB.getDataCreazione()), vers);
+		    Converter.dateToDouble(praticaDB.getDataDomanda()), vers);
 	    String dataInizioIMString = String.valueOf(dataInizioIM);
 	    String dataOdiernaString = String.valueOf(dataOdierna);
 
@@ -1305,84 +1376,95 @@ public class DatiVersamentiService {
 		oneriConcessCalcolato = interessiMora + delta;
 	    }
 	}
+	if(oneriConcessCalcolato < 0)
+	    oneriConcessCalcolato = new Double(0.0);
 	return oneriConcessCalcolato;
     }
 
-    private Double calcolaRiduzioniLegge2(Double importoObla,
-	    Double supUtilDouble, boolean primacasa, boolean abitazioneLusso,
-	    boolean convenzioneUrbanistica, String destinazioneUso,
-	    boolean iscrizioneCamera) {
-
-	if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)) {
-	    // Se esiste
-	    // una convenzione urbanistica o atto d’obbligo sull’abuso -50%
-	    if (convenzioneUrbanistica) {
-		importoObla = importoObla / 2;
-	    }
-	    // Se abuso è casa e residente o
-	    // non ancora abitabile allora oblazione = -1/3 (NO abitazioni di
-	    // lusso,
-	    // cat. A/1). Agevolazione valida fino a 150 mq sup. complessiva
-	    if (supUtilDouble <= 150 && ((primacasa)) && !abitazioneLusso) {
-		importoObla = (importoObla / 3) * 2;
-	    }
-	}
-
-	// INSERIMENTO SCONTO Iscrizione camera di commercio
-	// DESTINAZIONE NON RESIDENZIALE 0.5
-	if (!Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
-		&& iscrizioneCamera) {
-	    importoObla = importoObla * new Double(0.5);
-	}
-
-	// • - 1/3 costruzione industriale o artigianale fino a 3000 mq, ma se >
-	// 6000
-	// mq allora x 1.5
-	if (destinazioneUso.equals(Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE)
-		&& supUtilDouble < 3000) {
-	    importoObla = (importoObla / 3) * 2;
-	}
-	if (destinazioneUso.equals(Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE)
-		&& supUtilDouble > 6000) {
-	    importoObla = importoObla * new Double(1.5);
-	}
-
-	// • - 1/3 attività commerciale < 50 mq, ma se >500mq allora x*
-	// * 1.5 e se >1500 allora x2
-	if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
-		&& supUtilDouble < 50) {
-	    importoObla = (importoObla / 3) * 2;
-	} else if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
-		&& supUtilDouble > 500 && supUtilDouble <= 1500) {
-	    importoObla = importoObla * new Double(1.5);
-	} else if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
-		&& supUtilDouble > 1500) {
-	    importoObla = importoObla * new Double(2.0);
-	}
-	// • - 50% attività sportiva – culturale –
-	// * sanitaria - culto
-	// if (scontoAttivita) {
-	if (destinazioneUso.equals(Constants.DEST_USO_SPORTIVO)
-		|| destinazioneUso.equals(Constants.DEST_USO_CULTURALE)
-		|| destinazioneUso.equals(Constants.DEST_USO_SANITARIA)
-		|| destinazioneUso.equals(Constants.DEST_USO_CULTO)) {
-	    importoObla = (importoObla * new Double(0.5));
-	}
-	// }
-	// • - 1/3 se attività turistica e se <500 mq, ma se > 800
-	// * mq allora x1.5
-	if (destinazioneUso.equals(Constants.DEST_USO_TURISTICO)
-		&& supUtilDouble < 500) {
-	    importoObla = (importoObla / 3) * 2;
-	} else if (destinazioneUso.equals(Constants.DEST_USO_TURISTICO)
-		&& supUtilDouble > 800) {
-	    importoObla = importoObla * new Double(1.5);
-	}
-	// • - 1/3 se in zona agricola
-	if (destinazioneUso.equals(Constants.DEST_USO_AGRICOLO)) {
-	    importoObla = importoObla * new Double(0.5);
-	}
-
-	return importoObla;
-    }
+    // private Double calcolaRiduzioniLegge2(Double importoObla,
+    // Double supUtilDouble, boolean primacasa, boolean abitazioneLusso,
+    // boolean convenzioneUrbanistica, String destinazioneUso,
+    // boolean iscrizioneCamera) {
+    //
+    // if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)) {
+    // // Se esiste
+    // // una convenzione urbanistica o atto d’obbligo sull’abuso -50%
+    // if (convenzioneUrbanistica) {
+    // importoObla = importoObla / 2;
+    // }
+    // // Se abuso è casa e residente o
+    // // non ancora abitabile allora oblazione = -1/3 (NO abitazioni di
+    // // lusso,
+    // // cat. A/1). Agevolazione valida fino a 150 mq sup. complessiva
+    // if (primacasa && !abitazioneLusso) {
+    // if (supUtilDouble <= 150) {
+    // importoObla = (importoObla / 3) * 2;
+    // } else {
+    // Double costoUnitarioOblaz = importoObla / supUtilDouble;
+    // Double partePrezzoPieno = costoUnitarioOblaz
+    // * (supUtilDouble - 150);
+    // Double parteScontoPrimaCasa = (costoUnitarioOblaz * 150);
+    // importoObla = partePrezzoPieno
+    // + ((parteScontoPrimaCasa / 3) * 2);
+    // }
+    // }
+    // }
+    //
+    // // INSERIMENTO SCONTO Iscrizione camera di commercio
+    // // DESTINAZIONE NON RESIDENZIALE 0.5
+    // if (!Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
+    // && iscrizioneCamera) {
+    // importoObla = importoObla * new Double(0.5);
+    // }
+    //
+    // // • - 1/3 costruzione industriale o artigianale fino a 3000 mq, ma se >
+    // // 6000
+    // // mq allora x 1.5
+    // if (destinazioneUso.equals(Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE)
+    // && supUtilDouble < 3000) {
+    // importoObla = (importoObla / 3) * 2;
+    // }
+    // if (destinazioneUso.equals(Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE)
+    // && supUtilDouble > 6000) {
+    // importoObla = importoObla * new Double(1.5);
+    // }
+    //
+    // // • - 1/3 attività commerciale < 50 mq, ma se >500mq allora x*
+    // // * 1.5 e se >1500 allora x2
+    // if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
+    // && supUtilDouble < 50) {
+    // importoObla = (importoObla / 3) * 2;
+    // } else if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
+    // && supUtilDouble > 500 && supUtilDouble <= 1500) {
+    // importoObla = importoObla * new Double(1.5);
+    // } else if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
+    // && supUtilDouble > 1500) {
+    // importoObla = importoObla * new Double(2.0);
+    // }
+    // // • - 50% attività sportiva – culturale –
+    // // * sanitaria - culto
+    // // if (scontoAttivita) {
+    // if (destinazioneUso.equals(Constants.DEST_USO_SPORTIVO)
+    // || destinazioneUso.equals(Constants.DEST_USO_CULTURALE)
+    // || destinazioneUso.equals(Constants.DEST_USO_SANITARIA)
+    // || destinazioneUso.equals(Constants.DEST_USO_CULTO)) {
+    // importoObla = (importoObla * new Double(0.5));
+    // }
+    // // }
+    // // • - 1/3 se attività turistica e se <500 mq, ma se > 800
+    // // * mq allora x1.5
+    // if (destinazioneUso.equals(Constants.DEST_USO_TURISTICO)
+    // && supUtilDouble < 500) {
+    // importoObla = (importoObla / 3) * 2;
+    // } else if (destinazioneUso.equals(Constants.DEST_USO_TURISTICO)
+    // && supUtilDouble > 800) {
+    // importoObla = importoObla * new Double(1.5);
+    // }
+    // // • - 1/3 se in zona agricola
+    // if (destinazioneUso.equals(Constants.DEST_USO_AGRICOLO)) {
+    // importoObla = importoObla * new Double(0.5);
+    // }
+    //
+    // return importoObla;
+    // }
 }

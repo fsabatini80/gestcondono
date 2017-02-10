@@ -46,5 +46,9 @@ public class Constants {
     public static final Double PERC_ZONA_E = 0.85;
     public static final Double PERC_ZONA_B = 1.20;
     public static final Double PERC_ZONA_A = 1.30;
+    
+    public static final String ZONA_E = "E";
+    public static final String ZONA_B = "B";
+    public static final String ZONA_A = "A";
 
 }

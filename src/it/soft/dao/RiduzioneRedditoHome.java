@@ -74,8 +74,8 @@ public class RiduzioneRedditoHome {
     }
 
     @SuppressWarnings("unchecked")
-    public RiduzioneReddito findByRedditoSuperfice(int id, Double reddito,
-	    Double superfice) {
+    public RiduzioneReddito findByRedditoSuperfice(int id, Double reddito) {// Double
+									    // superfice
 	log.debug("getting RiduzioneReddito instance with id: " + id);
 	try {
 	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
@@ -84,11 +84,12 @@ public class RiduzioneRedditoHome {
 	    RiduzioneReddito riduzioneReddito = new RiduzioneReddito();
 	    riduzioneReddito.setIdriduzioneReddito(id);
 	    Criteria cr = sess.createCriteria(RiduzioneReddito.class);
-	    cr.add(Restrictions.eq("idriduzioneReddito", id));
-	    cr.add(Restrictions.ge("redditoDa", new BigDecimal(reddito)));
-	    cr.add(Restrictions.le("redditoA", new BigDecimal(reddito)));
-	    cr.add(Restrictions.ge("superficeDa", new BigDecimal(superfice)));
-	    cr.add(Restrictions.le("superficeA", new BigDecimal(superfice)));
+	    cr.add(Restrictions.eq("idtipoRiduzione", id));
+	    cr.add(Restrictions.le("redditoDa", new BigDecimal(reddito)));
+	    cr.add(Restrictions.ge("redditoA", new BigDecimal(reddito)));
+	    // cr.add(Restrictions.le("superficeDa", new
+	    // BigDecimal(superfice)));
+	    // cr.add(Restrictions.ge("superficeA", new BigDecimal(superfice)));
 	    List<RiduzioneReddito> results = cr.list();
 	    if (results != null && !results.isEmpty()) {
 		for (Iterator<RiduzioneReddito> iterator = results.iterator(); iterator

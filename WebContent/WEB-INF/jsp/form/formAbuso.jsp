@@ -172,7 +172,7 @@
 						<td><form:errors path="tipoReddito" cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
-						<td>Reddito:</td>
+						<td>Reddito in euro:</td>
 						<td><form:input path="reddito" /></td>
 						<td><form:errors path="reddito" cssClass="ui-state-error" /></td>
 					</tr>
