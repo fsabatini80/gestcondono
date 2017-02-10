@@ -397,7 +397,8 @@ public class DatiVersamentiService {
 	}
 	// entro solo se il calcolato maggiore del autoderminata
 	if (t > 0) {// && importoVersValidi < autoDetermina
-	    Double dataInizioIL = getDataUltimoVersamento(dataAbuso, vers);
+	    Double dataInizioIL = getDataUltimoVersamento(dataAbuso, vers,
+		    causali);
 	    // calcolo interessi legali
 	    String dtOdiernastr = Converter.dateToString(dtOdierna);
 	    Double dtOdiernadbl = Converter.dateToDouble(dtOdiernastr,
@@ -428,18 +429,20 @@ public class DatiVersamentiService {
     }
 
     private Double getDataUltimoVersamento(Double dataAbuso,
-	    List<DatiVersamento> vers) {
+	    List<DatiVersamento> vers, List<String> causali) {
 	// se esiste prendo la data dell'ultimo versamento
 	Date dataConfronto = null;
 	Date dataUltimoVersamento = null;
 	for (DatiVersamento datiVersamento : vers) {
-	    String dataVersamento = datiVersamento.getDataVersamento();
-	    if (dataConfronto == null) {
-		dataConfronto = Converter.stringToDate(dataVersamento);
-	    }
-	    dataUltimoVersamento = Converter.stringToDate(dataVersamento);
-	    if (dataConfronto.before(dataUltimoVersamento)) {
-		dataConfronto = dataUltimoVersamento;
+	    if (causali.contains(datiVersamento.getCausale())) {
+		String dataVersamento = datiVersamento.getDataVersamento();
+		if (dataConfronto == null) {
+		    dataConfronto = Converter.stringToDate(dataVersamento);
+		}
+		dataUltimoVersamento = Converter.stringToDate(dataVersamento);
+		if (dataConfronto.before(dataUltimoVersamento)) {
+		    dataConfronto = dataUltimoVersamento;
+		}
 	    }
 	}
 	Double dataInizioIL = null;
@@ -1353,8 +1356,10 @@ public class DatiVersamentiService {
 		    .valueOf(Integer.parseInt(praticaDB.getIddatipratica())),
 		    Integer.valueOf(abusoDB.getProgressivo()),
 		    Constants.ONERI_CAUSALE_SEL);
+	    List<String> causali = new ArrayList<String>();
+	    causali.add(Constants.ONERI_CAUSALE_SEL);
 	    Double dataInizioIM = getDataUltimoVersamento(
-		    Converter.dateToDouble(praticaDB.getDataDomanda()), vers);
+		    Converter.dateToDouble(praticaDB.getDataDomanda()), vers, causali);
 	    String dataInizioIMString = String.valueOf(dataInizioIM);
 	    String dataOdiernaString = String.valueOf(dataOdierna);
 
@@ -1376,7 +1381,7 @@ public class DatiVersamentiService {
 		oneriConcessCalcolato = interessiMora + delta;
 	    }
 	}
-	if(oneriConcessCalcolato < 0)
+	if (oneriConcessCalcolato < 0)
 	    oneriConcessCalcolato = new Double(0.0);
 	return oneriConcessCalcolato;
     }
