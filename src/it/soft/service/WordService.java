@@ -11,6 +11,7 @@ import it.soft.dao.TipologiaAbusoHome;
 import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiFabbricati;
 import it.soft.domain.DatiTerreni;
+import it.soft.domain.Datiabuso;
 import it.soft.domain.DocumentiAbuso;
 import it.soft.domain.EpocaAbuso;
 import it.soft.domain.RelSoggettoAbuso;
@@ -114,9 +115,13 @@ public class WordService {
 
 	TipologiaAbuso tipologiaAbuso = tipologiaAbusoHome.findById(Integer
 		.valueOf(abusoDB.getTipologiaAbuso()));
-
+	List<Datiabuso> abusi = abusoService.findAll(idpratica);
+	boolean applicaDefault = false;
+	if(abusi.size() == 1){
+	    applicaDefault = true;
+	}
 	Double importoCalcolato = datiVersamentiService
-		.getOblazioneCalcolata(tipologiaAbuso,
+		.getOblazioneCalcolata(applicaDefault,tipologiaAbuso,
 			Converter.dateToDouble(epocaAbuso.getEpocaDa()),
 			praticaDB.getLeggeCondono(), idabuso,
 			abusoDB.getDestinazioneUso());
