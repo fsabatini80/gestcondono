@@ -278,8 +278,14 @@ public class PraticheController extends BaseController {
 	    this.abusoPojo = datiAbusoService.findById(pojo.getIddatiabuso());
 	    EpocaAbuso epoca = epocaAbusoHome.findById(Integer.parseInt(pojo
 		    .getEpocaAbuso()));
+	    List<Datiabuso> abusi = datiAbusoService.findAll(this.praticaPojo
+		    .getIddatipratica());
+	    boolean applicaDefault = false;
+	    if (abusi.size() == 1) {
+		applicaDefault = true;
+	    }
 	    this.abusoPojo.setOblazioneCalcolata(datiVersamentiService
-		    .getOblazioneCalcolata(
+		    .getOblazioneCalcolata(applicaDefault,
 			    tipologiaAbusoHome.findById(Integer.valueOf(pojo
 				    .getTipologiaAbuso())), Converter
 				    .dateToDouble(epoca.getEpocaDa()),
