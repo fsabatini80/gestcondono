@@ -141,23 +141,27 @@ public class DatiVersamentiService {
 		abuso.getAutodeterminata()) : new Double(0.0));
     }
 
-    public Double getOblazioneCalcolata(TipologiaAbuso tipologiaAbuso,
-	    Double dataAbuso, String leggeCondono, String idAbuso,
-	    String destinazioneUso) {
+    public Double getOblazioneCalcolata(boolean applicaDefault,
+	    TipologiaAbuso tipologiaAbuso, Double dataAbuso,
+	    String leggeCondono, String idAbuso, String destinazioneUso) {
 
 	Integer tipoAbuso = tipologiaAbuso.getDescrizioneBreve();
 
 	List<TabCalcOblazione> tabOblList = datiVersamentiHome.findOblazione(
 		dataAbuso, leggeCondono, tipoAbuso);
-	List<TabCalcOblazione> tabOblListDefault = datiVersamentiHome
-		.findOblazione(dataAbuso, leggeCondono, 7);
-	TabCalcOblazione calcOblazione = null;
-	TabCalcOblazione calcOblazioneDefaul = null;
+	List<TabCalcOblazione> tabOblListDefault;
 	Double importoOblaDefault = new Double(0.0);
-	Double importoObla = new Double(0.0);
-	for (TabCalcOblazione element : tabOblListDefault) {
-	    calcOblazioneDefaul = element;
+	TabCalcOblazione calcOblazioneDefaul = null;
+	if (applicaDefault) {
+	    tabOblListDefault = datiVersamentiHome.findOblazione(dataAbuso,
+		    leggeCondono, 7);
+	    for (TabCalcOblazione element : tabOblListDefault) {
+		calcOblazioneDefaul = element;
+	    }
 	}
+
+	TabCalcOblazione calcOblazione = null;
+	Double importoObla = new Double(0.0);
 	for (TabCalcOblazione tabCalcOblazione : tabOblList) {
 	    calcOblazione = tabCalcOblazione;
 	}
@@ -1397,9 +1401,9 @@ public class DatiVersamentiService {
 				    .getProgressivo()));
 		    List<String> causali = new ArrayList<String>();
 		    causali.add(Constants.ONERI_CAUSALE_SEL);
-		    Double versValidi = getVersamentiValidi(new Double(19951231), vers,
-			    causali);
-		    oneriConcessCalcolato = (interessiMora + (autodeterminataOnere- versValidi))
+		    Double versValidi = getVersamentiValidi(
+			    new Double(19951231), vers, causali);
+		    oneriConcessCalcolato = (interessiMora + (autodeterminataOnere - versValidi))
 			    + (oneriConcessCalcolato - autodeterminataOnere);
 		} else {
 		    oneriConcessCalcolato = (interessiMora + delta)
