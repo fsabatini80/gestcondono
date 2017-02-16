@@ -5,27 +5,10 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <html>
-<jsp:include page="../tpl/header.jsp" />
-<script type="text/javascript">
-$( document ).ready(function() {
-	//$("a").removeClass("ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only");
-	//$("span").removeClass("ui-button-text");
-	var listx = document.querySelectorAll('*[id^="x"]');
-	var listy = document.querySelectorAll('*[id^="y"]');
-	var listz = document.querySelectorAll('*[id^="z"]');
-	for(i=0; i < listx.length; i++){
-		listx[i].removeAttribute("class");
-		listy[i].removeAttribute("class");
-		listz[i].removeAttribute("class");
-	}
-	
-});
-
-
-</script>
+<jsp:include page="tpl/header.jsp" />
 <h2
 	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
-	Pratiche</h2>
+	Stampe</h2>
 <div>
 	<table id="example1" class="display">
 		<thead>

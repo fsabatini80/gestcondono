@@ -6,23 +6,6 @@
 	uri="http://www.springframework.org/security/tags"%>
 <html>
 <jsp:include page="../tpl/header.jsp" />
-<script type="text/javascript">
-$( document ).ready(function() {
-	//$("a").removeClass("ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only");
-	//$("span").removeClass("ui-button-text");
-	var listx = document.querySelectorAll('*[id^="x"]');
-	var listy = document.querySelectorAll('*[id^="y"]');
-	var listz = document.querySelectorAll('*[id^="z"]');
-	for(i=0; i < listx.length; i++){
-		listx[i].removeAttribute("class");
-		listy[i].removeAttribute("class");
-		listz[i].removeAttribute("class");
-	}
-	
-});
-
-
-</script>
 <h2
 	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
 	Pratiche</h2>
@@ -48,15 +31,15 @@ $( document ).ready(function() {
 					<td>${pratica.richiedente.cognome} ${pratica.richiedente.nome}</td>
 					<td>${pratica.dataDomanda}</td>
 					<td>${pratica.leggeCondono.leggeNumero}</td>
-					<td><a id="x${pratica.iddatipratica}"
+					<td><a
 						href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
 						title="modifica pratica"><img src="img/24/edit.png"
 							title="modifica pratica"></a></td>
-					<td><a id="y${pratica.iddatipratica}"
+					<td><a
 						href="<c:url value="abusi.htm?idpratica=${pratica.iddatipratica}" />"
 						title="visualizza abusi"><img src="img/24/find.png"
 							title="visualizza abusi"></a></td>
-					<td><a id="z${pratica.iddatipratica}"
+					<td><a
 						href="<c:url value="versamenti.htm?idpratica=${pratica.iddatipratica}" />"
 						title="visualizza versamenti"><img
 							src="img/24/symbol_euro.png" title="visualizza versamenti"></a></td>

@@ -119,10 +119,10 @@
 		var listInput = document.getElementsByTagName("input");
 		var listInputLenght = document.getElementsByTagName("input").length;
 		for (i = 0; i < listInputLenght; i++) {
-			document.getElementsByTagName("input").item(i).value = document.getElementsByTagName("input").item(i).value.toUpperCase();
+			document.getElementsByTagName("input").item(i).value = document
+					.getElementsByTagName("input").item(i).value.toUpperCase();
 		}
 	}
-
 
 	/**
 	Expression	Description
@@ -158,9 +158,13 @@
 	</div>
 	<br />
 	<div id="barraMenu" class="ui-widget-header">
-		<a href="<c:url value="home.htm" />">Home</a> <a
-			href="<c:url value="homePratica.htm" />"> Pratiche</a> <a href="#">Scadenze</a>
-		<a href="#">Solleciti</a> <a href="#">Stampe</a> <a
-			href="<c:url value="cruscotto.htm" />" title="cruscotto">Cruscotto</a>
+		<a href="<c:url value="home.htm" />">Home</a> 
+		<a href="<c:url value="homePratica.htm" />"> Pratiche</a> 
+		<a href="#">Scadenze</a>
+		<a href="#">Solleciti</a>
+		<sec:authorize access="hasRole('superadmin')">
+			<a href="#">Stampe</a>
+		</sec:authorize>
+		<a href="<c:url value="cruscotto.htm" />" title="cruscotto">Cruscotto</a>
 	</div>
 	<br />

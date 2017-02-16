@@ -16,7 +16,7 @@
     
     <http use-expressions="true">
         <!-- intercept-url pattern="/index.jsp" access="permitAll" /-->
-        <intercept-url pattern="/secure/extreme/**" access="hasRole('utente')" />
+        <intercept-url pattern="/secure/extreme/**" access="hasRole('superadmin')" />
        <!--  <intercept-url pattern="/secure/**" access="denyAll" />-->
        <!--  <intercept-url pattern="/listAccounts.html" access="isAuthenticated()" />-->
        <!--  <intercept-url pattern="/post.html" access="isAuthenticated()" />-->
