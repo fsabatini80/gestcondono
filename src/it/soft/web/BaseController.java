@@ -11,30 +11,29 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class BaseController {
 
-	@Autowired
-	MailService mailService;
+    @Autowired
+    MailService mailService;
 
-	@ExceptionHandler(CustomException.class)
-	public ModelAndView handleCustomException(CustomException ex) {
+    @ExceptionHandler(CustomException.class)
+    public ModelAndView handleCustomException(CustomException ex) {
 
-		mailService.sendMail(MailService.from, MailService.to,
-				MailService.oggetto, ex.getMessage());
+	mailService.sendMail(MailService.from, MailService.to,
+		MailService.oggetto, ex.getMessage());
 
-		ModelAndView model = new ModelAndView("error/generic_error");
-		model.addObject("exception", ex);
-		return model;
+	ModelAndView model = new ModelAndView("error/generic_error");
+	model.addObject("exception", ex);
+	return model;
 
-	}
+    }
 
-	@ExceptionHandler(Exception.class)
-	public ModelAndView handleAllException(Exception ex) {
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleAllException(Exception ex) {
 
-		//mailService.sendMail(MailService.from, MailService.to,
-		//		MailService.oggetto, ex.getMessage());
+	mailService.sendMail(MailService.from, MailService.to,
+		MailService.oggetto, ex.getMessage());
+	ModelAndView model = new ModelAndView("error/exception_error");
+	model.addObject("exception", ex);
+	return model;
 
-		ModelAndView model = new ModelAndView("error/exception_error");
-		model.addObject("exception", ex);
-		return model;
-
-	}
+    }
 }

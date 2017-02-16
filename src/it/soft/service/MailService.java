@@ -6,7 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 public class MailService {
 
 	public static final String oggetto = "email di errore inviata da applicativo gestione per Cogesi";
-	public static final String to = "lupoenrico@yahoo.com";
+	public static final String to = "f.sabatini80@gmail.com";
 	public static final String from = "postmaster@aneda.it";
 
 	private MailSender mailSender;

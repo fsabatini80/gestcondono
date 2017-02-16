@@ -1529,90 +1529,13 @@ public class DatiVersamentiService {
 	return interessiMora;
     }
 
-    // private Double calcolaRiduzioniLegge2(Double importoObla,
-    // Double supUtilDouble, boolean primacasa, boolean abitazioneLusso,
-    // boolean convenzioneUrbanistica, String destinazioneUso,
-    // boolean iscrizioneCamera) {
-    //
-    // if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)) {
-    // // Se esiste
-    // // una convenzione urbanistica o atto d’obbligo sull’abuso -50%
-    // if (convenzioneUrbanistica) {
-    // importoObla = importoObla / 2;
-    // }
-    // // Se abuso è casa e residente o
-    // // non ancora abitabile allora oblazione = -1/3 (NO abitazioni di
-    // // lusso,
-    // // cat. A/1). Agevolazione valida fino a 150 mq sup. complessiva
-    // if (primacasa && !abitazioneLusso) {
-    // if (supUtilDouble <= 150) {
-    // importoObla = (importoObla / 3) * 2;
-    // } else {
-    // Double costoUnitarioOblaz = importoObla / supUtilDouble;
-    // Double partePrezzoPieno = costoUnitarioOblaz
-    // * (supUtilDouble - 150);
-    // Double parteScontoPrimaCasa = (costoUnitarioOblaz * 150);
-    // importoObla = partePrezzoPieno
-    // + ((parteScontoPrimaCasa / 3) * 2);
-    // }
-    // }
-    // }
-    //
-    // // INSERIMENTO SCONTO Iscrizione camera di commercio
-    // // DESTINAZIONE NON RESIDENZIALE 0.5
-    // if (!Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
-    // && iscrizioneCamera) {
-    // importoObla = importoObla * new Double(0.5);
-    // }
-    //
-    // // • - 1/3 costruzione industriale o artigianale fino a 3000 mq, ma se >
-    // // 6000
-    // // mq allora x 1.5
-    // if (destinazioneUso.equals(Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE)
-    // && supUtilDouble < 3000) {
-    // importoObla = (importoObla / 3) * 2;
-    // }
-    // if (destinazioneUso.equals(Constants.DEST_USO_INDUSTRIALE_ARTIGIANALE)
-    // && supUtilDouble > 6000) {
-    // importoObla = importoObla * new Double(1.5);
-    // }
-    //
-    // // • - 1/3 attività commerciale < 50 mq, ma se >500mq allora x*
-    // // * 1.5 e se >1500 allora x2
-    // if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
-    // && supUtilDouble < 50) {
-    // importoObla = (importoObla / 3) * 2;
-    // } else if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
-    // && supUtilDouble > 500 && supUtilDouble <= 1500) {
-    // importoObla = importoObla * new Double(1.5);
-    // } else if (destinazioneUso.equals(Constants.DEST_USO_COMMERCIALE)
-    // && supUtilDouble > 1500) {
-    // importoObla = importoObla * new Double(2.0);
-    // }
-    // // • - 50% attività sportiva – culturale –
-    // // * sanitaria - culto
-    // // if (scontoAttivita) {
-    // if (destinazioneUso.equals(Constants.DEST_USO_SPORTIVO)
-    // || destinazioneUso.equals(Constants.DEST_USO_CULTURALE)
-    // || destinazioneUso.equals(Constants.DEST_USO_SANITARIA)
-    // || destinazioneUso.equals(Constants.DEST_USO_CULTO)) {
-    // importoObla = (importoObla * new Double(0.5));
-    // }
-    // // }
-    // // • - 1/3 se attività turistica e se <500 mq, ma se > 800
-    // // * mq allora x1.5
-    // if (destinazioneUso.equals(Constants.DEST_USO_TURISTICO)
-    // && supUtilDouble < 500) {
-    // importoObla = (importoObla / 3) * 2;
-    // } else if (destinazioneUso.equals(Constants.DEST_USO_TURISTICO)
-    // && supUtilDouble > 800) {
-    // importoObla = importoObla * new Double(1.5);
-    // }
-    // // • - 1/3 se in zona agricola
-    // if (destinazioneUso.equals(Constants.DEST_USO_AGRICOLO)) {
-    // importoObla = importoObla * new Double(0.5);
-    // }
-    //
-    // return importoObla;
-    // }
+    public List<DatiVersamento> findBy(String dataVersamento,
+	    String ufficioPostale, String codiceVersamento) {
+
+	List<DatiVersamento> list = datiVersamentiHome.findBy(dataVersamento,
+		ufficioPostale, codiceVersamento);
+	return list;
+
+    }
+
 }
