@@ -134,6 +134,9 @@
 	<bean id="oneriConcessoriHome" class="it.soft.dao.OneriConcessoriHome">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	<bean id="stampeSollecitiHome" class="it.soft.dao.StampeSollecitiHome">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
 
 	<!-- END MAP DAO -->
 
@@ -150,16 +153,35 @@
 	<!-- END MAP viewResolver -->
 
 
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="smtp.linkem.com" />
-		<property name="port" value="25" />
-		<property name="username" value="postmaster@aneda.it" />
-		<property name="password" value="478mari15ani" />
+	<!-- <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+		<property name="host" value="smtp.linkem.com" /> <property name="port" value="25" 
+		/> <property name="username" value="postmaster@aneda.it" /> <property name="password" 
+		value="478mari15ani" /> <property name="javaMailProperties"> <props> <prop 
+		key="mail.smtp.auth">true</prop> <prop key="mail.smtp.starttls.enable">true</prop> 
+		</props> </property> </bean> -->
 
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+			<value>smtp.gmail.com</value>
+		</property>
+		<property name="port">
+			<value>587</value>
+		</property>
+		<property name="protocol">
+			<value>smtp</value>
+		</property>
+		<property name="username">
+			<value>francesco.sabatini.consoft@gmail.com</value>
+		</property>
+		<property name="password">
+			<value>fr3ncesco</value>
+		</property>
 		<property name="javaMailProperties">
 			<props>
 				<prop key="mail.smtp.auth">true</prop>
 				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtp.quitwait">false</prop>
 			</props>
 		</property>
 	</bean>

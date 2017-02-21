@@ -15,7 +15,7 @@ public class Constants {
     public static final String PERIODO_1_326_ = "6";
 
     public static final String ID_LEGGE_47_85 = "1";
-    public static final String ID_LEGGE_724_ = "2";
+    public static final String ID_LEGGE_724_94 = "2";
     public static final String ID_LEGGE_326_ = "3";
 
     public static final Double DATA_ZERO_VERSAMENTI = new Double(19960401);

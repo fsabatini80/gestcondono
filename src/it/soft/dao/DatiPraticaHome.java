@@ -198,4 +198,25 @@ public class DatiPraticaHome {
 			throw re;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Datipratica> findBy(LeggiCondono leggeCondono) {
+		log.debug("getting Datipratica instance with id: " + leggeCondono);
+		try {
+			org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+					.getCurrentSession();
+			sess.beginTransaction();
+			Criteria cr = sess.createCriteria(Datipratica.class);
+			if (leggeCondono != null && !"".equals(leggeCondono))
+				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
+
+			List<Datipratica> results = cr.list();
+			log.debug("get successful");
+			sess.close();
+			return results;
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
+	}
 }

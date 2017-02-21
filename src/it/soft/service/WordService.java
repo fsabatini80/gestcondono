@@ -144,7 +144,7 @@ public class WordService {
 		tipologiaAbuso, abusoDB, praticaDB, idabuso,
 		abusoDB.getDestinazioneUso());
 	Double oneriConcessSaldo = oneriConcessCalcolato - oneriConcessVersato;
-	if (Constants.ID_LEGGE_724_.equals(praticaDB.getLeggeCondono())){
+	if (Constants.ID_LEGGE_724_94.equals(praticaDB.getLeggeCondono())){
 	    oneriConcessSaldo = datiVersamentiService
 		    .getOneriConcessSaldoLegge2(oneriConcessVersato,
 			    oneriConcessCalcolato, abusoDB, praticaDB);
@@ -358,7 +358,7 @@ public class WordService {
 	table5.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
 		.setW(BigInteger.valueOf(2500));
 
-	if (Constants.ID_LEGGE_724_.equals(leggeCondono)) {
+	if (Constants.ID_LEGGE_724_94.equals(leggeCondono)) {
 	    XWPFTable table06 = document.createTable(1, 3);
 	    addTableCellCenter(table06.getRow(0).getCell(0),
 		    "Importo autodeterminato", false, ParagraphAlignment.LEFT);

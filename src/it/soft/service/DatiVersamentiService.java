@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,7 +168,7 @@ public class DatiVersamentiService {
 	}
 
 	if (calcOblazione != null
-		&& (Constants.ID_LEGGE_47_85.equals(leggeCondono) || Constants.ID_LEGGE_724_
+		&& (Constants.ID_LEGGE_47_85.equals(leggeCondono) || Constants.ID_LEGGE_724_94
 			.equals(leggeCondono))) {
 	    importoObla = Converter.convertLireEuro(new Double(calcOblazione
 		    .getImportoOblazione()));
@@ -202,7 +203,7 @@ public class DatiVersamentiService {
 	    return Converter.round(importoObla, 2);
 	}
 	// legge n. 724/94
-	if (Constants.ID_LEGGE_724_.equals(leggeCondono)) {
+	if (Constants.ID_LEGGE_724_94.equals(leggeCondono)) {
 
 	    // tipo reddito 10 dipendente 20 non dipendente
 	    String reddito = abusoDB.getReddito();
@@ -359,7 +360,7 @@ public class DatiVersamentiService {
 	if (Constants.ID_LEGGE_47_85.equals(leggeCondono)) {
 	    return getOblazione47_85(importoVersValidi, autoDetermina,
 		    oblazioneCalcolata, abusoDB, dataAbuso, leggeCondono, vers);
-	} else if (Constants.ID_LEGGE_724_.equals(leggeCondono)) {
+	} else if (Constants.ID_LEGGE_724_94.equals(leggeCondono)) {
 	    return getOblazione724_94(importoVersValidi, autoDetermina,
 		    oblazioneCalcolata, abusoDB, dataAbuso, leggeCondono, vers);
 	}
@@ -409,10 +410,11 @@ public class DatiVersamentiService {
 	if (importoVersValidi > autoDetermina) {
 	    t = oblazioneCalcolata - importoVersValidi;
 	}
-	if (importoVersValidi < autoDetermina
-		&& autoDetermina <= oblazioneCalcolata) {
-	    t = oblazioneCalcolata - importoVersValidi;
-	}
+	// rimosso in data 21-02-2017 a seguito chat con Luigi
+	// if (importoVersValidi < autoDetermina
+	// && autoDetermina <= oblazioneCalcolata) {
+	// t = oblazioneCalcolata - importoVersValidi;
+	// }
 	// entro solo se il calcolato maggiore del autoderminata
 	if (t > 0) {
 	    Double dataInizioIL = getDataUltimoVersamento(dataAbuso, vers,
@@ -692,9 +694,9 @@ public class DatiVersamentiService {
 	Integer annoOdierna = Integer.parseInt(dataOdiernaString
 		.substring(0, 4));
 
-	long ggInteroAnno = 0;
+	long ggInteressiLegali = 0;
 
-	Double interessiAnno = new Double(0.0);
+	Double percinteressiAnno = new Double(0.0);
 	Double sommainteressiAnno = new Double(0.0);
 
 	Integer annoStart = annoInizioIM;
@@ -704,34 +706,69 @@ public class DatiVersamentiService {
 	    String dataInizioAnno = annoStart + "1231";
 	    List<InteressiLegali> list = interessiLegaliHome
 		    .findByDtFine(new Double(dataInizioAnno));
+	    long ggInteroAnno = getGiorniAnno(annoStart);
 
 	    for (InteressiLegali interessiLegali : list) {
-		ggInteroAnno = interessiLegali.getGiorni();
-		interessiAnno = interessiLegali.getPercentuale();
+		ggInteressiLegali = interessiLegali.getGiorni();
+		percinteressiAnno = interessiLegali.getPercentuale();
 	    }
 	    sommainteressiAnno = applicaPercentuale(delta, ggInteroAnno,
-		    ggInteroAnno, interessiAnno);
+		    ggInteressiLegali, percinteressiAnno);
+
 	    sommaimportoDeltaOblaCalcAut = sommaimportoDeltaOblaCalcAut
 		    + sommainteressiAnno;
-	    System.out.println("interessi applicati a " + delta + " perc "
-		    + interessiAnno + " per giorni " + ggInteroAnno
-		    + " dell'anno " + annoStart + " sommati euro: "
-		    + sommainteressiAnno);
+	    stampa(delta, sommaimportoDeltaOblaCalcAut, ggInteressiLegali,
+		    percinteressiAnno, sommainteressiAnno, annoStart);
+	    dataInizioAnno = annoStart + "1215";
+	    list = interessiLegaliHome.findByDtFine(new Double(dataInizioAnno));
+	    if (list != null && !list.isEmpty()) {
+		ggInteroAnno = getGiorniAnno(annoStart);
 
-	    System.out.println("sommaimportoDeltaOblaCalcAut: "
-		    + sommaimportoDeltaOblaCalcAut + "sommainteressiAnno: "
-		    + sommainteressiAnno);
+		for (InteressiLegali interessiLegali : list) {
+		    ggInteressiLegali = interessiLegali.getGiorni();
+		    percinteressiAnno = interessiLegali.getPercentuale();
+		}
+		sommainteressiAnno = applicaPercentuale(delta, ggInteroAnno,
+			ggInteressiLegali, percinteressiAnno);
+
+		sommaimportoDeltaOblaCalcAut = sommaimportoDeltaOblaCalcAut
+			+ sommainteressiAnno;
+		stampa(delta, sommaimportoDeltaOblaCalcAut, ggInteressiLegali,
+			percinteressiAnno, sommainteressiAnno, annoStart);
+	    }
 	}
 	return sommaimportoDeltaOblaCalcAut;
     }
 
-    private static Double applicaPercentuale(Double delta, long ggInteroAnno,
-	    long ggPrimoAnno, Double interessiAnno) {
+    private void stampa(Double delta, Double sommaimportoDeltaOblaCalcAut,
+	    long ggInteressiLegali, Double percinteressiAnno,
+	    Double sommainteressiAnno, Integer annoStart) {
+	System.out.println("interessi applicati a " + delta + " perc "
+		+ percinteressiAnno + " per giorni " + ggInteressiLegali
+		+ " dell'anno " + annoStart + " sommati euro: "
+		+ sommainteressiAnno);
 
-	Double importoAnnoIntero = delta * (interessiAnno / 100);
-	Double percAnnoFraz = (((new Double(ggPrimoAnno) * new Double(100)) / new Double(
+	System.out.println("sommaimportoDeltaOblaCalcAut: "
+		+ sommaimportoDeltaOblaCalcAut + " sommainteressiAnno: "
+		+ sommainteressiAnno);
+    }
+
+    private long getGiorniAnno(Integer annoStart) {
+	Date dateInizioAnno = Converter.convertData("01-01-" + annoStart);
+	GregorianCalendar gdtInizio = new GregorianCalendar();
+	gdtInizio.setTime(dateInizioAnno);
+	int ggAnno = gdtInizio.getActualMaximum(GregorianCalendar.DAY_OF_YEAR);
+	System.out.println("giorni anno = " + ggAnno);
+	return ggAnno;
+    }
+
+    private static Double applicaPercentuale(Double delta, long ggInteroAnno,
+	    long ggInteressiLegali, Double percinteressiAnno) {
+
+	Double importoAnnoIntero = delta * (percinteressiAnno / 100);
+	Double percAnnoFraz = (((new Double(ggInteressiLegali) * new Double(100)) / new Double(
 		ggInteroAnno)) / new Double(100));
-	if (percAnnoFraz.intValue() != 1) {
+	if (percAnnoFraz != 1) {
 	    return Converter.round((importoAnnoIntero * percAnnoFraz), 2);
 	}
 	return Converter.round(importoAnnoIntero, 2);
@@ -798,7 +835,7 @@ public class DatiVersamentiService {
 	}
 
 	// calcolo oneri 724/94
-	if (Constants.ID_LEGGE_724_.equals(praticaDB.getLeggeCondono())) {
+	if (Constants.ID_LEGGE_724_94.equals(praticaDB.getLeggeCondono())) {
 
 	    if (Constants.DEST_USO_RESIDENZIALE.equals(destinazioneUso)
 		    || !(Constants.DEST_USO_TURISTICO.equals(destinazioneUso)

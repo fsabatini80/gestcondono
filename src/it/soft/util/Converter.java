@@ -2,6 +2,7 @@ package it.soft.util;
 
 import it.soft.exception.CustomException;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -181,7 +182,15 @@ public class Converter {
 	    return Constants.DEST_USO_RESIDENZIALE;
 
 	}
-	
+
 	return destinazioneUso;
+    }
+
+    public static BigDecimal stringToBigDdecimal(String s) {
+	return new BigDecimal(s);
+    }
+
+    public static int stringToint(String s) {
+	return Integer.parseInt(s);
     }
 }

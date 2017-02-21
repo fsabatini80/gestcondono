@@ -13,36 +13,26 @@
 	<table id="example1" class="display">
 		<thead>
 			<tr>
-				<th>Numero Pratica</th>
-				<th>Numero Protocollo</th>
-				<th>Nominativo</th>
-				<th>Data domanda</th>
-				<th>Legge condono</th>
-				<th>mod.</th>
-				<th>vis. abusi</th>
-				<th>vis. vers.</th>
+				<th>Id Pratica</th>
+				<th>Id Abuso</th>
+				<th>Progressivo abuso</th>
+				<th>Nome file</th>
+				<th>Data inserimento</th>
+				<th>download file</th>
 			</tr>
 		</thead>
 		<tbody align="center">
-			<c:forEach var="pratica" items="${pratiche}">
+			<c:forEach var="stampa" items="${stampe}">
 				<tr>
-					<td>${pratica.numeroPratica}</td>
-					<td>${pratica.numeroProtocollo}</td>
-					<td>${pratica.richiedente.cognome} ${pratica.richiedente.nome}</td>
-					<td>${pratica.dataDomanda}</td>
-					<td>${pratica.leggeCondono.leggeNumero}</td>
-					<td><a id="x${pratica.iddatipratica}"
-						href="<c:url value="modificaPratica.htm?idpratica=${pratica.iddatipratica}" />"
-						title="modifica pratica"><img src="img/24/edit.png"
-							title="modifica pratica"></a></td>
-					<td><a id="y${pratica.iddatipratica}"
-						href="<c:url value="abusi.htm?idpratica=${pratica.iddatipratica}" />"
-						title="visualizza abusi"><img src="img/24/find.png"
-							title="visualizza abusi"></a></td>
-					<td><a id="z${pratica.iddatipratica}"
-						href="<c:url value="versamenti.htm?idpratica=${pratica.iddatipratica}" />"
-						title="visualizza versamenti"><img
-							src="img/24/symbol_euro.png" title="visualizza versamenti"></a></td>
+					<td>${stampa.idPratica}</td>
+					<td>${stampa.idAbuso}</td>
+					<td>${stampa.progressivoAbuso}</td>
+					<td>${stampa.nomeFileStampa}</td>
+					<td>${stampa.dataInserimento}</td>
+					<td><a id="x${stampa.idstampeSolleciti}"
+						href="<c:url value="download.htm?idfile=${stampa.idstampeSolleciti}" />"
+						title="donwload file"><img src="img/24/edit.png"
+							title="download file"></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

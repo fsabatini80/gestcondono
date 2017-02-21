@@ -163,7 +163,7 @@
 		<a href="#">Scadenze</a>
 		<a href="#">Solleciti</a>
 		<sec:authorize access="hasRole('superadmin')">
-			<a href="#">Stampe</a>
+			<a href="stampe.htm">Stampe</a>
 		</sec:authorize>
 		<a href="<c:url value="cruscotto.htm" />" title="cruscotto">Cruscotto</a>
 	</div>
