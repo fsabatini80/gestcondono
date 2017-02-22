@@ -183,16 +183,16 @@
 				<table>
 					<tr>
 						<td>Provincia :</td>
-						<td><form:input path="localizzazione.provincia" /> <form:hidden
+						<td><form:input path="localizzazione.provincia" value="RM"/><form:hidden
 								path="localizzazione.iddatiLocalizzazione" /></td>
 					</tr>
 					<tr>
 						<td>Comune :</td>
-						<td><form:input path="localizzazione.comune" /></td>
+						<td><form:input path="localizzazione.comune" value="PALOMBARA SABINA" /></td>
 					</tr>
 					<tr>
 						<td>Cap :
-						<td><form:input path="localizzazione.cap" /></td>
+						<td><form:input path="localizzazione.cap" value="00018" /></td>
 					</tr>
 					<tr>
 						<td>Indirizzo :</td>

@@ -1039,7 +1039,7 @@ public class WordService {
 		.getResourceAsStream("/WEB-INF/logoCondono.png");
 	try {
 	    paragraph.createRun().addPicture(is, Document.PICTURE_TYPE_PNG,
-		    "logoCondono.png", Units.toEMU(454), Units.toEMU(85));
+		    "logoCondono.png", Units.toEMU(318), Units.toEMU(63));
 	} catch (InvalidFormatException e) {
 	    e.printStackTrace();
 	} catch (FileNotFoundException e) {
