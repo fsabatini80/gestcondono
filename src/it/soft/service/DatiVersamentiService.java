@@ -158,6 +158,8 @@ public class DatiVersamentiService {
 		    leggeCondono, 7);
 	    for (TabCalcOblazione element : tabOblListDefault) {
 		calcOblazioneDefaul = element;
+		importoOblaDefault = Converter.convertLireEuro(new Double(
+			calcOblazioneDefaul.getImportoOblazione()));
 	    }
 	}
 
@@ -172,8 +174,6 @@ public class DatiVersamentiService {
 			.equals(leggeCondono))) {
 	    importoObla = Converter.convertLireEuro(new Double(calcOblazione
 		    .getImportoOblazione()));
-	    importoOblaDefault = Converter.convertLireEuro(new Double(
-		    calcOblazioneDefaul.getImportoOblazione()));
 	    // se la destinazione uso è diversa da RESIDENZIALE, gli importi in
 	    // tabella vanno divisi per 2
 	    if (Constants.ID_LEGGE_47_85.equals(leggeCondono)
@@ -1428,8 +1428,9 @@ public class DatiVersamentiService {
 		delta = autodeterminataOnere - oneriConcessVersato;
 	    }
 	    Double interessiMora = calcolaInteressiMoraOneri(abusoDB,
-		    praticaDB, autodeterminataOnere);
-
+		    praticaDB, autodeterminataOnere, oneriConcessCalcolato);
+	    System.out.println("interessi di mora per gli oneri: "
+		    + interessiMora);
 	    if (autodeterminataOnere <= oneriConcessCalcolato) {
 		if (oneriConcessVersato > 0) {
 		    List<DatiVersamento> vers = datiVersamentiHome.findAll(
@@ -1465,36 +1466,34 @@ public class DatiVersamentiService {
      */
 
     private Double calcolaInteressiMoraOneri(DatiAbusoPojo abusoDB,
-	    DatiPraticaPojo praticaDB, Double autodeterminataOnere) {
+	    DatiPraticaPojo praticaDB, Double autodeterminataOnere,
+	    double oneriCalcolati) {
 	Date dtOdierna = new Date();
 	Double interessiMora = new Double(0.0);
 	String dtOdiernastr = Converter.dateToString(dtOdierna);
+
 	Double dataOdierna = Converter.dateToDouble(dtOdiernastr, "dd-MM-yyyy");
 	List<DatiVersamento> vers = datiVersamentiHome.findAll(BigInteger
 		.valueOf(Integer.parseInt(praticaDB.getIddatipratica())),
 		Integer.valueOf(abusoDB.getProgressivo()),
 		Constants.ONERI_CAUSALE_SEL);
 	if (vers.isEmpty()) {
-	    Double dataInizioIM = Converter.dateToDouble(praticaDB
-		    .getDataDomanda());
-	    String dataInizioIMString = String.valueOf(dataInizioIM);
-	    String dataOdiernaString = String.valueOf(dataOdierna);
-
-	    dataInizioIMString = dataInizioIMString.replace(".", "");
-	    dataOdiernaString = dataOdiernaString.replace(".", "");
-
-	    Integer annoInizioIM = Integer.parseInt(dataInizioIMString
-		    .substring(0, 4));
-	    Integer annoOdierna = Integer.parseInt(dataOdiernaString.substring(
-		    0, 4));
-
-	    Integer totaleAnniIM = annoOdierna - annoInizioIM;
-	    interessiMora = (autodeterminataOnere * 0.10) * totaleAnniIM;
-
+	    interessiMora = calcolaMoraOneriSenzaVersamenti(praticaDB,
+		    autodeterminataOnere, dataOdierna);
 	} else {
 	    Double dataInizioIM;
 	    Double datafine = null;
 	    Double importoIntMora = autodeterminataOnere;
+	    List<String> causali = new ArrayList<String>();
+	    causali.add(Constants.ONERI_CAUSALE_SEL);
+	    double importoVersValidi = getVersamentiValidi(
+		    new Double(19951231), vers, causali);
+	    boolean flagSottrazioneEseguita = false;
+	    if (importoVersValidi < oneriCalcolati
+		    && oneriCalcolati < autodeterminataOnere) {
+		autodeterminataOnere = oneriCalcolati - importoVersValidi;
+		flagSottrazioneEseguita = true;
+	    }
 	    for (DatiVersamento datiVersamento : vers) {
 		if (vers.indexOf(datiVersamento) == 0) {
 		    dataInizioIM = Converter.dateToDouble(praticaDB
@@ -1502,67 +1501,75 @@ public class DatiVersamentiService {
 		    datafine = Converter.dateToDouble(datiVersamento
 			    .getDataVersamento());
 
-		    String dataInizioIMString = String.valueOf(dataInizioIM);
-		    String datafineString = String.valueOf(datafine);
-
-		    dataInizioIMString = dataInizioIMString.replace(".", "");
-		    datafineString = datafineString.replace(".", "");
-
-		    Integer annoInizioIM = Integer.parseInt(dataInizioIMString
-			    .substring(0, 4));
-		    Integer annoFine = Integer.parseInt(datafineString
-			    .substring(0, 4));
+		    Integer annoInizioIM = getAnnoFromDataDouble(dataInizioIM);
+		    Integer annoFine = getAnnoFromDataDouble(datafine);
 		    Integer totaleAnniIM = annoFine - annoInizioIM;
 
 		    interessiMora = (autodeterminataOnere * 0.10)
 			    * totaleAnniIM;
-
-		    importoIntMora = autodeterminataOnere
-			    - datiVersamento.getImportoEuro();
+		    // versamento contestuale alla data domanda se totaleAnniIM
+		    // = 0
+		    if (totaleAnniIM > 0) {
+			importoIntMora = autodeterminataOnere
+				- datiVersamento.getImportoEuro();
+		    } else {
+			importoIntMora = autodeterminataOnere;
+			if (!flagSottrazioneEseguita)
+			    importoIntMora = autodeterminataOnere
+				    - importoVersValidi;
+		    }
 		} else {
 
 		    dataInizioIM = datafine.doubleValue();
 		    datafine = Converter.dateToDouble(datiVersamento
 			    .getDataVersamento());
-
-		    String dataInizioIMString = String.valueOf(dataInizioIM);
-		    String datafineString = String.valueOf(datafine);
-
-		    dataInizioIMString = dataInizioIMString.replace(".", "");
-		    datafineString = datafineString.replace(".", "");
-
-		    Integer annoInizioIM = Integer.parseInt(dataInizioIMString
-			    .substring(0, 4));
-		    Integer annoFine = Integer.parseInt(datafineString
-			    .substring(0, 4));
+		    Integer annoInizioIM = getAnnoFromDataDouble(datafine
+			    .doubleValue());
+		    Integer annoFine = getAnnoFromDataDouble(datafine);
 		    Integer totaleAnniIM = annoFine - annoInizioIM;
-
 		    interessiMora = interessiMora
 			    + ((importoIntMora * 0.10) * totaleAnniIM);
-
 		    importoIntMora = autodeterminataOnere
 			    - datiVersamento.getImportoEuro();
 		}
 	    }
 
-	    dataInizioIM = datafine.doubleValue();
-	    datafine = dataOdierna;
-
-	    String dataInizioIMString = String.valueOf(dataInizioIM);
-	    String datafineString = String.valueOf(datafine);
-
-	    dataInizioIMString = dataInizioIMString.replace(".", "");
-	    datafineString = datafineString.replace(".", "");
-
-	    Integer annoInizioIM = Integer.parseInt(dataInizioIMString
-		    .substring(0, 4));
-	    Integer annoFine = Integer.parseInt(datafineString.substring(0, 4));
+	    Integer annoInizioIM = getAnnoFromDataDouble(datafine.doubleValue());
+	    Integer annoFine = getAnnoFromDataDouble(dataOdierna);
 	    Integer totaleAnniIM = annoFine - annoInizioIM;
-
 	    interessiMora = interessiMora
 		    + ((importoIntMora * 0.10) * totaleAnniIM);
 	}
 
+	return interessiMora;
+    }
+
+    private Integer getAnnoFromDataDouble(Double dataInizioIM) {
+	String dataInizioIMString = String.valueOf(dataInizioIM);
+	dataInizioIMString = dataInizioIMString.replace(".", "");
+	Integer annoInizioIM = Integer.parseInt(dataInizioIMString.substring(0,
+		4));
+	return annoInizioIM;
+    }
+
+    private Double calcolaMoraOneriSenzaVersamenti(DatiPraticaPojo praticaDB,
+	    Double autodeterminataOnere, Double dataOdierna) {
+	Double interessiMora;
+	Double dataInizioIM = Converter
+		.dateToDouble(praticaDB.getDataDomanda());
+	String dataInizioIMString = String.valueOf(dataInizioIM);
+	String dataOdiernaString = String.valueOf(dataOdierna);
+
+	dataInizioIMString = dataInizioIMString.replace(".", "");
+	dataOdiernaString = dataOdiernaString.replace(".", "");
+
+	Integer annoInizioIM = Integer.parseInt(dataInizioIMString.substring(0,
+		4));
+	Integer annoOdierna = Integer.parseInt(dataOdiernaString
+		.substring(0, 4));
+
+	Integer totaleAnniIM = annoOdierna - annoInizioIM;
+	interessiMora = (autodeterminataOnere * 0.10) * totaleAnniIM;
 	return interessiMora;
     }
 
