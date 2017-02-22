@@ -265,8 +265,6 @@ public class WordService {
 	document.createParagraph().createRun().addBreak(BreakType.PAGE);
 	addTextBoldBreakCenter(document.createParagraph().createRun(),
 		"2) ATTESTAZIONI DI VERSAMENTO");
-	// FIXME AMPLIARE ALTEZZA DELLE CELLE, METTERE 2 CIFRE DECIMALI
-	// OBLAZIONE
 	XWPFTable table = document.createTable(1, 3);
 	addTableCellCenter(table.getRow(0).getCell(0), "OBLAZIONE ", true,
 		ParagraphAlignment.LEFT);

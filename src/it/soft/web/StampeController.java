@@ -1,6 +1,5 @@
 package it.soft.web;
 
-import it.soft.domain.Datipratica;
 import it.soft.domain.StampeSolleciti;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
@@ -48,6 +47,11 @@ public class StampeController extends BaseController {
 	    @RequestParam(value = "idabuso") String idabuso,
 	    @RequestParam(value = "progressivo") String progressivo,
 	    HttpServletResponse response) {
+	DatiPraticaPojo praticaDB = datiPraticaService.findById(idpratica);
+	String docTitle = "Lett_Not_Prot_" + praticaDB.getNumeroProtocollo()
+		+ "_Int_" + idpratica + "_Sot_" + progressivo + ".docx";
+	response.setHeader("Content-disposition", "attachment; filename="
+		+ docTitle);
 	response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 	try {
 	    XWPFDocument document = new XWPFDocument();
@@ -57,6 +61,7 @@ public class StampeController extends BaseController {
 	    document.write(out);
 	    out.flush();
 	    out.close();
+
 	    saveToDB(idpratica, idabuso, progressivo, document);
 	} catch (Exception e) {
 	    e.printStackTrace();
