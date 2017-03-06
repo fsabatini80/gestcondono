@@ -117,14 +117,14 @@ public class WordService {
 		.valueOf(abusoDB.getTipologiaAbuso()));
 	List<Datiabuso> abusi = abusoService.findAll(idpratica);
 	boolean applicaDefault = false;
-	if(abusi.size() == 1){
+	if (abusi.size() == 1) {
 	    applicaDefault = true;
 	}
-	Double importoCalcolato = datiVersamentiService
-		.getOblazioneCalcolata(applicaDefault,tipologiaAbuso,
-			Converter.dateToDouble(epocaAbuso.getEpocaDa()),
-			praticaDB.getLeggeCondono(), idabuso,
-			abusoDB.getDestinazioneUso());
+	Double importoCalcolato = datiVersamentiService.getOblazioneCalcolata(
+		applicaDefault, tipologiaAbuso,
+		Converter.dateToDouble(epocaAbuso.getEpocaDa()),
+		praticaDB.getLeggeCondono(), idabuso,
+		abusoDB.getDestinazioneUso());
 	importoCalcolato = Converter.round(importoCalcolato, 2);
 
 	Double oblazioneDovuta = datiVersamentiService.getOblazioneDovuta(
@@ -144,7 +144,7 @@ public class WordService {
 		tipologiaAbuso, abusoDB, praticaDB, idabuso,
 		abusoDB.getDestinazioneUso());
 	Double oneriConcessSaldo = oneriConcessCalcolato - oneriConcessVersato;
-	if (Constants.ID_LEGGE_724_94.equals(praticaDB.getLeggeCondono())){
+	if (Constants.ID_LEGGE_724_94.equals(praticaDB.getLeggeCondono())) {
 	    oneriConcessSaldo = datiVersamentiService
 		    .getOneriConcessSaldoLegge2(oneriConcessVersato,
 			    oneriConcessCalcolato, abusoDB, praticaDB);
@@ -997,10 +997,23 @@ public class WordService {
 	oggetto += " N° interno " + praticaDB.getNumeroPratica();
 	oggetto += " richiesta da " + praticaDB.getCognome() + " "
 		+ praticaDB.getNome();
-	oggetto += " residente in " + praticaDB.getIndirizzo();
+	oggetto += " residente in "
+		+ concat(praticaDB.getComuneResidenza(), false) + " "
+		+ concat(praticaDB.getIndirizzo(), false) + " "
+		+ concat(praticaDB.getCap(), true) + ".";
 
 	XWPFRun run = paragraphggetto.createRun();
 	addTextSimple(run, oggetto);
+    }
+
+    private String concat(String string, boolean last) {
+	if (string != null && string.length() > 0) {
+	    if (!last)
+		return string + ",";
+	    else
+		return string;
+	}
+	return "";
     }
 
     private void createListaSoggetti(XWPFParagraph paragraph,

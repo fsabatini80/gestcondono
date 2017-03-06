@@ -49,7 +49,7 @@ public class StampeController extends BaseController {
 	    HttpServletResponse response) {
 	DatiPraticaPojo praticaDB = datiPraticaService.findById(idpratica);
 	String docTitle = "Lett_Not_Prot_" + praticaDB.getNumeroProtocollo()
-		+ "_Int_" + idpratica + "_Sot_" + progressivo + ".docx";
+		+ "_Int_" + praticaDB.getNumeroPratica() + "_Sot_" + progressivo + ".docx";
 	response.setHeader("Content-disposition", "attachment; filename="
 		+ docTitle);
 	response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
