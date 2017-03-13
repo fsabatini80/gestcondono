@@ -33,6 +33,7 @@
 					<form:option value="" label="--seleziona conto--"></form:option>
 					<form:option value="1" label="1020723423"></form:option>
 					<form:option value="4" label="255000"></form:option>
+					<form:option value="5" label="785014"></form:option>
 				</form:select></td>
 			<td><form:errors path="ccPostale" cssClass="ui-state-error" /></td>
 		</tr>
@@ -60,6 +61,7 @@
 					<form:option value="2" label="Oneri"></form:option>
 					<form:option value="3" label="Diritti Segreteria"></form:option>
 					<form:option value="4" label="Oblazione Ministero"></form:option>
+					<form:option value="5" label="Oblazione Regione"></form:option>
 				</form:select></td>
 			<td><form:errors path="causale" cssClass="ui-state-error" /></td>
 		</tr>

@@ -2,15 +2,16 @@ package it.soft.web.validator;
 
 import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.EpocaAbusoHome;
-import it.soft.dao.LeggiCondonoHome;
 import it.soft.domain.Datipratica;
 import it.soft.domain.EpocaAbuso;
 import it.soft.util.Converter;
 import it.soft.web.pojo.DatiAbusoPojo;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -26,8 +27,9 @@ public class DatiAbusoValidator implements Validator {
     DatiPraticaHome datiPraticaHome;
     @Autowired
     EpocaAbusoHome epocaAbusoHome;
-    @Autowired
-    LeggiCondonoHome leggiCondonoHome;
+
+    // @Autowired
+    // LeggiCondonoHome leggiCondonoHome;
 
     public boolean supports(Class<?> arg0) {
 	return DatiAbusoPojo.class.equals(arg0);

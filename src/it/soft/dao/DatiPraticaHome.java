@@ -143,7 +143,7 @@ public class DatiPraticaHome {
 				cr.add(Restrictions.eq("numeroProtocollo", numeroProtocollo));
 			if (!StringUtils.isEmptyOrWhitespaceOnly(dataDomanda))
 				cr.add(Restrictions.eq("dataDomanda", dataDomanda));
-			if (leggeCondono != null && !"".equals(leggeCondono))
+			if (leggeCondono != null)
 				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
 
 			List<Datipratica> results = cr.list();
@@ -207,7 +207,7 @@ public class DatiPraticaHome {
 					.getCurrentSession();
 			sess.beginTransaction();
 			Criteria cr = sess.createCriteria(Datipratica.class);
-			if (leggeCondono != null && !"".equals(leggeCondono))
+			if (leggeCondono != null)
 				cr.add(Restrictions.eq("leggeCondono", leggeCondono));
 
 			List<Datipratica> results = cr.list();

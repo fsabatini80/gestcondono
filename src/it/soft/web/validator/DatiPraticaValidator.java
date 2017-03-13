@@ -1,7 +1,6 @@
 package it.soft.web.validator;
 
 import it.soft.dao.DatiPraticaHome;
-import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
 import it.soft.domain.Datipratica;
 import it.soft.domain.LeggiCondono;
@@ -19,8 +18,8 @@ import org.springframework.validation.Validator;
 @Component
 public class DatiPraticaValidator implements Validator {
 
-	@Autowired
-	EpocaAbusoHome epocaAbusoHome;
+    // @Autowired
+    // EpocaAbusoHome epocaAbusoHome;
 	@Autowired
 	LeggiCondonoHome leggiCondonoHome;
 	@Autowired

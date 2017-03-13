@@ -50,6 +50,16 @@ public class DatiVersamentiValidator implements Validator {
 	    arg1.rejectValue("causale", "cc.error.causale");
 	    arg1.rejectValue("ccPostale", "cc.error.causale");
 	}
+	if (!StringUtils.isEmptyOrWhitespaceOnly(pojo.getCausale())
+		&& !StringUtils.isEmptyOrWhitespaceOnly(pojo.getCcPostale())
+		&& ((Constants.OBLAZIONE_REGIONE_CAUSALE_SEL.equals(pojo
+			.getCausale()) && !Constants.OBLAZIONE_REGIONE_CAUSALE_SEL
+			.equals(pojo.getCcPostale())) || (!Constants.OBLAZIONE_REGIONE_CAUSALE_SEL
+			.equals(pojo.getCausale()) && Constants.OBLAZIONE_REGIONE_CAUSALE_SEL
+			.equals(pojo.getCcPostale())))) {
+	    arg1.rejectValue("causale", "cc.error.causale");
+	    arg1.rejectValue("ccPostale", "cc.error.causale");
+	}
 
 	/*
 	 * lanciare allert nel caso in cui ci sono dei versamenti con stessa

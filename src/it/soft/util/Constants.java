@@ -6,6 +6,7 @@ public class Constants {
     public static final String ONERI_CAUSALE_SEL = "2";
     public static final String DIRITTI_SEGRETERIA_CAUSALE_SEL = "3";
     public static final String OBLAZIONE_MINISTERO_CAUSALE_SEL = "4";
+    public static final String OBLAZIONE_REGIONE_CAUSALE_SEL = "5";
 
     public static final String PERIODO_1_47_85 = "1";
     public static final String PERIODO_2_47_85 = "2";
@@ -16,7 +17,7 @@ public class Constants {
 
     public static final String ID_LEGGE_47_85 = "1";
     public static final String ID_LEGGE_724_94 = "2";
-    public static final String ID_LEGGE_326_ = "3";
+    public static final String ID_LEGGE_326_03 = "3";
 
     public static final Double DATA_ZERO_VERSAMENTI = new Double(19960401);
 

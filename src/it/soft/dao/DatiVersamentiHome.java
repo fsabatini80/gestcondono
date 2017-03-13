@@ -216,6 +216,27 @@ public class DatiVersamentiHome {
 	    throw re;
 	}
     }
+    
+    @SuppressWarnings("unchecked")
+    public List<TabCalcOblazione> findOblazione(String destinazioneUso,
+	    String leggeCondono, Integer tipoAbuso) {
+	try {
+	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+		    .getCurrentSession();
+	    sess.beginTransaction();
+	    Criteria cr = sess.createCriteria(TabCalcOblazione.class);
+	    cr.add(Restrictions.eq("destinazioneUso",
+		    Integer.valueOf(destinazioneUso)));
+	    cr.add(Restrictions.eq("leggeCondono",
+		    Integer.valueOf(leggeCondono)));
+	    cr.add(Restrictions.eq("tipoabuso", tipoAbuso));
+	    List<TabCalcOblazione> results = cr.list();
+	    return results;
+	} catch (RuntimeException re) {
+	    log.error("findOblazione failed", re);
+	    throw re;
+	}
+    }
 
     @SuppressWarnings("unchecked")
     public TipoEsenzioni findEsenzioneById(Integer idtipoEsenzioni) {

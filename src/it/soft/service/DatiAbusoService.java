@@ -95,8 +95,6 @@ public class DatiAbusoService {
 	    datiabuso.setDatiPratica(datiPraticaHome.findById(BigDecimal
 		    .valueOf(Integer.valueOf(pojo.getIdPratica()))));
 	if (pojo.getLocalizzazione() != null
-		&& !"".equals(pojo.getLocalizzazione()
-			.getIddatiLocalizzazione())
 		&& pojo.getLocalizzazione().getIddatiLocalizzazione() != null) {
 	    DatiLocalizzazione loc = pojo.getLocalizzazione();
 	    loc.setDatiabuso(datiabuso);
@@ -131,6 +129,9 @@ public class DatiAbusoService {
 	if (pojo.getAutodeterminataOneri() != null)
 	    datiabuso.setAutodeterminataOneri(BigDecimal.valueOf(pojo
 		    .getAutodeterminataOneri()));
+	if (pojo.getAutodeterminataRegione() != null)
+	    datiabuso.setAutodeterminataRegione(BigDecimal.valueOf(pojo
+		    .getAutodeterminataRegione()));
 	datiAbusoHome.persist(datiabuso);
 
     }
@@ -179,11 +180,13 @@ public class DatiAbusoService {
 	target.setVolumeUtile(source.getVolumeUtile());
 	target.setVolumeTotale(source.getVolumeTotale());
 	if (source.getAutodeterminata() != null)
-	    target.setAutodeterminata(new Double(source.getAutodeterminata()
-		    .doubleValue()));
+	    target.setAutodeterminata(source.getAutodeterminata().doubleValue());
 	if (source.getAutodeterminataOneri() != null)
-	    target.setAutodeterminataOneri(new Double(source
-		    .getAutodeterminataOneri().doubleValue()));
+	    target.setAutodeterminataOneri(source.getAutodeterminataOneri()
+		    .doubleValue());
+	if (source.getAutodeterminataRegione() != null)
+	    target.setAutodeterminataRegione(source.getAutodeterminataRegione()
+		    .doubleValue());
 	return target;
     }
 

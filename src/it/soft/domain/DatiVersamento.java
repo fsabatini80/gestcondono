@@ -17,219 +17,219 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "dati_versamento")
 public class DatiVersamento implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "iddati_versamento", unique = true, nullable = false)
-	private BigInteger iddatiVersamento;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "iddati_versamento", unique = true, nullable = false)
+    private BigInteger iddatiVersamento;
 
-	@Column(length = 120)
-	private String causale;
+    @Column(length = 120)
+    private String causale;
 
-	@Column(length = 45)
-	private String ccPostale;
+    @Column(length = 45)
+    private String ccPostale;
 
-	@Column(length = 45)
-	private String codiceVersamento;
+    @Column(length = 45)
+    private String codiceVersamento;
 
-	@Column(length = 45)
-	private String cognome;
+    @Column(length = 45)
+    private String cognome;
 
-	@Column(length = 10)
-	private String dataInserimento;
+    @Column(length = 10)
+    private String dataInserimento;
 
-	@Column(length = 10)
-	private String dataProtocollo;
+    @Column(length = 10)
+    private String dataProtocollo;
 
-	@Column(length = 10)
-	private String dataVersamento;
+    @Column(length = 10)
+    private String dataVersamento;
 
-	@Column(length = 45)
-	private String iban;
+    @Column(length = 45)
+    private String iban;
 
-	private BigInteger iddatipratica;
+    private BigInteger iddatipratica;
 
-	@Column(length = 45)
-	private Double importo;
+    @Column(length = 45)
+    private Double importo;
 
-	@Column(length = 45)
-	private Double importoEuro;
+    @Column(length = 45)
+    private Double importoEuro;
 
-	@Column(length = 45)
-	private Double importoLire;
+    @Column(length = 45)
+    private Double importoLire;
 
-	@Column(length = 45)
-	private String nome;
+    @Column(length = 45)
+    private String nome;
 
-	@Column(length = 45)
-	private String numeroBollettino;
+    @Column(length = 45)
+    private String numeroBollettino;
 
-	@Column(length = 45)
-	private String numeroProtocollo;
+    @Column(length = 45)
+    private String numeroProtocollo;
 
-	@Column(length = 45)
-	private String ragioneSociale;
+    @Column(length = 45)
+    private String ragioneSociale;
 
-	@Column(length = 45)
-	private String ufficioPostale;
-	
-	@Column(name="progressivo_abuso")
-	private Integer progressivo_abuso;
+    @Column(length = 45)
+    private String ufficioPostale;
 
-	public DatiVersamento() {
-	}
+    @Column(name = "progressivo_abuso")
+    private Integer progressivo_abuso;
 
-	public BigInteger getIddatiVersamento() {
-		return this.iddatiVersamento;
-	}
+    public DatiVersamento() {
+    }
 
-	public void setIddatiVersamento(BigInteger iddatiVersamento) {
-		this.iddatiVersamento = iddatiVersamento;
-	}
+    public BigInteger getIddatiVersamento() {
+	return this.iddatiVersamento;
+    }
 
-	public String getCausale() {
-		return this.causale;
-	}
+    public void setIddatiVersamento(BigInteger iddatiVersamento) {
+	this.iddatiVersamento = iddatiVersamento;
+    }
 
-	public void setCausale(String causale) {
-		this.causale = causale;
-	}
+    public String getCausale() {
+	return this.causale;
+    }
 
-	public String getCcPostale() {
-		return this.ccPostale;
-	}
+    public void setCausale(String causale) {
+	this.causale = causale;
+    }
 
-	public void setCcPostale(String ccPostale) {
-		this.ccPostale = ccPostale;
-	}
+    public String getCcPostale() {
+	return this.ccPostale;
+    }
 
-	public String getCodiceVersamento() {
-		return this.codiceVersamento;
-	}
+    public void setCcPostale(String ccPostale) {
+	this.ccPostale = ccPostale;
+    }
 
-	public void setCodiceVersamento(String codiceVersamento) {
-		this.codiceVersamento = codiceVersamento;
-	}
+    public String getCodiceVersamento() {
+	return this.codiceVersamento;
+    }
 
-	public String getCognome() {
-		return this.cognome;
-	}
+    public void setCodiceVersamento(String codiceVersamento) {
+	this.codiceVersamento = codiceVersamento;
+    }
 
-	public void setCognome(String cognome) {
-		this.cognome = cognome;
-	}
+    public String getCognome() {
+	return this.cognome;
+    }
 
-	public String getDataInserimento() {
-		return this.dataInserimento;
-	}
+    public void setCognome(String cognome) {
+	this.cognome = cognome;
+    }
 
-	public void setDataInserimento(String dataInserimento) {
-		this.dataInserimento = dataInserimento;
-	}
+    public String getDataInserimento() {
+	return this.dataInserimento;
+    }
 
-	public String getDataProtocollo() {
-		return this.dataProtocollo;
-	}
+    public void setDataInserimento(String dataInserimento) {
+	this.dataInserimento = dataInserimento;
+    }
 
-	public void setDataProtocollo(String dataProtocollo) {
-		this.dataProtocollo = dataProtocollo;
-	}
+    public String getDataProtocollo() {
+	return this.dataProtocollo;
+    }
 
-	public String getDataVersamento() {
-		return this.dataVersamento;
-	}
+    public void setDataProtocollo(String dataProtocollo) {
+	this.dataProtocollo = dataProtocollo;
+    }
 
-	public void setDataVersamento(String dataVersamento) {
-		this.dataVersamento = dataVersamento;
-	}
+    public String getDataVersamento() {
+	return this.dataVersamento;
+    }
 
-	public String getIban() {
-		return this.iban;
-	}
+    public void setDataVersamento(String dataVersamento) {
+	this.dataVersamento = dataVersamento;
+    }
 
-	public void setIban(String iban) {
-		this.iban = iban;
-	}
+    public String getIban() {
+	return this.iban;
+    }
 
-	public BigInteger getIddatipratica() {
-		return this.iddatipratica;
-	}
+    public void setIban(String iban) {
+	this.iban = iban;
+    }
 
-	public void setIddatipratica(BigInteger iddatipratica) {
-		this.iddatipratica = iddatipratica;
-	}
+    public BigInteger getIddatipratica() {
+	return this.iddatipratica;
+    }
 
-	public Double getImporto() {
-		return this.importo;
-	}
+    public void setIddatipratica(BigInteger iddatipratica) {
+	this.iddatipratica = iddatipratica;
+    }
 
-	public void setImporto(Double importo) {
-		this.importo = importo;
-	}
+    public Double getImporto() {
+	return this.importo;
+    }
 
-	public Double getImportoEuro() {
-		return this.importoEuro;
-	}
+    public void setImporto(Double importo) {
+	this.importo = importo;
+    }
 
-	public void setImportoEuro(Double importoEuro) {
-		this.importoEuro = importoEuro;
-	}
+    public Double getImportoEuro() {
+	return this.importoEuro;
+    }
 
-	public Double getImportoLire() {
-		return this.importoLire;
-	}
+    public void setImportoEuro(Double importoEuro) {
+	this.importoEuro = importoEuro;
+    }
 
-	public void setImportoLire(Double importoLire) {
-		this.importoLire = importoLire;
-	}
+    public Double getImportoLire() {
+	return this.importoLire;
+    }
 
-	public String getNome() {
-		return this.nome;
-	}
+    public void setImportoLire(Double importoLire) {
+	this.importoLire = importoLire;
+    }
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    public String getNome() {
+	return this.nome;
+    }
 
-	public String getNumeroBollettino() {
-		return this.numeroBollettino;
-	}
+    public void setNome(String nome) {
+	this.nome = nome;
+    }
 
-	public void setNumeroBollettino(String numeroBollettino) {
-		this.numeroBollettino = numeroBollettino;
-	}
+    public String getNumeroBollettino() {
+	return this.numeroBollettino;
+    }
 
-	public String getNumeroProtocollo() {
-		return this.numeroProtocollo;
-	}
+    public void setNumeroBollettino(String numeroBollettino) {
+	this.numeroBollettino = numeroBollettino;
+    }
 
-	public void setNumeroProtocollo(String numeroProtocollo) {
-		this.numeroProtocollo = numeroProtocollo;
-	}
+    public String getNumeroProtocollo() {
+	return this.numeroProtocollo;
+    }
 
-	public String getRagioneSociale() {
-		return this.ragioneSociale;
-	}
+    public void setNumeroProtocollo(String numeroProtocollo) {
+	this.numeroProtocollo = numeroProtocollo;
+    }
 
-	public void setRagioneSociale(String ragioneSociale) {
-		this.ragioneSociale = ragioneSociale;
-	}
+    public String getRagioneSociale() {
+	return this.ragioneSociale;
+    }
 
-	public String getUfficioPostale() {
-		return this.ufficioPostale;
-	}
+    public void setRagioneSociale(String ragioneSociale) {
+	this.ragioneSociale = ragioneSociale;
+    }
 
-	public void setUfficioPostale(String ufficioPostale) {
-		this.ufficioPostale = ufficioPostale;
-	}
+    public String getUfficioPostale() {
+	return this.ufficioPostale;
+    }
 
-	public Integer getProgressivo_abuso() {
-		return progressivo_abuso;
-	}
+    public void setUfficioPostale(String ufficioPostale) {
+	this.ufficioPostale = ufficioPostale;
+    }
 
-	public void setProgressivo_abuso(Integer progressivo_abuso) {
-		this.progressivo_abuso = progressivo_abuso;
-	}
+    public Integer getProgressivo_abuso() {
+	return progressivo_abuso;
+    }
+
+    public void setProgressivo_abuso(Integer progressivo_abuso) {
+	this.progressivo_abuso = progressivo_abuso;
+    }
 
 }

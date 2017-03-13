@@ -1,32 +1,12 @@
 package it.soft.web;
 
-import it.soft.dao.CaratteristicheHome;
-import it.soft.dao.ComuniHome;
-import it.soft.dao.DatiPraticaHome;
-import it.soft.dao.DestinazioneUsoHome;
-import it.soft.dao.EpocaAbusoHome;
 import it.soft.dao.LeggiCondonoHome;
-import it.soft.dao.SoggettiAbusoHome;
-import it.soft.dao.TipoAlloggioHome;
-import it.soft.dao.TipoOperaHome;
-import it.soft.dao.TipologiaAbusoHome;
-import it.soft.dao.UtentiHome;
-import it.soft.domain.CaratteristicheSpeciali;
 import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
-import it.soft.domain.EpocaAbuso;
-import it.soft.domain.SoggettiAbuso;
-import it.soft.domain.TipoOpera;
-import it.soft.domain.TipologiaAbuso;
-import it.soft.domain.TipologiaAlloggio;
-import it.soft.domain.TipologiaDestinazioneUso;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
 import it.soft.util.Constants;
-import it.soft.web.pojo.DatiAbusoPojo;
 import it.soft.web.pojo.DatiPraticaPojo;
-import it.soft.web.validator.DatiAbusoValidator;
-import it.soft.web.validator.DatiPraticaValidator;
 
 import java.util.List;
 
@@ -41,51 +21,52 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class CruscottoController extends BaseController {
 
-    @Autowired
-    DatiPraticaHome datiPraticaHome;
+//    @Autowired
+//    DatiPraticaHome datiPraticaHome;
     @Autowired
     LeggiCondonoHome leggiCondonoHome;
-    @Autowired
-    DestinazioneUsoHome destinazioneUsoHome;
-    @Autowired
-    EpocaAbusoHome epocaAbusoHome;
-    @Autowired
-    TipoOperaHome tipoOperaHome;
-    @Autowired
-    TipologiaAbusoHome tipologiaAbusoHome;
-    @Autowired
-    UtentiHome utentiHome;
-    @Autowired
-    ComuniHome comuniHome;
-    @Autowired
-    TipoAlloggioHome tipoAlloggioHome;
-    @Autowired
-    CaratteristicheHome caratteristicheHome;
-    @Autowired
-    SoggettiAbusoHome soggettiAbusoHome;
+//    @Autowired
+//    DestinazioneUsoHome destinazioneUsoHome;
+//    @Autowired
+//    EpocaAbusoHome epocaAbusoHome;
+//    @Autowired
+//    TipoOperaHome tipoOperaHome;
+//    @Autowired
+//    TipologiaAbusoHome tipologiaAbusoHome;
+    // @Autowired
+    // UtentiHome utentiHome;
+    // @Autowired
+    // ComuniHome comuniHome;
+    // @Autowired
+    // TipoAlloggioHome tipoAlloggioHome;
+    // @Autowired
+    // CaratteristicheHome caratteristicheHome;
+//    @Autowired
+//    SoggettiAbusoHome soggettiAbusoHome;
 
-    @Autowired
-    DatiPraticaValidator validatorPratica;
-    @Autowired
-    DatiAbusoValidator datiAbusoValidator;
+//    @Autowired
+//    DatiPraticaValidator validatorPratica;
+//    @Autowired
+//    DatiAbusoValidator datiAbusoValidator;
 
     @Autowired
     DatiPraticaService datiPraticaService;
     @Autowired
     DatiAbusoService datiAbusoService;
 
-    DatiPraticaPojo praticaPojo;
-    DatiAbusoPojo abusoPojo;
-    String idDatiAlloggio;
-    List<String> comuni;
-    List<String> province;
-    List<TipologiaDestinazioneUso> tipologiaDestinazioneUsos;
-    List<EpocaAbuso> epocaAbusos;
-    List<TipoOpera> tipoOperas;
-    List<TipologiaAbuso> tipologiaAbusos;
-    List<TipologiaAlloggio> tipologiaAlloggios;
-    List<CaratteristicheSpeciali> caratteristicheSpecialis;
-    List<SoggettiAbuso> soggettiAbusos;
+    //    DatiPraticaPojo praticaPojo;
+
+    // DatiAbusoPojo abusoPojo;
+    // String idDatiAlloggio;
+    // List<String> comuni;
+    // List<String> province;
+    // List<TipologiaDestinazioneUso> tipologiaDestinazioneUsos;
+    // List<EpocaAbuso> epocaAbusos;
+    // List<TipoOpera> tipoOperas;
+    // List<TipologiaAbuso> tipologiaAbusos;
+    // List<TipologiaAlloggio> tipologiaAlloggios;
+    // List<CaratteristicheSpeciali> caratteristicheSpecialis;
+    // List<SoggettiAbuso> soggettiAbusos;
 
     @RequestMapping(value = "/cruscotto", method = RequestMethod.GET)
     public ModelAndView cruscottoHome(ModelMap model, DatiPraticaPojo pojo,
@@ -100,7 +81,7 @@ public class CruscottoController extends BaseController {
 		.findBy(leggiCondonoHome.findById(Integer
 			.valueOf(Constants.ID_LEGGE_724_94)));
 	List<Datipratica> list326_ = datiPraticaService.findBy(leggiCondonoHome
-		.findById(Integer.valueOf(Constants.ID_LEGGE_326_)));
+		.findById(Integer.valueOf(Constants.ID_LEGGE_326_03)));
 
 	List<Datiabuso> abusi = datiAbusoService.findAll();
 

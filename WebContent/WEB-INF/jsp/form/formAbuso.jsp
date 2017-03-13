@@ -63,6 +63,12 @@
 								cssClass="ui-state-error" /></td>
 					</tr>
 					<tr>
+						<td>Autodetermina Oblazione Regionale:</td>
+						<td><form:input path="autodeterminataRegione" /></td>
+						<td><form:errors path="autodeterminataRegione"
+								cssClass="ui-state-error" /></td>
+					</tr>
+					<tr>
 						<td>Autodetermina Oneri:</td>
 						<td><form:input path="autodeterminataOneri" /></td>
 						<td><form:errors path="autodeterminataOneri"
@@ -183,12 +189,13 @@
 				<table>
 					<tr>
 						<td>Provincia :</td>
-						<td><form:input path="localizzazione.provincia" value="RM"/><form:hidden
-								path="localizzazione.iddatiLocalizzazione" /></td>
+						<td><form:input path="localizzazione.provincia" value="RM" />
+							<form:hidden path="localizzazione.iddatiLocalizzazione" /></td>
 					</tr>
 					<tr>
 						<td>Comune :</td>
-						<td><form:input path="localizzazione.comune" value="PALOMBARA SABINA" /></td>
+						<td><form:input path="localizzazione.comune"
+								value="PALOMBARA SABINA" /></td>
 					</tr>
 					<tr>
 						<td>Cap :

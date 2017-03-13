@@ -20,7 +20,7 @@
 		<thead>
 			<tr>
 				<th>Sott.</th>
-				<th>Cod. Versamento</th>
+				<th>Causale Versamento</th>
 				<th>Numero Bollettino</th>
 				<th>Numero Protocollo</th>
 				<th>Data Versamento</th>
@@ -33,7 +33,11 @@
 			<c:forEach var="versamento" items="${versamenti}">
 				<tr>
 					<td>${versamento.progressivo_abuso}</td>
-					<td>${versamento.codiceVersamento}</td>
+					<td><c:if test="${versamento.causale==1}">Oblazione Comune</c:if>
+					<c:if test="${versamento.causale==2}">Oneri</c:if>
+					<c:if test="${versamento.causale==3}">Diritti Segreteria</c:if>
+					<c:if test="${versamento.causale==4}">Oblazione Ministero</c:if>
+					<c:if test="${versamento.causale==5}">Oblazione Regione</c:if></td>
 					<td>${versamento.numeroBollettino}</td>
 					<td>${versamento.numeroProtocollo}</td>
 					<td>${versamento.dataVersamento}</td>
