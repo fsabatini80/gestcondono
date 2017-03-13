@@ -4,7 +4,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+<html>
 <jsp:include page="../tpl/header.jsp" />
+<script type="text/javascript">
+	$(document).ready(function() {
+		var listx = document.querySelectorAll('*[id^="x"]');
+		var listy = document.querySelectorAll('*[id^="y"]');
+		for (i = 0; i < listx.length; i++) {
+			listx[i].removeAttribute("class");
+			listy[i].removeAttribute("class");
+		}
+
+	});
+</script>
 <h2
 	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
 	Documenti</h2>
@@ -39,6 +51,7 @@
 				<th>Presente?</th>
 				<th>Valido?</th>
 				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody align="center">
@@ -62,9 +75,10 @@
 						</c:if> <c:if test="${!doc.valido}">
 							<img src="img/24/document_forbidden.png">
 						</c:if></td>
-					<td><a
+					<td><a id="x${doc.iddocumentiAbuso}"
 						href="<c:url value="modificaDocumento.htm?iddocumento=${doc.iddocumentiAbuso}" />"><img
-							src="img/24/edit.png"></a> <a
+							src="img/24/edit.png"></a></td>
+					<td><a id="y${doc.iddocumentiAbuso}"
 						href="<c:url value="eliminaDocumento.htm?iddocumento=${doc.iddocumentiAbuso}" />"><img
 							src="img/24/delete.png"></a></td>
 				</tr>

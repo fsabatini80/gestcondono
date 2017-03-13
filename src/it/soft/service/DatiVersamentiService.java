@@ -512,6 +512,10 @@ public class DatiVersamentiService {
 		&& autoDetermina <= oblazioneCalcolata) {
 	    t = oblazioneCalcolata - importoVersValidi;
 	}
+	if (importoVersValidi < oblazioneCalcolata
+		&& oblazioneCalcolata < autoDetermina) {
+	    t = oblazioneCalcolata - importoVersValidi;
+	}
 	// entro solo se il calcolato maggiore del autoderminata
 	if (t > 0) {// && importoVersValidi < autoDetermina
 	    Double dataInizioIL = getDataUltimoVersamento(dataAbuso, vers,
@@ -548,6 +552,10 @@ public class DatiVersamentiService {
 	}
 	if (importoVersValidi < autoDetermina
 		&& autoDetermina <= oblazioneCalcolata) {
+	    t = oblazioneCalcolata - importoVersValidi;
+	}
+	if (importoVersValidi < oblazioneCalcolata
+		&& oblazioneCalcolata < autoDetermina) {
 	    t = oblazioneCalcolata - importoVersValidi;
 	}
 	// entro solo se il calcolato maggiore del autoderminata
@@ -587,6 +595,10 @@ public class DatiVersamentiService {
 	}
 	if (importoVersValidi < autoDetermina
 		&& autoDetermina <= oblazioneCalcolata) {
+	    t = oblazioneCalcolata - importoVersValidi;
+	}
+	if (importoVersValidi < oblazioneCalcolata
+		&& oblazioneCalcolata < autoDetermina) {
 	    t = oblazioneCalcolata - importoVersValidi;
 	}
 	// entro solo se il calcolato maggiore del autoderminata
