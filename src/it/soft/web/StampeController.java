@@ -49,7 +49,8 @@ public class StampeController extends BaseController {
 	    HttpServletResponse response) {
 	DatiPraticaPojo praticaDB = datiPraticaService.findById(idpratica);
 	String docTitle = "Lett_Not_Prot_" + praticaDB.getNumeroProtocollo()
-		+ "_Int_" + praticaDB.getNumeroPratica() + "_Sot_" + progressivo + ".docx";
+		+ "_Int_" + praticaDB.getNumeroPratica() + "_Sot_"
+		+ progressivo + ".docx";
 	response.setHeader("Content-disposition", "attachment; filename="
 		+ docTitle);
 	response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
@@ -136,6 +137,8 @@ public class StampeController extends BaseController {
 	stampeSolleciti.setIdAbuso(Converter.stringToBigDdecimal(idabuso));
 	stampeSolleciti.setIdPratica(Converter.stringToBigDdecimal(idpratica));
 	stampeSolleciti.setProgressivoAbuso(Converter.stringToint(progressivo));
+	stampeSolleciti.setGiorniValiditaAlert(0);
+	stampeSolleciti.setPraticaEvasa(false);
     }
 
     private byte[] zipByteArray(XWPFDocument document) throws IOException {

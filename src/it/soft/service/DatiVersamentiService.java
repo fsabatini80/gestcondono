@@ -1381,13 +1381,14 @@ public class DatiVersamentiService {
 	    // alloggio
 	    perc = getincrementoSUAbitabile(superficeUtileTotale,
 		    superficeUtile);
-	    System.out
-		    .println("superficeUtile: " + superficeUtile != null ? superficeUtile
-			    : "");
-	    System.out.println("perc: " + perc != null ? perc : "");
-	    System.out
-		    .println("superficeAccessoria: " + superficeAccessoria != null ? superficeAccessoria
-			    : "");
+	    System.out.println("superficeUtile: "
+		    .concat((superficeUtile != null ? String
+			    .valueOf(superficeUtile) : "")));
+	    System.out.println("perc: ".concat((perc != null ? String
+		    .valueOf(perc) : "")));
+	    System.out.println("superficeAccessoria: "
+		    .concat((superficeAccessoria != null ? String
+			    .valueOf(superficeAccessoria) : "")));
 	    percTotale = percTotale + perc;
 
 	    costoR2 = getCostoR2(datiAlloggio.getTipologiaAlloggio()
@@ -1618,8 +1619,9 @@ public class DatiVersamentiService {
 				    .getProgressivo()));
 		    List<String> causali = new ArrayList<String>();
 		    causali.add(Constants.ONERI_CAUSALE_SEL);
-		    Double versValidi = getVersamentiValidi(
-			    new Double(19951231), vers, causali);
+		    // Double versValidi = getVersamentiValidi(
+		    // new Double(19951231), vers, causali);
+		    Double versValidi = getVersamentiValidi(vers, causali);
 		    oneriConcessCalcolato = (interessiMora + (autodeterminataOnere - versValidi))
 			    + (oneriConcessCalcolato - autodeterminataOnere);
 		} else {
