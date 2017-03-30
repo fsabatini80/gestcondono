@@ -82,6 +82,10 @@ public class WordService {
     @Autowired
     ServletContext context;
 
+    private static Integer CELL_WIDTH_DESC = 9900;
+    private static Integer CELL_WIDTH_VALUTA = 500;
+    private static Integer CELL_WIDTH_IMPORTO = 1500;
+
     public XWPFDocument createDoc(XWPFDocument document,
 	    DatiPraticaService praticaService, DatiAbusoService abusoService,
 	    String idpratica, String idabuso, String progressivo)
@@ -280,46 +284,46 @@ public class WordService {
 	UtilityWord.addTableCellCenter(table1.getRow(0).getCell(0),
 		"Autodetermina", false, ParagraphAlignment.LEFT);
 	table1.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(7900));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table1.getRow(0).getCell(1), "€", false,
 		ParagraphAlignment.CENTER);
 	table1.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table1.getRow(0).getCell(2),
 		Converter.doubleToString(importoOblazione), false,
 		ParagraphAlignment.RIGHT);
 	table1.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table2 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table2.getRow(0).getCell(0),
 		"Importo versato", false, ParagraphAlignment.LEFT);
 	table2.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table2.getRow(0).getCell(1), "€", false,
 		ParagraphAlignment.CENTER);
 	table2.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table2.getRow(0).getCell(2),
 		Converter.doubleToString(importoVersato), false,
 		ParagraphAlignment.RIGHT);
 	table2.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table3 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table3.getRow(0).getCell(0),
 		"Importo calcolato", false, ParagraphAlignment.LEFT);
 	table3.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table3.getRow(0).getCell(1), "€", false,
 		ParagraphAlignment.CENTER);
 	table3.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table3.getRow(0).getCell(2),
 		Converter.doubleToString(importoCalcolato), false,
 		ParagraphAlignment.RIGHT);
 	table3.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table4 = document.createTable(1, 3);
 	UtilityWord
@@ -328,16 +332,16 @@ public class WordService {
 			"Importo da versare a saldo comprensivo degli interessi dovuti ",
 			true, ParagraphAlignment.LEFT);
 	table4.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table4.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	table4.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table4.getRow(0).getCell(2),
 		Converter.doubleToString(importoRediduo), true,
 		ParagraphAlignment.RIGHT);
 	table4.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	// OBLAZIONE REGIONALE
 	Double saldo = Double.valueOf(0);
@@ -361,47 +365,47 @@ public class WordService {
 	UtilityWord.addTableCellCenter(table6.getRow(0).getCell(0),
 		"Importo versato", false, ParagraphAlignment.LEFT);
 	table6.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table6.getRow(0).getCell(1), "€", false,
 		ParagraphAlignment.CENTER);
 	table6.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table6.getRow(0).getCell(2),
 		Converter.doubleToString(oneriConcessVersato), false,
 		ParagraphAlignment.RIGHT);
 	table6.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table7 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table7.getRow(0).getCell(0),
 		"Importo calcolato", false, ParagraphAlignment.LEFT);
 	table7.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table7.getRow(0).getCell(1), "€", false,
 		ParagraphAlignment.CENTER);
 	table7.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table7.getRow(0).getCell(2),
 		Converter.doubleToString(oneriConcessCalcolato), false,
 		ParagraphAlignment.RIGHT);
 	table7.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table8 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table8.getRow(0).getCell(0),
 		"Importo da versare a saldo comprensivo degli interessi ",
 		true, ParagraphAlignment.LEFT);
 	table8.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table8.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	table8.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table8.getRow(0).getCell(2),
 		Converter.doubleToString(oneriConcessSaldo), true,
 		ParagraphAlignment.RIGHT);
 	table8.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	// DIRITTI DI SEGRETERIA
 	XWPFTable table9_ = document.createTable(1, 1);
@@ -413,80 +417,80 @@ public class WordService {
 	UtilityWord.addTableCellCenter(table10.getRow(0).getCell(0),
 		"Diritti di istruttoria ", false, ParagraphAlignment.LEFT);
 	table10.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table10.getRow(0).getCell(1), "€",
 		false, ParagraphAlignment.CENTER);
 	table10.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table10.getRow(0).getCell(2),
 		Converter.doubleToString(dirittiIstrut), false,
 		ParagraphAlignment.RIGHT);
 	table10.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table11 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table11.getRow(0).getCell(0),
 		"Diritti rilascio permesso di costruire ", false,
 		ParagraphAlignment.LEFT);
 	table11.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table11.getRow(0).getCell(1), "€",
 		false, ParagraphAlignment.CENTER);
 	table11.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table11.getRow(0).getCell(2),
 		Converter.doubleToString(dirittiRilPerm), false,
 		ParagraphAlignment.RIGHT);
 	table11.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table12 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table12.getRow(0).getCell(0),
 		"Diritti istruttoria pareri sui vincoli ", false,
 		ParagraphAlignment.LEFT);
 	table12.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table12.getRow(0).getCell(1), "€",
 		false, ParagraphAlignment.CENTER);
 	table12.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table12.getRow(0).getCell(2),
 		Converter.doubleToString(dirittiPareri), false,
 		ParagraphAlignment.RIGHT);
 	table12.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table13 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table13.getRow(0).getCell(0),
 		"Agibilità ", false, ParagraphAlignment.LEFT);
 	table13.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table13.getRow(0).getCell(1), "€",
 		false, ParagraphAlignment.CENTER);
 	table13.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table13.getRow(0).getCell(2),
 		Converter.doubleToString(agibilita), false,
 		ParagraphAlignment.RIGHT);
 	table13.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table15 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table15.getRow(0).getCell(0),
 		"Totale diritti di segreteria ", true, ParagraphAlignment.LEFT);
 	table15.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table15.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	table15.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(
 		table15.getRow(0).getCell(2),
 		Converter.doubleToString(new Double(dirittiIstrut
 			+ dirittiPareri + dirittiRilPerm + agibilita)), true,
 		ParagraphAlignment.RIGHT);
 	table15.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table99_ = document.createTable(1, 1);
 	UtilityWord.addTableCellCenter(table99_.getRow(0).getCell(0), "", true,
@@ -498,18 +502,18 @@ public class WordService {
 		"Totale da versare al comune di Palombara Sabina ", true,
 		ParagraphAlignment.LEFT);
 	table16.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table16.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	table16.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	Double d = Converter.round(new Double(oneriConcessSaldo
 		+ metaImportoResiduo + dirittiIstrut + dirittiPareri
 		+ dirittiRilPerm + agibilita), 2);
 	UtilityWord.addTableCellCenter(table16.getRow(0).getCell(2),
 		Converter.doubleToString(d), true, ParagraphAlignment.RIGHT);
 	table16.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table17 = document.createTable(1, 1);
 
@@ -566,16 +570,16 @@ public class WordService {
 	UtilityWord.addTableCellCenter(table1.getRow(0).getCell(0),
 		"Autodetermina", false, ParagraphAlignment.LEFT);
 	table1.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table1.getRow(0).getCell(1), "€", false,
 		ParagraphAlignment.CENTER);
 	table1.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table1.getRow(0).getCell(2),
 		Converter.doubleToString(autodeterminaRegione), false,
 		ParagraphAlignment.RIGHT);
 	table1.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	Double importoVersatoRegione = datiVersamentiService
 		.getImportoVersatoOblazioneRegione(idpratica, progressivo);
@@ -583,31 +587,31 @@ public class WordService {
 	UtilityWord.addTableCellCenter(table2.getRow(0).getCell(0),
 		"Importo versato", false, ParagraphAlignment.LEFT);
 	table2.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table2.getRow(0).getCell(1), "€", false,
 		ParagraphAlignment.CENTER);
 	table2.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table2.getRow(0).getCell(2),
 		Converter.doubleToString(importoVersatoRegione), false,
 		ParagraphAlignment.RIGHT);
 	table2.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	XWPFTable table3 = document.createTable(1, 3);
 	UtilityWord.addTableCellCenter(table3.getRow(0).getCell(0),
 		"Importo calcolato", false, ParagraphAlignment.LEFT);
 	table3.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table3.getRow(0).getCell(1), "€", false,
 		ParagraphAlignment.CENTER);
 	table3.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table3.getRow(0).getCell(2),
 		Converter.doubleToString(importoCalcolato * 0.1), false,
 		ParagraphAlignment.RIGHT);
 	table3.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 
 	Double saldo = datiVersamentiService.getOblazioneSaldo(
 		importoVersatoRegione, autodeterminaRegione,
@@ -621,17 +625,17 @@ public class WordService {
 			"Importo da versare a saldo comprensivo degli interessi dovuti ",
 			true, ParagraphAlignment.LEFT);
 	table4.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table4.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	table4.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord
 		.addTableCellCenter(table4.getRow(0).getCell(2),
 			Converter.doubleToString(saldo), true,
 			ParagraphAlignment.RIGHT);
 	table4.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 	return saldo;
     }
 
@@ -652,17 +656,17 @@ public class WordService {
 			"Importo da versare a saldo comprensivo degli interessi dovuti ",
 			true, ParagraphAlignment.LEFT);
 	table4.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table4.getRow(0).getCell(1), "€", true,
 		ParagraphAlignment.CENTER);
 	table4.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord
 		.addTableCellCenter(table4.getRow(0).getCell(2),
 			Converter.doubleToString(saldo), true,
 			ParagraphAlignment.RIGHT);
 	table4.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
 	XWPFTable table4_ = document.createTable(1, 1);
 	createCircolareRegioneInfo(document, table4_);
     }
@@ -673,16 +677,16 @@ public class WordService {
 	UtilityWord.addTableCellCenter(table06.getRow(0).getCell(0),
 		"Importo autodeterminato", false, ParagraphAlignment.LEFT);
 	table06.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(5000));
+		.setW(BigInteger.valueOf(CELL_WIDTH_DESC));
 	UtilityWord.addTableCellCenter(table06.getRow(0).getCell(1), "€",
 		false, ParagraphAlignment.CENTER);
 	table06.getRow(0).getCell(1).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(499));
+		.setW(BigInteger.valueOf(CELL_WIDTH_VALUTA));
 	UtilityWord.addTableCellCenter(table06.getRow(0).getCell(2),
 		Converter.doubleToString(oneriAutodeterminata), false,
 		ParagraphAlignment.RIGHT);
 	table06.getRow(0).getCell(2).getCTTc().addNewTcPr().addNewTcW()
-		.setW(BigInteger.valueOf(4500));
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
     }
 
     private void createCircolareMinisteroInfo(XWPFDocument document) {
@@ -808,7 +812,7 @@ public class WordService {
 	UtilityWord
 		.addTextBold(
 			parag.createRun(),
-			"il numero di pratica e sottonumero e il numero di protocollo di cui al punto A");
+			"il numero di pratica e sottonumero e il numero di protocollo di cui all'oggetto");
 	UtilityWord.addTextSimple(parag.createRun(),
 		" della presente nota, dovranno essere effettuati ");
 	UtilityWord.addTextBold(parag.createRun(),
