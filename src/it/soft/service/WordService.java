@@ -43,11 +43,14 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTPageMargins;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFldChar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
@@ -85,6 +88,8 @@ public class WordService {
     private static Integer CELL_WIDTH_DESC = 9900;
     private static Integer CELL_WIDTH_VALUTA = 500;
     private static Integer CELL_WIDTH_IMPORTO = 1500;
+    private static Integer CELL_WIDTH_ALL = 9900;
+    private static Integer FONT_SIZE_SUBTITLE = 9;
 
     public XWPFDocument createDoc(XWPFDocument document,
 	    DatiPraticaService praticaService, DatiAbusoService abusoService,
@@ -241,21 +246,266 @@ public class WordService {
 
     public void createPage4(XWPFDocument document) {
 	document.createParagraph().createRun().addBreak(BreakType.PAGE);
-	InputStream is = context
-		.getResourceAsStream("/WEB-INF/ultima pag statica.png");
-	try {
-	    document.createParagraph()
-		    .createRun()
-		    .addPicture(is, Document.PICTURE_TYPE_PNG,
-			    "ultima pag statica.png", Units.toEMU(550),
-			    Units.toEMU(650));
-	} catch (InvalidFormatException e) {
-	    e.printStackTrace();
-	} catch (FileNotFoundException e) {
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+	CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
+	CTPageMar pageMar = sectPr.addNewPgMar();
+	pageMar.setLeft(BigInteger.valueOf(720L));
+	pageMar.setTop(BigInteger.valueOf(720L));
+	pageMar.setRight(BigInteger.valueOf(720L));
+	pageMar.setBottom(BigInteger.valueOf(720L));
+	// InputStream is = context
+	// .getResourceAsStream("/WEB-INF/ultima pag statica.png");
+
+	// document.createParagraph()
+	// .createRun()
+	// .addPicture(is, Document.PICTURE_TYPE_PNG,
+	// "ultima pag statica.png", Units.toEMU(550),
+	// Units.toEMU(650));
+
+	UtilityWord.addText(document.createParagraph().createRun(),
+		"MODALITA’ E CRITERI DI CALCOLO APPLICATI", true,
+		ParagraphAlignment.CENTER, true, false, FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			document.createParagraph().createRun(),
+			"ONERI CONCESSORI = COSTO DI COSTRUZIONE + ONERI DI URBANIZZAZIONE COSTO DI COSTRUZIONE = [(R1+R2+R3)/100]*[(260,81+M)*MQ]",
+			true, ParagraphAlignment.CENTER, false, false,
+			FONT_SIZE_SUBTITLE);
+
+	XWPFTable table1 = document.createTable(3, 3);
+	table1.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
+	UtilityWord.spanCellsAcrossCell(table1, 0, 0, 3);
+	UtilityWord.addTableCellCenter(table1.getRow(0).getCell(0), "R1", true,
+		ParagraphAlignment.CENTER);
+	UtilityWord.addTableCell(table1.getRow(0).getCell(1), "A", true,
+		ParagraphAlignment.CENTER, CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table1.getRow(0).getCell(2), "2,25", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table1.getRow(1).getCell(1), "B - C2", true,
+		ParagraphAlignment.CENTER, CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table1.getRow(1).getCell(2), "2,00", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table1.getRow(2).getCell(1), "C1 - E", true,
+		ParagraphAlignment.CENTER, CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table1.getRow(2).getCell(2), "1,25", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+
+	XWPFTable table1_ = document.createTable(1, 1);
+	UtilityWord.addTableCellCenter(table1_.getRow(0).getCell(0),
+		"", true, ParagraphAlignment.LEFT);
+	table1_.getCTTbl().getTblPr().unsetTblBorders();
+
+	XWPFTable table2 = document.createTable(5, 3);
+	table2.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
+	UtilityWord.spanCellsAcrossCell(table2, 0, 0, 5);
+	UtilityWord.addTableCellCenter(table2.getRow(0).getCell(0), "R2", true,
+		ParagraphAlignment.CENTER);
+	UtilityWord.addTableCell(table2.getRow(0).getCell(1),
+		"Unifamiliari singole", true, ParagraphAlignment.CENTER,
+		CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(0).getCell(2), "2,25", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(1).getCell(1),
+		"Unifamiliari aggregate fino a 2 piani max 4 alloggi", true,
+		ParagraphAlignment.CENTER, CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(1).getCell(2), "1,75", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(2).getCell(1),
+		"familiari aggregate fino a 2 piani a schiera", true,
+		ParagraphAlignment.CENTER, CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(2).getCell(2), "1,50", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(3).getCell(1),
+		"Plurifamiliari fino a 3 piani abitabili", true,
+		ParagraphAlignment.CENTER, CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(3).getCell(2), "1,25", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(4).getCell(1),
+		"Oltre 3 piani abitabili", true, ParagraphAlignment.CENTER,
+		CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table2.getRow(4).getCell(2), "1,75", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+
+	XWPFTable table2_ = document.createTable(1, 1);
+	UtilityWord.addTableCellCenter(table2_.getRow(0).getCell(0),
+		"", true, ParagraphAlignment.LEFT);
+	table2_.getCTTbl().getTblPr().unsetTblBorders();
+
+	XWPFTable table3 = document.createTable(3, 3);
+	table3.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW()
+		.setW(BigInteger.valueOf(CELL_WIDTH_IMPORTO));
+	UtilityWord.spanCellsAcrossCell(table3, 0, 0, 3);
+	UtilityWord.addTableCellCenter(table3.getRow(0).getCell(0), "R3", true,
+		ParagraphAlignment.CENTER);
+	UtilityWord.addTableCell(table3.getRow(0).getCell(1),
+		"Classi I, II, III, IV", true, ParagraphAlignment.CENTER,
+		CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table3.getRow(0).getCell(2), "2,25", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table3.getRow(1).getCell(1),
+		"Classi V, VI, VII, VIII", true, ParagraphAlignment.CENTER,
+		CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table3.getRow(1).getCell(2), "2,00", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table3.getRow(2).getCell(1),
+		"Classi IX, X, XI", true, ParagraphAlignment.CENTER,
+		CELL_WIDTH_DESC, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table3.getRow(2).getCell(2), "1,25", true,
+		ParagraphAlignment.RIGHT, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+
+	XWPFRun run = document.createParagraph().createRun();
+	UtilityWord
+		.addText(
+			run,
+			"M= maggiorazione % ricavata secondo DM n. 801 del 10 Maggio 1977.",
+			true, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run,
+			"260,81 €/mq è il costo base secondo quanto disposto dalla Delibera del Consiglio Comunale n. 53/2001.",
+			true, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run,
+			"ONERI DI URBANIZZAZIONE = MC*COEFFICIENTE COME DA DELIBERA 53/2001.",
+			true, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run,
+			"N.B. Gli oneri sono soggetti a riduzioni, maggiorazioni, interessi moratori e/o legali secondo quanto stabilito dalle Leggi Regionali n. 76/1985 e n. 58/1996.",
+			true, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+
+	UtilityWord.addTextBoldUnderlineBreak(document.createParagraph()
+		.createRun(), "NOTA BENE:", false);
+
+	XWPFRun run1 = document.createParagraph().createRun();
+	UtilityWord
+		.addText(
+			run1,
+			"- Al momento del ritiro della concessione dovrà essere presentata una Marca da bollo da € 16,00 da apporre sulla stessa N.B. Gli oneri sono soggetti a riduzioni, maggiorazioni, interessi moratori e/o legali secondo quanto stabilito dalle Leggi Regionali n. 76/1985 e n. 58/1996.",
+			false, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run1,
+			"- Qualora gli importi siano stati versati oltre le scadenze previste, all’atto del ritiro della Concessione saranno applicati gli interessi legali previsti dalla normativa vigente.",
+			false, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run1,
+			"- Eventuali calcoli che potranno risultare difformi alla luce della nuova documentazione presentata, ove ricorrano i termini di legge, saranno rielaborati direttamente allo sportello in sede di rilascio della Concessione in sanatoria.",
+			false, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run1,
+			"- Previa presentazione della documentazione necessaria, all’atto del ritiro della Concessione, sarà possibile ottenere il certificato di Agibilità. La modulistica necessaria è reperibile sul sito web del Comune di Palombara Sabina all’indirizzo www.comune.palombarasabina.rm.it .",
+			false, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run1,
+			"- Qualsiasi ulteriore comunicazione o inoltro di atti relativi all'istanza di cui in oggetto dovranno tassativamente riportare il numero di pratica ed il numero di protocollo di cui al punto A. Diversamente tali integrazioni non verranno prese in esame.",
+			false, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run1,
+			"La presente è da intendersi anche come Avvio del Procedimento Amministrativo ai sensi degli artt. 5, 7 e 8 della Legge 07/08/1990 n° 24 e successive modifiche ed integrazioni.",
+			false, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			run1,
+			"Responsabile del Procedimento è stato nominato : Arch. Paolo Caracciolo",
+			false, ParagraphAlignment.LEFT, false, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord
+		.addText(
+			document.createParagraph().createRun(),
+			"L'Unità organizzativa presso la quale sono depositati gli Atti relativi al presente Procedimento è la seguente: Settore VII –Condono Edilizio, Piazza Vittorio Veneto 12 Piano 1° Tel: 0774/636443 Fax: 0774/636443",
+			false, ParagraphAlignment.LEFT, false, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord.addText(document.createParagraph().createRun(),
+		"Orario sportello:", false, ParagraphAlignment.LEFT, false,
+		false, FONT_SIZE_SUBTITLE);
+
+	// TABELLA ORARI
+	XWPFTable table4 = document.createTable(1, 5);
+	UtilityWord.addTableCell(table4.getRow(0).getCell(0), "Lunedì", true,
+		ParagraphAlignment.CENTER, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table4.getRow(0).getCell(1),
+		"Martedì 9:00 - 12:00", true, ParagraphAlignment.CENTER,
+		CELL_WIDTH_IMPORTO, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table4.getRow(0).getCell(2), "Mercoledì",
+		true, ParagraphAlignment.CENTER, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table4.getRow(0).getCell(3),
+		"Giovedì 15:00 - 17:00", true, ParagraphAlignment.CENTER,
+		CELL_WIDTH_IMPORTO, FONT_SIZE_SUBTITLE);
+	UtilityWord.addTableCell(table4.getRow(0).getCell(4), "Venerdì", true,
+		ParagraphAlignment.CENTER, CELL_WIDTH_IMPORTO,
+		FONT_SIZE_SUBTITLE);
+	UtilityWord.adjustTableWidth(table4);
+	// FINE TABELLA ORARI
+
+	UtilityWord
+		.addText(
+			document.createParagraph().createRun(),
+			"L'Ufficio scrivente rimarrà a disposizione per le attività di rilascio Concessioni e/o eventuale richiesta di informazioni.",
+			false, ParagraphAlignment.LEFT, false, false,
+			FONT_SIZE_SUBTITLE);
+
+	XWPFRun run2 = document.createParagraph().createRun();
+	UtilityWord.addText(run2, "NOTA BENE:", true, ParagraphAlignment.LEFT,
+		true);
+	UtilityWord
+		.addText(
+			run2,
+			"Qualora il destinatario della presente non sia a conoscenza della pratica in oggetto o non è più il proprietario è cortesemente pregato di darne segnalazione :",
+			true, ParagraphAlignment.LEFT, true, false,
+			FONT_SIZE_SUBTITLE);
+	UtilityWord.addText(run2, "Ufficio Urbanistica ", true,
+		ParagraphAlignment.LEFT, true, false, FONT_SIZE_SUBTITLE);
+	UtilityWord.addText(run2, "Piazza Vittorio Veneto", true,
+		ParagraphAlignment.LEFT, true, false, FONT_SIZE_SUBTITLE);
+	UtilityWord.addText(run2, "00018 Palombara Sabina (RM)", true,
+		ParagraphAlignment.LEFT, true, false, FONT_SIZE_SUBTITLE);
+	UtilityWord.addText(run2, "Tel: 0774 636443  Fax: 0774 636443", true,
+		ParagraphAlignment.LEFT, false, false, FONT_SIZE_SUBTITLE);
+
+	// TABELLA RESPONSABILE
+	XWPFTable table5 = document.createTable(1, 1);
+	UtilityWord.addTableCell(table5.getRow(0).getCell(0),
+		"Il responsabile del procedimento Arch. Paolo Caracciolo",
+		true, ParagraphAlignment.CENTER, CELL_WIDTH_ALL,
+		FONT_SIZE_SUBTITLE);
+	// FINE TABELLA RESPONSABILE
+
+	UtilityWord
+		.addText(
+			document.createParagraph().createRun(),
+			"La firma autografa del responsabile del procedimento è sostituita dall'indicazione in stampa ai sensi dell'art. 6 quater della legge n. 80 del 15/03/1991.",
+			false, ParagraphAlignment.LEFT, false, true,
+			FONT_SIZE_SUBTITLE);
 
     }
 
@@ -546,7 +796,7 @@ public class WordService {
 
 	// NOTE INFORMATIVE
 	XWPFParagraph p = document.createParagraph();
-	p.createRun().addBreak();
+//	p.createRun().addBreak();
 	UtilityWord
 		.addTextBoldUnderlineBreak(
 			p.createRun(),
