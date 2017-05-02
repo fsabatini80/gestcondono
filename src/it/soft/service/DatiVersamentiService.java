@@ -232,8 +232,8 @@ public class DatiVersamentiService {
 
 	// legge n. 47/85
 	if (Constants.ID_LEGGE_47_85.equals(leggeCondono)) {
-	    importoObla = calcolaLegge1(importoObla, abusoDB, supUtilDouble
-		    + (supUtilNRDouble * 0.6));
+	    importoObla = calcolaLegge1(tipoAbuso, importoObla, abusoDB,
+		    supUtilDouble + (supUtilNRDouble * 0.6));
 	    if (importoObla < importoOblaDefault) {
 		importoObla = importoOblaDefault;
 	    }
@@ -276,13 +276,14 @@ public class DatiVersamentiService {
 
 	if (tipoAbuso == 4 || tipoAbuso == 5 || tipoAbuso == 6
 		|| tipoAbuso == 7) {
-	    importoObla = calcolaRiduzioniLegge2(importoObla, supUtilDouble,
-		    abusoDB.getLocalizzazione().isIsprimaCasa(), abusoDB
-			    .getLocalizzazione().getAbitazioneLusso(), abusoDB
-			    .getLocalizzazione().getConvenzione_urbanistica(),
-		    abusoDB.getDestinazioneUso(), riduzioneRedditoBean, abusoDB
-			    .getLocalizzazione().getZonaUrbanizzazione(),
-		    abusoDB.getLocalizzazione().isIscrizioneCamera());
+	    // importoObla = calcolaRiduzioniLegge2(importoObla, supUtilDouble,
+	    // abusoDB.getLocalizzazione().isIsprimaCasa(), abusoDB
+	    // .getLocalizzazione().getAbitazioneLusso(), abusoDB
+	    // .getLocalizzazione().getConvenzione_urbanistica(),
+	    // abusoDB.getDestinazioneUso(), riduzioneRedditoBean, abusoDB
+	    // .getLocalizzazione().getZonaUrbanizzazione(),
+	    // abusoDB.getLocalizzazione().isIscrizioneCamera());
+	    return importoObla;
 	} else {
 	    importoObla = importoObla
 		    * (supUtilDouble + (supUtilNRDouble * 0.6));
@@ -297,8 +298,12 @@ public class DatiVersamentiService {
 	return importoObla;
     }
 
-    private Double calcolaLegge1(Double importoObla, DatiAbusoPojo abusoDB,
-	    Double supUtilDouble) {
+    private Double calcolaLegge1(Integer tipoAbuso, Double importoObla,
+	    DatiAbusoPojo abusoDB, Double supUtilDouble) {
+
+	if (tipoAbuso == 7) {
+	    return importoObla;
+	}
 	importoObla = importoObla * supUtilDouble;
 	importoObla = Converter.round(importoObla, 2);
 	System.out
@@ -663,6 +668,24 @@ public class DatiVersamentiService {
 	    if (!StringUtils.isEmptyOrWhitespaceOnly(dataVersa)) {
 		Double dv = Converter.dateToDouble(dataVersa);
 		if (dv <= dataAbuso) {
+		    versamentiValidi.add(versamento);
+		}
+	    }
+	}
+	Double answer = new Double(0.0);
+	answer = filtraPerCausali(causali, versamentiValidi, answer);
+	return answer;
+    }
+
+    public Double getVersamentiValidiPerAnno(Integer anno,
+	    List<DatiVersamento> vers, List<String> causali) {
+	List<DatiVersamento> versamentiValidi = new ArrayList<DatiVersamento>();
+	for (DatiVersamento versamento : vers) {
+	    String dataVersa = versamento.getDataVersamento();
+	    if (!StringUtils.isEmptyOrWhitespaceOnly(dataVersa)) {
+		Integer annodv = getAnnoFromDataDouble(Converter
+			.dateToDouble(dataVersa));
+		if (annodv.intValue() == anno.intValue()) {
 		    versamentiValidi.add(versamento);
 		}
 	    }
@@ -1566,7 +1589,7 @@ public class DatiVersamentiService {
     }
 
     public Double getDirittiRilPerm(DatiAbusoPojo abusoDB) {
-	Double answer = Double.valueOf(0);
+	Double answer = 150.0;
 	Double superficeUtile = Double.valueOf(0);
 	Double superficeUtileNR = Double.valueOf(0);
 	Double superficeTot = Double.valueOf(0);
@@ -1735,14 +1758,16 @@ public class DatiVersamentiService {
 			    * totaleAnniIM;
 		    // versamento contestuale alla data domanda se totaleAnniIM
 		    // = 0
+		    double totaleVersamentiAnno = getVersamentiValidiPerAnno(
+			    annoFine, vers, causali);
 		    if (totaleAnniIM > 0) {
 			importoIntMora = autodeterminataOnere
-				- datiVersamento.getImportoEuro();
+				- totaleVersamentiAnno;
 		    } else {
 			importoIntMora = autodeterminataOnere;
 			if (!flagSottrazioneEseguita)
 			    importoIntMora = autodeterminataOnere
-				    - importoVersValidi;
+				    - totaleVersamentiAnno;
 		    }
 		} else {
 
@@ -1753,18 +1778,22 @@ public class DatiVersamentiService {
 			    .doubleValue());
 		    Integer annoFine = getAnnoFromDataDouble(datafine);
 		    Integer totaleAnniIM = annoFine - annoInizioIM;
-		    interessiMora = interessiMora
-			    + ((importoIntMora * 0.10) * totaleAnniIM);
+		    if (importoIntMora > 0)
+			interessiMora = interessiMora
+				+ ((importoIntMora * 0.10) * totaleAnniIM);
+		    double totaleVersamentiAnno = getVersamentiValidiPerAnno(
+			    annoFine, vers, causali);
 		    importoIntMora = autodeterminataOnere
-			    - datiVersamento.getImportoEuro();
+			    - totaleVersamentiAnno;
 		}
 	    }
 
 	    Integer annoInizioIM = getAnnoFromDataDouble(datafine.doubleValue());
 	    Integer annoFine = getAnnoFromDataDouble(dataOdierna);
 	    Integer totaleAnniIM = annoFine - annoInizioIM;
-	    interessiMora = interessiMora
-		    + ((importoIntMora * 0.10) * totaleAnniIM);
+	    if (importoIntMora > 0)
+		interessiMora = interessiMora
+			+ ((importoIntMora * 0.10) * totaleAnniIM);
 	}
 
 	return interessiMora;
@@ -1831,8 +1860,9 @@ public class DatiVersamentiService {
 			    .doubleValue());
 		    Integer annoFine = getAnnoFromDataDouble(datafine);
 		    Integer totaleAnniIM = annoFine - annoInizioIM;
-		    interessiMora = interessiMora
-			    + ((importoIntMora * 0.10) * totaleAnniIM);
+		    if (importoIntMora > 0)
+			interessiMora = interessiMora
+				+ ((importoIntMora * 0.10) * totaleAnniIM);
 		    importoIntMora = autodeterminataOnere
 			    - datiVersamento.getImportoEuro();
 		}
@@ -1841,8 +1871,9 @@ public class DatiVersamentiService {
 	    Integer annoInizioIM = getAnnoFromDataDouble(datafine.doubleValue());
 	    Integer annoFine = getAnnoFromDataDouble(dataOdierna);
 	    Integer totaleAnniIM = annoFine - annoInizioIM;
-	    interessiMora = interessiMora
-		    + ((importoIntMora * 0.10) * totaleAnniIM);
+	    if (importoIntMora > 0)
+		interessiMora = interessiMora
+			+ ((importoIntMora * 0.10) * totaleAnniIM);
 	}
 
 	return interessiMora;
