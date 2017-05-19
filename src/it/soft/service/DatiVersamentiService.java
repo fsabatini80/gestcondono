@@ -1618,17 +1618,26 @@ public class DatiVersamentiService {
 	    Double oneriConcessCalcolato, DatiAbusoPojo abusoDB,
 	    DatiPraticaPojo praticaDB) {
 	Double autodeterminataOnere = abusoDB.getAutodeterminataOneri();
-	if (oneriConcessVersato.doubleValue() == autodeterminataOnere
+
+	List<DatiVersamento> vers = datiVersamentiHome.findAll(
+		BigInteger.valueOf(Integer.valueOf(abusoDB.getIdPratica())),
+		Integer.valueOf(abusoDB.getProgressivo()));
+	List<String> causali = new ArrayList<String>();
+	causali.add(Constants.ONERI_CAUSALE_SEL);
+	Double versValidi1995 = getVersamentiValidi(new Double(19951231), vers,
+		causali);
+	//versValidi1995 = getVersamentiValidi(vers, causali);
+	if (versValidi1995.doubleValue() == autodeterminataOnere
 		.doubleValue()) {
 	    oneriConcessCalcolato = oneriConcessCalcolato
 		    - autodeterminataOnere;
 	}
-	if (oneriConcessVersato < autodeterminataOnere) {
+	if (versValidi1995 < autodeterminataOnere) {
 	    Double delta = new Double(0.0);
 	    if (autodeterminataOnere > oneriConcessCalcolato) {
-		delta = oneriConcessCalcolato - oneriConcessVersato;
+		delta = oneriConcessCalcolato - versValidi1995;
 	    } else {
-		delta = autodeterminataOnere - oneriConcessVersato;
+		delta = autodeterminataOnere - versValidi1995;
 	    }
 	    Double interessiMora = calcolaInteressiMoraOneri(abusoDB,
 		    praticaDB, autodeterminataOnere, oneriConcessCalcolato);
@@ -1636,16 +1645,8 @@ public class DatiVersamentiService {
 		    + interessiMora);
 	    if (autodeterminataOnere <= oneriConcessCalcolato) {
 		if (oneriConcessVersato > 0) {
-		    List<DatiVersamento> vers = datiVersamentiHome.findAll(
-			    BigInteger.valueOf(Integer.valueOf(abusoDB
-				    .getIdPratica())), Integer.valueOf(abusoDB
-				    .getProgressivo()));
-		    List<String> causali = new ArrayList<String>();
-		    causali.add(Constants.ONERI_CAUSALE_SEL);
-		    // Double versValidi = getVersamentiValidi(
-		    // new Double(19951231), vers, causali);
-		    Double versValidi = getVersamentiValidi(vers, causali);
-		    oneriConcessCalcolato = (interessiMora + (autodeterminataOnere - versValidi))
+
+		    oneriConcessCalcolato = (interessiMora + (autodeterminataOnere - oneriConcessVersato))
 			    + (oneriConcessCalcolato - autodeterminataOnere);
 		} else {
 		    oneriConcessCalcolato = (interessiMora + delta)
