@@ -1728,6 +1728,10 @@ public class DatiVersamentiService {
 		Integer.valueOf(abusoDB.getProgressivo()),
 		Constants.ONERI_CAUSALE_SEL);
 	if (vers.isEmpty()) {
+	    if (0 < oneriCalcolati
+		    && oneriCalcolati < autodeterminataOnere) {
+		autodeterminataOnere = oneriCalcolati;
+	    }
 	    interessiMora = calcolaMoraOneriSenzaVersamenti(praticaDB,
 		    autodeterminataOnere, dataOdierna);
 	} else {
