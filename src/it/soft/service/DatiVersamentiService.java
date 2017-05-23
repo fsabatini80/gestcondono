@@ -1626,9 +1626,8 @@ public class DatiVersamentiService {
 	causali.add(Constants.ONERI_CAUSALE_SEL);
 	Double versValidi1995 = getVersamentiValidi(new Double(19951231), vers,
 		causali);
-	//versValidi1995 = getVersamentiValidi(vers, causali);
-	if (versValidi1995.doubleValue() == autodeterminataOnere
-		.doubleValue()) {
+	// versValidi1995 = getVersamentiValidi(vers, causali);
+	if (versValidi1995.doubleValue() == autodeterminataOnere.doubleValue()) {
 	    oneriConcessCalcolato = oneriConcessCalcolato
 		    - autodeterminataOnere;
 	}
@@ -1676,8 +1675,12 @@ public class DatiVersamentiService {
 	    } else {
 		delta = autodeterminataOnere - oneriConcessVersato;
 	    }
-	    Double interessiMora = calcolaInteressiMoraOneriLegge3(abusoDB,
-		    praticaDB, autodeterminataOnere, oneriConcessCalcolato);
+	    Double interessiMora = Double.valueOf(0);
+	    //calcolato < versato< autodeterminata
+	    if (delta > 0) {
+		interessiMora = calcolaInteressiMoraOneriLegge3(abusoDB,
+			praticaDB, autodeterminataOnere, oneriConcessCalcolato);
+	    }
 	    System.out.println("interessi di mora per gli oneri: "
 		    + interessiMora);
 	    if (autodeterminataOnere <= oneriConcessCalcolato) {
@@ -1698,7 +1701,8 @@ public class DatiVersamentiService {
 	    } else {
 		oneriConcessCalcolato = interessiMora + delta;
 	    }
-	} else if (oneriConcessVersato > oneriConcessCalcolato) {
+	} else if (oneriConcessVersato.doubleValue() > oneriConcessCalcolato
+		.doubleValue()) {
 	    oneriConcessCalcolato = oneriConcessCalcolato - oneriConcessVersato;
 	}
 	if (oneriConcessCalcolato < 0)
@@ -1728,8 +1732,7 @@ public class DatiVersamentiService {
 		Integer.valueOf(abusoDB.getProgressivo()),
 		Constants.ONERI_CAUSALE_SEL);
 	if (vers.isEmpty()) {
-	    if (0 < oneriCalcolati
-		    && oneriCalcolati < autodeterminataOnere) {
+	    if (0 < oneriCalcolati && oneriCalcolati < autodeterminataOnere) {
 		autodeterminataOnere = oneriCalcolati;
 	    }
 	    interessiMora = calcolaMoraOneriSenzaVersamenti(praticaDB,
@@ -1816,16 +1819,20 @@ public class DatiVersamentiService {
 		.valueOf(Integer.parseInt(praticaDB.getIddatipratica())),
 		Integer.valueOf(abusoDB.getProgressivo()),
 		Constants.ONERI_CAUSALE_SEL);
+	List<String> causali = new ArrayList<String>();
+	causali.add(Constants.ONERI_CAUSALE_SEL);
+	double importoVersValidi = getVersamentiValidi(vers, causali);
 	if (vers.isEmpty()) {
+	    if (importoVersValidi < oneriCalcolati
+		    && oneriCalcolati < autodeterminataOnere) {
+		autodeterminataOnere = oneriCalcolati - importoVersValidi;
+	    }
 	    interessiMora = calcolaMoraOneriSenzaVersamenti(praticaDB,
 		    autodeterminataOnere, dataOdierna);
 	} else {
 	    Double dataInizioIM;
 	    Double datafine = null;
 	    Double importoIntMora = autodeterminataOnere;
-	    List<String> causali = new ArrayList<String>();
-	    causali.add(Constants.ONERI_CAUSALE_SEL);
-	    double importoVersValidi = getVersamentiValidi(vers, causali);
 	    boolean flagSottrazioneEseguita = false;
 	    if (importoVersValidi < oneriCalcolati
 		    && oneriCalcolati < autodeterminataOnere) {
