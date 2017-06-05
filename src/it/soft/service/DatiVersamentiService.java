@@ -1651,6 +1651,10 @@ public class DatiVersamentiService {
 		    oneriConcessCalcolato = (interessiMora + delta)
 			    + (oneriConcessCalcolato - autodeterminataOnere);
 		}
+	    } else if (autodeterminataOnere > oneriConcessCalcolato
+		    && oneriConcessCalcolato > oneriConcessVersato) {
+		oneriConcessCalcolato = interessiMora + delta
+			- oneriConcessVersato;
 	    } else {
 		oneriConcessCalcolato = interessiMora + delta;
 	    }
@@ -1676,7 +1680,7 @@ public class DatiVersamentiService {
 		delta = autodeterminataOnere - oneriConcessVersato;
 	    }
 	    Double interessiMora = Double.valueOf(0);
-	    //calcolato < versato< autodeterminata
+	    // calcolato < versato< autodeterminata
 	    if (delta > 0) {
 		interessiMora = calcolaInteressiMoraOneriLegge3(abusoDB,
 			praticaDB, autodeterminataOnere, oneriConcessCalcolato);
