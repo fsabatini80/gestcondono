@@ -1,7 +1,6 @@
 package it.soft.web;
 
 import it.soft.dao.LeggiCondonoHome;
-import it.soft.domain.Datiabuso;
 import it.soft.domain.Datipratica;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
@@ -21,18 +20,18 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class CruscottoController extends BaseController {
 
-//    @Autowired
-//    DatiPraticaHome datiPraticaHome;
+    // @Autowired
+    // DatiPraticaHome datiPraticaHome;
     @Autowired
     LeggiCondonoHome leggiCondonoHome;
-//    @Autowired
-//    DestinazioneUsoHome destinazioneUsoHome;
-//    @Autowired
-//    EpocaAbusoHome epocaAbusoHome;
-//    @Autowired
-//    TipoOperaHome tipoOperaHome;
-//    @Autowired
-//    TipologiaAbusoHome tipologiaAbusoHome;
+    // @Autowired
+    // DestinazioneUsoHome destinazioneUsoHome;
+    // @Autowired
+    // EpocaAbusoHome epocaAbusoHome;
+    // @Autowired
+    // TipoOperaHome tipoOperaHome;
+    // @Autowired
+    // TipologiaAbusoHome tipologiaAbusoHome;
     // @Autowired
     // UtentiHome utentiHome;
     // @Autowired
@@ -41,20 +40,24 @@ public class CruscottoController extends BaseController {
     // TipoAlloggioHome tipoAlloggioHome;
     // @Autowired
     // CaratteristicheHome caratteristicheHome;
-//    @Autowired
-//    SoggettiAbusoHome soggettiAbusoHome;
+    // @Autowired
+    // SoggettiAbusoHome soggettiAbusoHome;
 
-//    @Autowired
-//    DatiPraticaValidator validatorPratica;
-//    @Autowired
-//    DatiAbusoValidator datiAbusoValidator;
+    // @Autowired
+    // DatiPraticaValidator validatorPratica;
+    // @Autowired
+    // DatiAbusoValidator datiAbusoValidator;
 
     @Autowired
     DatiPraticaService datiPraticaService;
     @Autowired
     DatiAbusoService datiAbusoService;
 
-    //    DatiPraticaPojo praticaPojo;
+    private int abusi47;
+    private int abusi724;
+    private int abusi326;
+
+    // DatiPraticaPojo praticaPojo;
 
     // DatiAbusoPojo abusoPojo;
     // String idDatiAlloggio;
@@ -77,19 +80,45 @@ public class CruscottoController extends BaseController {
 	List<Datipratica> list47_85 = datiPraticaService
 		.findBy(leggiCondonoHome.findById(Integer
 			.valueOf(Constants.ID_LEGGE_47_85)));
+	setAbusi47(contaAbusi(list47_85));
 	List<Datipratica> list724_94 = datiPraticaService
 		.findBy(leggiCondonoHome.findById(Integer
 			.valueOf(Constants.ID_LEGGE_724_94)));
-	List<Datipratica> list326_ = datiPraticaService.findBy(leggiCondonoHome
-		.findById(Integer.valueOf(Constants.ID_LEGGE_326_03)));
-
-	List<Datiabuso> abusi = datiAbusoService.findAll();
+	setAbusi724(contaAbusi(list724_94));
+	List<Datipratica> list326_04 = datiPraticaService
+		.findBy(leggiCondonoHome.findById(Integer
+			.valueOf(Constants.ID_LEGGE_326_03)));
+	setAbusi326(contaAbusi(list326_04));
 
 	model.addAttribute("presentiL47", list47_85.size());
 	model.addAttribute("presentiL724", list724_94.size());
-	model.addAttribute("presentiL326", list326_.size());
+	model.addAttribute("presentiL326", list326_04.size());
 	model.addAttribute("presentiLTot", list47_85.size() + list724_94.size()
-		+ list326_.size());
+		+ list326_04.size());
+
+	model.addAttribute("abusiL47", getAbusi47());
+	model.addAttribute("abusiL724", getAbusi724());
+	model.addAttribute("abusiL326", getAbusi326());
+	model.addAttribute("abusiTot", getAbusi47() + getAbusi724()
+		+ getAbusi326());
+
+	setFakeData(model);
+
+	return new ModelAndView(view, model);
+    }
+
+    private int contaAbusi(List<Datipratica> list) {
+	// TODO Auto-generated method stub
+	int count = 0;
+	for (Datipratica datipratica : list) {
+	    count = count
+		    + Integer.parseInt(datiAbusoService.countProg(String
+			    .valueOf(datipratica.getIddatipratica()))) - 1;
+	}
+	return count;
+    }
+
+    private void setFakeData(ModelMap model) {
 	model.addAttribute("istruiteL47", "0");
 	model.addAttribute("istruiteL724", "0");
 	model.addAttribute("istruiteL326", "0");
@@ -98,13 +127,30 @@ public class CruscottoController extends BaseController {
 	model.addAttribute("daistruireL724", "0");
 	model.addAttribute("daistruireL326", "0");
 	model.addAttribute("daistruireTot", "0");
-	model.addAttribute("abusiL47", abusi.size());
-	model.addAttribute("abusiL724", abusi.size());
-	model.addAttribute("abusiL326", abusi.size());
-	model.addAttribute("abusiTot",
-		abusi.size() + abusi.size() + abusi.size());
+    }
 
-	return new ModelAndView(view, model);
+    public int getAbusi47() {
+	return abusi47;
+    }
+
+    public void setAbusi47(int abusi47) {
+	this.abusi47 = abusi47;
+    }
+
+    public int getAbusi724() {
+	return abusi724;
+    }
+
+    public void setAbusi724(int abusi724) {
+	this.abusi724 = abusi724;
+    }
+
+    public int getAbusi326() {
+	return abusi326;
+    }
+
+    public void setAbusi326(int abusi326) {
+	this.abusi326 = abusi326;
     }
 
 }
