@@ -1336,6 +1336,7 @@ public class DatiVersamentiService {
 		    + " zona urbanistica = "
 		    + abusoDB.getLocalizzazione().getZonaUrbanizzazione());
 	    answer = (mcUtili + mcAccessori) * parametroTab;
+	    System.out.println("calcoloOneriDaTab = " + answer);
 	}
 	return answer;
     }
@@ -1421,7 +1422,8 @@ public class DatiVersamentiService {
 	System.out
 		.println("percTotale getincrementoSUAbitabile: " + percTotale);
 
-	percAccessori = (superficeAccessoriaTotale / superficeUtileTotale) * 100;
+	if (superficeUtileTotale > 0)
+	    percAccessori = (superficeAccessoriaTotale / superficeUtileTotale) * 100;
 	System.out.println("superficeAccessoriaTotale : " + percAccessori);
 	System.out
 		.println("percTotale getincrementoSUAbitabile: " + percTotale);
@@ -1574,7 +1576,8 @@ public class DatiVersamentiService {
     private Double getincrementoSUAbitabile(Double superficeUtileTotale,
 	    Double superficeUtile) {
 	Double perc = Double.valueOf(0);
-	if (superficeUtile < 95) {
+	if (superficeUtile < 95
+		&& (superficeUtile > 0 || superficeUtileTotale > 0)) {
 	    perc = (superficeUtile / superficeUtileTotale) * 0;
 	} else if (superficeUtile > 95 && superficeUtile <= 110) {
 	    perc = (superficeUtile / superficeUtileTotale) * 5;
