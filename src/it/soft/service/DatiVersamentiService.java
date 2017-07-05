@@ -1366,7 +1366,7 @@ public class DatiVersamentiService {
 	Double superficeAccessoria = Double.valueOf(0);
 	Double percTotale = Double.valueOf(0);
 	Double perc = Double.valueOf(0);
-	Double percAccessori = Double.valueOf(1);
+	Double percAccessori = Double.valueOf(0);
 	Integer caratteristicheSpecialiTotale = new Integer(0);
 	String[] caratteristicheSpecialiTotaleArray = null;
 	Double costoR1 = Double.valueOf(0);
@@ -1422,7 +1422,7 @@ public class DatiVersamentiService {
 	System.out
 		.println("percTotale getincrementoSUAbitabile: " + percTotale);
 
-	if (superficeUtileTotale > 0)
+//	if (superficeUtileTotale > 0)
 	    percAccessori = (superficeAccessoriaTotale / superficeUtileTotale) * 100;
 	System.out.println("superficeAccessoriaTotale : " + percAccessori);
 	System.out
