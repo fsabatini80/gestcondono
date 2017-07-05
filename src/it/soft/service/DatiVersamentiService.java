@@ -1366,7 +1366,7 @@ public class DatiVersamentiService {
 	Double superficeAccessoria = Double.valueOf(0);
 	Double percTotale = Double.valueOf(0);
 	Double perc = Double.valueOf(0);
-	Double percAccessori = Double.valueOf(0);
+	Double percAccessori = Double.valueOf(1);
 	Integer caratteristicheSpecialiTotale = new Integer(0);
 	String[] caratteristicheSpecialiTotaleArray = null;
 	Double costoR1 = Double.valueOf(0);
