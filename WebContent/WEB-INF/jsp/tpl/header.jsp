@@ -92,6 +92,22 @@
 		$("#effect7").hide();
 		$("#effect8").hide();
 		$("#effect9").hide();
+
+		$("#dialog").dialog({
+			autoOpen : false,
+			minHeight: 200
+		});
+		$("#opener").click(function() {
+			$("#dialog").dialog("open");
+		});
+		$("#converti")
+				.click(
+						function() {
+							document.getElementById('euro').value = Math
+									.round(document.getElementById('lire').value * 100 / 1936.27) / 100;
+							return false;
+						});
+
 	});
 
 	// run the currently selected effect    
@@ -123,7 +139,6 @@
 					.getElementsByTagName("input").item(i).value.toUpperCase();
 		}
 	}
-
 	/**
 	Expression	Description
 	hasRole([role])	Returns true if the current principal has the specified role.
@@ -136,7 +151,7 @@
 	isRememberMe()	Returns true if the current principal is a remember-me user
 	isAuthenticated()	Returns true if the user is not anonymous
 	isFullyAuthenticated()	Returns true if the user is not an anonymous or a remember-me user
-	 */
+	 **/
 </script>
 
 <title>Gestione Condoni</title>
@@ -158,13 +173,23 @@
 	</div>
 	<br />
 	<div id="barraMenu" class="ui-widget-header">
-		<a href="<c:url value="home.htm" />">Home</a> 
-		<a href="<c:url value="homePratica.htm" />"> Pratiche</a> 
-		<a href="#">Scadenze</a>
+		<a href="<c:url value="home.htm" />">Home</a> <a
+			href="<c:url value="homePratica.htm" />"> Pratiche</a> <a href="#">Scadenze</a>
 		<a href="#">Solleciti</a>
 		<sec:authorize access="hasRole('superadmin')">
 			<a href="stampe.htm">Stampe</a>
 		</sec:authorize>
 		<a href="<c:url value="cruscotto.htm" />" title="cruscotto">Cruscotto</a>
+		<button id="opener">Lire/Euro</button>
 	</div>
 	<br />
+	<div id="dialog" title="Convertitore lire/euro">
+		<form>
+			<fieldset style="width: 190px">
+				<label for="lire" style="width: 50px">Lire</label> <input type="text" name="lire"
+					id="lire"> <label for="euro" style="width: 50px">Euro</label> <input
+					type="text" name="euro" id="euro">
+				<button id="converti" style="vertical-align: middle;">converti</button>
+			</fieldset>
+		</form>
+	</div>

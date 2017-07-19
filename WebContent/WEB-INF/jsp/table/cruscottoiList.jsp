@@ -28,7 +28,7 @@
 			<td>${presentiLTot}</td>
 		</tr>
 		<tr>
-			<td>Domande istruite</td>
+			<td>Domande sollecitate</td>
 			<td>n.</td>
 			<td>${istruiteL47}</td>
 			<td>${istruiteL724}</td>
@@ -36,7 +36,7 @@
 			<td>${istruiteLTot}</td>
 		</tr>
 		<tr>
-			<td>Domande da istruire</td>
+			<td>Domande sollecitate insolute</td>
 			<td>n.</td>
 			<td>${daistruireL47}</td>
 			<td>${daistruireL724 }</td>

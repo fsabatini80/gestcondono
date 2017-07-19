@@ -7,21 +7,21 @@
 <html>
 <jsp:include page="../tpl/header.jsp" />
 <script type="text/javascript">
-$( document ).ready(function() {
-	//$("a").removeClass("ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only");
-	//$("span").removeClass("ui-button-text");
-	var listx = document.querySelectorAll('*[id^="x"]');
-	var listy = document.querySelectorAll('*[id^="y"]');
-	var listz = document.querySelectorAll('*[id^="z"]');
-	for(i=0; i < listx.length; i++){
-		listx[i].removeAttribute("class");
-		listy[i].removeAttribute("class");
-		listz[i].removeAttribute("class");
-	}
-	
-});
+	$(document).ready(function() {
+		//$("a").removeClass("ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only");
+		//$("span").removeClass("ui-button-text");
+		var listx = document.querySelectorAll('*[id^="x"]');
+		var listy = document.querySelectorAll('*[id^="y"]');
+		var listz = document.querySelectorAll('*[id^="z"]');
+		var listk = document.querySelectorAll('*[id^="k"]');
+		for (i = 0; i < listx.length; i++) {
+			listx[i].removeAttribute("class");
+			listy[i].removeAttribute("class");
+			listz[i].removeAttribute("class");
+			listk[i].removeAttribute("class");
+		}
 
-
+	});
 </script>
 <h2
 	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
@@ -38,6 +38,7 @@ $( document ).ready(function() {
 				<th>mod.</th>
 				<th>vis. abusi</th>
 				<th>vis. vers.</th>
+				<th>soll.</th>
 			</tr>
 		</thead>
 		<tbody align="center">
@@ -60,6 +61,11 @@ $( document ).ready(function() {
 						href="<c:url value="versamenti.htm?idpratica=${pratica.iddatipratica}" />"
 						title="visualizza versamenti"><img
 							src="img/24/symbol_euro.png" title="visualizza versamenti"></a></td>
+
+					<td><a id="k${pratica.iddatipratica}"
+						href="<c:url value="solleciti.htm?idpratica=${pratica.iddatipratica}" />"
+						title="visualizza solleciti"><img
+							src="img/24/hand_yellow_card.png" title="visualizza solleciti"></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
