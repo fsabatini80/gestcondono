@@ -5,7 +5,11 @@ import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DatiSollecitoHome;
 import it.soft.domain.DatiSollecito;
 import it.soft.domain.Datiabuso;
+import it.soft.service.DatiAbusoService;
+import it.soft.service.DatiPraticaService;
 import it.soft.service.DatiSollecitiService;
+import it.soft.service.WordService;
+import it.soft.web.pojo.DatiPraticaPojo;
 import it.soft.web.pojo.DatiSollecitoPojo;
 
 import java.math.BigDecimal;
@@ -13,6 +17,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,23 +42,28 @@ public class SollecitiController extends BaseController {
 
     @Autowired
     DatiSollecitiService datiSollecitiService;
-
-    // @Autowired
-    // DatiVersamentiValidator versamentiValidator;
+    @Autowired
+    DatiPraticaService datiPraticaService;
+    @Autowired
+    WordService wservice;
+    @Autowired
+    DatiAbusoService datiAbusoService;
 
     DatiSollecitoPojo datiSollecitoPojo;
 
     String idPratica;
+    String idAbuso;
 
     @RequestMapping(value = "/solleciti", method = RequestMethod.GET)
     public ModelAndView solleciti(@RequestParam(value = "idpratica") String id,
-	    ModelMap model) throws Exception {
+	    @RequestParam(value = "idabuso") String idabuso, ModelMap model)
+	    throws Exception {
 
 	String view = "table/sollecitiList";
-	// ricerca versamenti
 	List<DatiSollecito> list = datiSollecitoHome.findAll(BigInteger
 		.valueOf(Integer.valueOf(id)));
 	this.idPratica = id;
+	this.idAbuso = idabuso;
 	initSollecito(model);
 	model.addAttribute("solleciti", list);
 	model.addAttribute("idpratica", this.idPratica);
@@ -71,18 +84,11 @@ public class SollecitiController extends BaseController {
 	    Errors errors) throws Exception {
 
 	String view = "redirect:solleciti.htm?idpratica="
-		.concat(this.idPratica);
+		.concat(this.idPratica).concat("&idabuso=")
+		.concat(this.idAbuso);
 	this.datiSollecitoPojo = pojo;
 	pojo.setIddatiPratica(this.idPratica);
-	// versamentiValidator.validate(pojo, errors);
-	// if (errors.hasFieldErrors()) {
-	// initSollecito(model);
-	// view = "form/formSollecito";
-	// } else {
-	// pojo.setIddatipratica(this.idPratica);
-	// versamentiService.persist(pojo);
-	// view = view.concat(pojo.getIddatipratica());
-	// }
+	pojo.setIdAbuso(this.idAbuso);
 	datiSollecitiService.save(pojo);
 	return new ModelAndView(view, model);
     }
@@ -92,7 +98,8 @@ public class SollecitiController extends BaseController {
 	    @RequestParam(value = "idSollecito") String id) throws Exception {
 
 	String view = "redirect:solleciti.htm?idpratica="
-		.concat(this.idPratica);
+		.concat(this.idPratica).concat("&idabuso=")
+		.concat(this.idAbuso);
 	datiSollecitiService.remove(id);
 	return new ModelAndView(view, model);
     }
@@ -117,5 +124,65 @@ public class SollecitiController extends BaseController {
 	    progressivi.add(String.valueOf(datiabuso.getProgressivo()));
 	}
 	model.addAttribute("progressivi", progressivi);
+    }
+
+    @RequestMapping(value = "/stampaSollecito1", method = RequestMethod.GET)
+    public void stampaSollecito1(
+	    @RequestParam(value = "idpratica") String idpratica,
+	    @RequestParam(value = "idabuso") String idabuso,
+	    @RequestParam(value = "progressivo") String progressivo,
+	    HttpServletResponse response) {
+	DatiPraticaPojo praticaDB = datiPraticaService.findById(idpratica);
+	String docTitle = "Lett_Not_Prot_" + praticaDB.getNumeroProtocollo()
+		+ "_Int_" + praticaDB.getNumeroPratica() + "_Sot_"
+		+ progressivo + "_sollecito_1.docx";
+	response.setHeader("Content-disposition", "attachment; filename="
+		+ docTitle);
+	response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+	try {
+	    XWPFDocument document = new XWPFDocument();
+	    document = wservice.creaSollecito(document, true,
+		    datiPraticaService, datiAbusoService, idpratica, idabuso,
+		    progressivo);
+	    document = wservice.createDoc(document, datiPraticaService,
+		    datiAbusoService, idpratica, idabuso, progressivo);
+	    ServletOutputStream out = response.getOutputStream();
+	    document.write(out);
+	    out.flush();
+	    out.close();
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+    }
+
+    @RequestMapping(value = "/stampaSollecito2", method = RequestMethod.GET)
+    public void stampaSollecito2(
+	    @RequestParam(value = "idpratica") String idpratica,
+	    @RequestParam(value = "idabuso") String idabuso,
+	    @RequestParam(value = "progressivo") String progressivo,
+	    HttpServletResponse response) {
+	DatiPraticaPojo praticaDB = datiPraticaService.findById(idpratica);
+	String docTitle = "Lett_Not_Prot_" + praticaDB.getNumeroProtocollo()
+		+ "_Int_" + praticaDB.getNumeroPratica() + "_Sot_"
+		+ progressivo + "_sollecito_2.docx";
+	response.setHeader("Content-disposition", "attachment; filename="
+		+ docTitle);
+	response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+	try {
+	    XWPFDocument document = new XWPFDocument();
+	    document = wservice.creaSollecito(document, true,
+		    datiPraticaService, datiAbusoService, idpratica, idabuso,
+		    progressivo);
+	    document = wservice.createDoc(document, datiPraticaService,
+		    datiAbusoService, idpratica, idabuso, progressivo);
+	    ServletOutputStream out = response.getOutputStream();
+	    document.write(out);
+	    out.flush();
+	    out.close();
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
     }
 }

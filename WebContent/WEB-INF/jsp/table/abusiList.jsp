@@ -29,6 +29,7 @@
 				<th>vis. doc.</th>
 				<th>vis. sogg.</th>
 				<th>stampa lettera</th>
+				<th>vis. solleciti</th>
 			</tr>
 		</thead>
 		<tbody align="center">
@@ -61,6 +62,10 @@
 						title="stampa lettera"> <img title="stampa lettera"
 							src="img/24/printer.png">
 					</a></td>
+					<td><a id="${abuso.iddatiabuso}"
+						href="<c:url value="solleciti.htm?idpratica=${abuso.datiPratica.iddatipratica}&idabuso=${abuso.iddatiabuso}" />"
+						title="visualizza solleciti"><img
+							src="img/24/hand_yellow_card.png" title="visualizza solleciti"></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

@@ -10,6 +10,7 @@ import it.soft.dao.LeggiCondonoHome;
 import it.soft.dao.TipologiaAbusoHome;
 import it.soft.domain.DatiAlloggio;
 import it.soft.domain.DatiFabbricati;
+import it.soft.domain.DatiSollecito;
 import it.soft.domain.DatiTerreni;
 import it.soft.domain.Datiabuso;
 import it.soft.domain.DocumentiAbuso;
@@ -80,6 +81,8 @@ public class WordService {
     DatiVersamentiService datiVersamentiService;
     @Autowired
     TipologiaAbusoHome tipologiaAbusoHome;
+    @Autowired
+    DatiSollecitiService datiSollecitiService;
 
     @Autowired
     ServletContext context;
@@ -293,8 +296,8 @@ public class WordService {
 		FONT_SIZE_SUBTITLE);
 
 	XWPFTable table1_ = document.createTable(1, 1);
-	UtilityWord.addTableCellCenter(table1_.getRow(0).getCell(0),
-		"", true, ParagraphAlignment.LEFT);
+	UtilityWord.addTableCellCenter(table1_.getRow(0).getCell(0), "", true,
+		ParagraphAlignment.LEFT);
 	table1_.getCTTbl().getTblPr().unsetTblBorders();
 
 	XWPFTable table2 = document.createTable(5, 3);
@@ -335,8 +338,8 @@ public class WordService {
 		FONT_SIZE_SUBTITLE);
 
 	XWPFTable table2_ = document.createTable(1, 1);
-	UtilityWord.addTableCellCenter(table2_.getRow(0).getCell(0),
-		"", true, ParagraphAlignment.LEFT);
+	UtilityWord.addTableCellCenter(table2_.getRow(0).getCell(0), "", true,
+		ParagraphAlignment.LEFT);
 	table2_.getCTTbl().getTblPr().unsetTblBorders();
 
 	XWPFTable table3 = document.createTable(3, 3);
@@ -795,7 +798,7 @@ public class WordService {
 
 	// NOTE INFORMATIVE
 	XWPFParagraph p = document.createParagraph();
-//	p.createRun().addBreak();
+	// p.createRun().addBreak();
 	UtilityWord
 		.addTextBoldUnderlineBreak(
 			p.createRun(),
@@ -1420,5 +1423,126 @@ public class WordService {
 	paragraphAOneRunOne.addBreak();
 	paragraphAOneRunOne.addBreak();
 
+    }
+
+    public XWPFDocument creaSollecito(XWPFDocument document,
+	    boolean primosollecito, DatiPraticaService datiPraticaService,
+	    DatiAbusoService datiAbusoService, String idpratica,
+	    String idabuso, String progressivo) {
+
+	DatiPraticaPojo praticaDB = datiPraticaService.findById(idpratica);
+	DatiAbusoPojo abusoDB = datiAbusoService.findById(idabuso);
+	DatiSollecito sollecito = datiSollecitiService.findAll(idpratica,
+		progressivo);
+
+	List<RelSoggettoAbuso> listaSoggetti = datiAbusoService
+		.findAllSoggettiById(idabuso);
+	// create header
+	createHeader(document.createParagraph());
+	document.createParagraph().createRun().addBreak();
+	// create Protocollo e lista soggetti
+	createListaSoggettiSollecito(document.createParagraph(), praticaDB,
+		abusoDB, listaSoggetti, sollecito, primosollecito);
+	document.createParagraph().createRun().addBreak();
+	creaOggettoSollecito(document.createParagraph(), praticaDB, abusoDB);
+
+	String testo = "In riferimento alla nostra precedente comunicazione che per conoscenza si allega in copia alla presente, si sollecita la Signoria Vostra all’integrazione della documentazione e dei pagamenti richiesti al fine di poter procedere alla predetta definizione dell’istanza in oggetto.";
+	UtilityWord.addTextSimpleBreak(document.createParagraph().createRun(),
+		testo);
+
+	testo = "I nostri uffici sono a Vostra disposizione per fornire tutta l’assistenza necessaria per il completamento delle procedure d’istruttoria ed il rilascio della concessione in sanatoria presso lo sportello dedicato del Comune di Palombara Sabina, in Piazza Vittorio Veneto 12, nei seguenti giorni:";
+	UtilityWord.addTextSimpleBreak(document.createParagraph().createRun(),
+		testo);
+
+	// TABELLA ORARI
+	XWPFTable table1 = document.createTable(1, 1);
+	UtilityWord
+		.addTableCell(
+			table1.getRow(0).getCell(0),
+			"Il martedì dalle ore 9.00 alle ore 12.00 e il giovedì dalle ore 15.00 alle ore 17.00.",
+			true, ParagraphAlignment.CENTER, CELL_WIDTH_ALL,
+			FONT_SIZE_SUBTITLE);
+	// FINE TABELLA ORARI
+
+	testo = "Per qualsiasi comunicazione o richiesta di appuntamento è sempre possibile contattare il numero telefonico 0774/636443.";
+	UtilityWord.addTextBoldBreak(document.createParagraph().createRun(),
+		testo);
+
+	testo = "La presente comunicazione è stata redatta dalla CO.GE.SI. Srl quale affidataria del servizio a supporto della definizione delle pratiche di condono edilizio del Comune di Palombara Sabina.";
+	UtilityWord.addTextBoldBreak(document.createParagraph().createRun(),
+		testo);
+
+	// TABELLA RESPONSABILE
+	XWPFTable table2 = document.createTable(1, 1);
+	UtilityWord.addTableCell(table2.getRow(0).getCell(0),
+		"Il responsabile del procedimento Arch. Paolo Caracciolo",
+		true, ParagraphAlignment.CENTER, CELL_WIDTH_ALL,
+		FONT_SIZE_SUBTITLE);
+	// FINE TABELLA RESPONSABILE
+
+	testo = "La firma autografa del responsabile del procedimento, è sostituita dall’indicazione a stampa ai sensi dell’art. 6.quater della legge 80 del 15/03/1991.";
+	UtilityWord.addText(document.createParagraph().createRun(), testo,
+		true, ParagraphAlignment.LEFT, true, true, 9);
+
+	document.createParagraph().createRun().addBreak(BreakType.PAGE);
+
+	return document;
+    }
+
+    private void creaOggettoSollecito(XWPFParagraph paragraphggetto,
+	    DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB) {
+
+	UtilityWord.addTextBold(paragraphggetto.createRun(), "Oggetto: ");
+	String oggetto = "Definizione Istanza di Sanatoria edilizia ai sensi della legge "
+		.concat(praticaDB.getLeggeCondono() != null ? leggiCondonoHome
+			.findById(Integer.valueOf(praticaDB.getLeggeCondono()))
+			.getLeggeNumero() : " ");
+	oggetto += " presentata il " + praticaDB.getDataDomanda();
+	oggetto += " con protocollo n. " + praticaDB.getNumeroProtocollo();
+	oggetto += " del " + praticaDB.getDataProtocollo();
+	oggetto += " sott " + abusoDB.getProgressivo();
+	oggetto += " N° interno " + praticaDB.getNumeroPratica();
+	oggetto += " richiesta da " + praticaDB.getCognome() + " "
+		+ praticaDB.getNome().concat(".");
+	XWPFRun run = paragraphggetto.createRun();
+	UtilityWord.addTextBoldBreak(run, oggetto);
+    }
+
+    private void createListaSoggettiSollecito(XWPFParagraph paragraph,
+	    DatiPraticaPojo praticaDB, DatiAbusoPojo abusoDB,
+	    List<RelSoggettoAbuso> listaSoggetti, DatiSollecito sollecito,
+	    boolean primosollecito) {
+	String testo1;
+	String testo2;
+	if (primosollecito) {
+	    testo1 = "Protocollo n° ".concat(sollecito.getProtocolloSoll1() != null?sollecito.getProtocolloSoll1():"");
+	    UtilityWord.addTextSimple(paragraph.createRun(), testo1);
+	    UtilityWord.addTab(paragraph, 1);
+	    testo2 = "del ".concat(sollecito.getDataInvioSoll1()!=null?sollecito.getDataInvioSoll1():"");
+	    UtilityWord.addTextSimpleBreak(paragraph.createRun(), testo2);
+	} else {
+	    testo1 = "Protocollo n° ".concat(sollecito.getProtocolloSoll2() != null?sollecito.getProtocolloSoll2():"");
+	    UtilityWord.addTextSimple(paragraph.createRun(), testo1);
+	    UtilityWord.addTab(paragraph, 1);
+	    testo2 = "del ".concat(sollecito.getDataInvioSoll2()!=null?sollecito.getDataInvioSoll2():"");
+	    UtilityWord.addTextSimpleBreak(paragraph.createRun(), testo2);
+	}
+	paragraph.createRun().addBreak();
+	for (RelSoggettoAbuso relSoggettoAbuso : listaSoggetti) {
+	    UtilityWord.addTab(paragraph, 7);
+	    UtilityWord.addTextBoldBreak(
+		    paragraph.createRun(),
+		    "" + relSoggettoAbuso.getCognome() + " "
+			    + relSoggettoAbuso.getNome());
+	    UtilityWord.addTab(paragraph, 7);
+	    UtilityWord.addTextBoldBreak(paragraph.createRun(), ""
+		    + relSoggettoAbuso.getIndirizzo());
+	    UtilityWord.addTab(paragraph, 7);
+	    UtilityWord.addTextBoldBreak(paragraph.createRun(),
+		    relSoggettoAbuso.getComuneResidenza() + " ("
+			    + relSoggettoAbuso.getProvinciaResidenza() + "), "
+			    + relSoggettoAbuso.getCap());
+	    paragraph.createRun().addBreak();
+	}
     }
 }

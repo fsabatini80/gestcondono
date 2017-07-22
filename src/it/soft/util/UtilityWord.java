@@ -154,7 +154,6 @@ public class UtilityWord {
 	run.setFontFamily(FONT_FAMILY);
 	run.getParagraph().setAlignment(alignP);
 	run.setText(testo);
-	run.setFontSize(11);
 	run.setBold(bold);
 	if (breakR)
 	    run.addBreak();

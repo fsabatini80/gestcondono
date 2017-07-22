@@ -13,12 +13,10 @@
 		var listx = document.querySelectorAll('*[id^="x"]');
 		var listy = document.querySelectorAll('*[id^="y"]');
 		var listz = document.querySelectorAll('*[id^="z"]');
-		var listk = document.querySelectorAll('*[id^="k"]');
 		for (i = 0; i < listx.length; i++) {
 			listx[i].removeAttribute("class");
 			listy[i].removeAttribute("class");
 			listz[i].removeAttribute("class");
-			listk[i].removeAttribute("class");
 		}
 
 	});
@@ -38,7 +36,6 @@
 				<th>mod.</th>
 				<th>vis. abusi</th>
 				<th>vis. vers.</th>
-				<th>soll.</th>
 			</tr>
 		</thead>
 		<tbody align="center">
@@ -61,11 +58,6 @@
 						href="<c:url value="versamenti.htm?idpratica=${pratica.iddatipratica}" />"
 						title="visualizza versamenti"><img
 							src="img/24/symbol_euro.png" title="visualizza versamenti"></a></td>
-
-					<td><a id="k${pratica.iddatipratica}"
-						href="<c:url value="solleciti.htm?idpratica=${pratica.iddatipratica}" />"
-						title="visualizza solleciti"><img
-							src="img/24/hand_yellow_card.png" title="visualizza solleciti"></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

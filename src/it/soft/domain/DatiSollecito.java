@@ -20,6 +20,7 @@ public class DatiSollecito implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private BigInteger iddatiSollecito;
+    private BigInteger idAbuso;
     private String dataInvioSoll1;
     private String dataInvioSoll2;
     private String dataPagamento;
@@ -122,6 +123,15 @@ public class DatiSollecito implements Serializable {
 
     public void setTecnicoIncaricato(String tecnicoIncaricato) {
 	this.tecnicoIncaricato = tecnicoIncaricato;
+    }
+
+    @Column(name = "id_abuso")
+    public BigInteger getIdAbuso() {
+	return idAbuso;
+    }
+
+    public void setIdAbuso(BigInteger idAbuso) {
+	this.idAbuso = idAbuso;
     }
 
 }

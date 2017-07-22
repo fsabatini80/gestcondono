@@ -24,8 +24,8 @@
 				<th>Numero Protocollo 1</th>
 				<th>Numero Protocollo 2</th>
 				<th>Data Pagamento</th>
-				<th>Stampa 1 sollecito</th>
-				<th>Stampa 2 sollecito</th>
+				<th>soll. 1</th>
+				<th>soll. 2</th>
 				<th>mod.</th>
 				<th>canc.</th>
 			</tr>
@@ -39,13 +39,13 @@
 					<td>${sollecito.protocolloSoll2}</td>
 					<td>${sollecito.dataPagamento}</td>
 					<td><a
-						href="<c:url value="modificaSollecito.htm?idSollecito=${sollecito.iddatiSollecito}" />"
-						title="modifica sollecito"><img src="img/24/hand_yellow_card.png"
-							title="modifica sollecito"></a></td>
+						href="<c:url value="stampaSollecito1.htm?idpratica=${sollecito.iddatiPratica}&idabuso=${sollecito.idAbuso}&progressivo=${sollecito.progressivoAbuso}" />"
+						title="stampa primo sollecito"><img src="img/24/hand_yellow_card.png"
+							title="stampa primo sollecito"></a></td>
 					<td><a
-						href="<c:url value="removeSollecito.htm?idSollecito=${sollecito.iddatiSollecito}" />"
-						title="cancella sollecito"><img src="img/24/hand_red_card.png"
-							title="cancella sollecito"></a></td>
+						href="<c:url value="stampaSollecito2.htm?idpratica=${sollecito.iddatiPratica}&idabuso=${sollecito.idAbuso}&progressivo=${sollecito.progressivoAbuso}" />"
+						title="stampa secondo sollecito"><img src="img/24/hand_red_card.png"
+							title="stampa secondo sollecito"></a></td>
 					<td><a
 						href="<c:url value="modificaSollecito.htm?idSollecito=${sollecito.iddatiSollecito}" />"
 						title="modifica sollecito"><img src="img/24/edit.png"

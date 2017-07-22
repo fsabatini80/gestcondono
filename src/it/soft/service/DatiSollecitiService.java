@@ -23,10 +23,11 @@ public class DatiSollecitiService {
     public DatiSollecito save(DatiSollecitoPojo pojo) {
 	DatiSollecito datiSollecito = new DatiSollecito();
 	try {
-	    ConvertUtilsBean convertUtilsBean = BeanUtilsBean.getInstance().getConvertUtils();
-	    convertUtilsBean.register(false, true, -1);	    
-	    org.apache.commons.beanutils.BeanUtils.copyProperties(datiSollecito,
-		    pojo);
+	    ConvertUtilsBean convertUtilsBean = BeanUtilsBean.getInstance()
+		    .getConvertUtils();
+	    convertUtilsBean.register(false, true, -1);
+	    org.apache.commons.beanutils.BeanUtils.copyProperties(
+		    datiSollecito, pojo);
 	} catch (IllegalAccessException e) {
 	    e.printStackTrace();
 	} catch (InvocationTargetException e) {
@@ -63,6 +64,19 @@ public class DatiSollecitiService {
 	DatiSollecito source = datiSollecitoHome.findById(BigInteger
 		.valueOf(Integer.parseInt(id)));
 	datiSollecitoHome.remove(source);
+
+    }
+
+    public DatiSollecito findAll(String idpratica, String progressivo) {
+	BigInteger idPratBD = BigInteger.valueOf(Integer.valueOf(idpratica));
+	Integer progressivoInt = Integer.valueOf(progressivo);
+	List<DatiSollecito> lista = datiSollecitoHome.findAll(idPratBD,
+		progressivoInt);
+	DatiSollecito datiSollecito = new DatiSollecito();
+	if (lista != null && !lista.isEmpty()) {
+	    datiSollecito = lista.get(0);
+	}
+	return datiSollecito;
 
     }
 }

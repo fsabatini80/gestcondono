@@ -6,6 +6,7 @@ public class DatiSollecitoPojo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String iddatiSollecito;
+    private String idAbuso;
     private String dataInvioSoll1;
     private String dataInvioSoll2;
     private String dataPagamento;
@@ -97,6 +98,14 @@ public class DatiSollecitoPojo implements Serializable {
 
     public void setTecnicoIncaricato(String tecnicoIncaricato) {
 	this.tecnicoIncaricato = tecnicoIncaricato;
+    }
+
+    public String getIdAbuso() {
+	return idAbuso;
+    }
+
+    public void setIdAbuso(String idAbuso) {
+	this.idAbuso = idAbuso;
     }
 
 }

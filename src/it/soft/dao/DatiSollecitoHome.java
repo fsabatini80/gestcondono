@@ -149,8 +149,8 @@ public class DatiSollecitoHome {
 		    .getCurrentSession();
 	    sess.beginTransaction();
 	    Criteria cr = sess.createCriteria(DatiSollecito.class);
-	    cr.add(Restrictions.eq("iddatipratica", idPratica));
-	    cr.add(Restrictions.eq("progressivo_abuso", progressivo));
+	    cr.add(Restrictions.eq("iddatiPratica", idPratica));
+	    cr.add(Restrictions.eq("progressivoAbuso", progressivo));
 	    List<DatiSollecito> results = cr.list();
 	    return results;
 	} catch (RuntimeException re) {
