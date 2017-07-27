@@ -20,6 +20,11 @@
 					cssClass="ui-state-error" /></td>
 		</tr>
 		<tr>
+			<td>Data stampa:</td>
+			<td><form:input path="dataStampa" id="datepicker2" /></td>
+			<td><form:errors path="dataStampa" cssClass="ui-state-error" /></td>
+		</tr>
+		<tr>
 			<td>Protocollo primo sollecito:</td>
 			<td><form:input path="protocolloSoll1" /> <form:hidden
 					path="iddatiPratica" /> <form:hidden path="iddatiSollecito" /></td>
@@ -28,7 +33,7 @@
 		</tr>
 		<tr>
 			<td>Data invio primo sollecito:</td>
-			<td><form:input path="dataInvioSoll1" id="datepicker"/></td>
+			<td><form:input path="dataInvioSoll1" id="datepicker" /></td>
 			<td><form:errors path="dataInvioSoll1" cssClass="ui-state-error" /></td>
 		</tr>
 		<tr>
@@ -54,8 +59,9 @@
 		</tr>
 		<tr>
 			<td>Tecnico incaricato:</td>
-			<td><form:input path="tecnicoIncaricato" /></td>
-			<td><form:errors path="tecnicoIncaricato" cssClass="ui-state-error" /></td>
+			<td><form:input path="tecnicoIncaricato" readonly="true"/></td>
+			<td><form:errors path="tecnicoIncaricato"
+					cssClass="ui-state-error" /></td>
 		</tr>
 	</table>
 	<form:button value="Salva" name="Salva">Salva</form:button>

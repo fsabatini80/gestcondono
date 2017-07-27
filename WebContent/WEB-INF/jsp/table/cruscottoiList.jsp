@@ -28,28 +28,28 @@
 			<td>${presentiLTot}</td>
 		</tr>
 		<tr>
-			<td>Domande sollecitate</td>
-			<td>n.</td>
-			<td>${istruiteL47}</td>
-			<td>${istruiteL724}</td>
-			<td>${istruiteL326}</td>
-			<td>${istruiteLTot}</td>
-		</tr>
-		<tr>
-			<td>Domande sollecitate insolute</td>
-			<td>n.</td>
-			<td>${daistruireL47}</td>
-			<td>${daistruireL724 }</td>
-			<td>${daistruireL326 }</td>
-			<td>${daistruireTot }</td>
-		</tr>
-		<tr>
 			<td>Abusi istruiti</td>
 			<td>n.</td>
 			<td>${abusiL47}</td>
 			<td>${abusiL724 }</td>
 			<td>${abusiL326 }</td>
 			<td>${abusiTot}</td>
+		</tr>
+		<tr>
+			<td>Domande sollecitate</td>
+			<td>n.</td>
+			<td>${sollecitateL47}</td>
+			<td>${sollecitateL724}</td>
+			<td>${sollecitateL326}</td>
+			<td>${sollecitateTot}</td>
+		</tr>
+		<tr>
+			<td>Domande sollecitate insolute</td>
+			<td>n.</td>
+			<td>${sollecitateInsoluteL47}</td>
+			<td>${sollecitateInsoluteL724 }</td>
+			<td>${sollecitateInsoluteL326 }</td>
+			<td>${sollecitateInsoluteTot }</td>
 		</tr>
 	</tbody>
 </table>

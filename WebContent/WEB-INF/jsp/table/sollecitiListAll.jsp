@@ -9,12 +9,7 @@
 <h2
 	class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Lista
 	Solleciti</h2>
-<div>
-	<a href="<c:url value="nuovoSollecito.htm" />"
-		title="aggiungi un nuovo sollecito"> <img
-		title="aggiungi un nuovo sollecito" src="img/add.png">
-	</a>
-</div>
+<div></div>
 <div>
 	<table id="example10" class="display">
 		<thead>
@@ -50,7 +45,7 @@
 						href="<c:url value="modificaSollecito.htm?idSollecito=${sollecito.iddatiSollecito}" />"
 						title="modifica sollecito"><img src="img/24/edit.png"
 							title="modifica sollecito"></a></td>
-					<!-- <td><a
+					<!-- td><a
 						href="<c:url value="removeSollecito.htm?idSollecito=${sollecito.iddatiSollecito}" />"
 						title="cancella sollecito"><img src="img/24/delete.png"
 							title="cancella sollecito"></a></td> -->
@@ -58,8 +53,4 @@
 			</c:forEach>
 		</tbody>
 	</table>
-</div>
-<div>
-	<a href="<c:url value="pratica.htm?idpratica=${idpratica}" />"
-		title="INDIETRO"> Indietro </a>
 </div>

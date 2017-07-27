@@ -95,7 +95,7 @@
 
 		$("#dialog").dialog({
 			autoOpen : false,
-			minHeight: 200
+			minHeight : 200
 		});
 		$("#opener").click(function() {
 			$("#dialog").dialog("open");
@@ -175,7 +175,7 @@
 	<div id="barraMenu" class="ui-widget-header">
 		<a href="<c:url value="home.htm" />">Home</a> <a
 			href="<c:url value="homePratica.htm" />"> Pratiche</a> <a href="#">Scadenze</a>
-		<a href="#">Solleciti</a>
+		<a href="sollecitiListAll.htm">Solleciti</a>
 		<sec:authorize access="hasRole('superadmin')">
 			<a href="stampe.htm">Stampe</a>
 		</sec:authorize>
@@ -186,9 +186,10 @@
 	<div id="dialog" title="Convertitore lire/euro">
 		<form>
 			<fieldset style="width: 190px">
-				<label for="lire" style="width: 50px">Lire</label> <input type="text" name="lire"
-					id="lire"> <label for="euro" style="width: 50px">Euro</label> <input
-					type="text" name="euro" id="euro">
+				<label for="lire" style="width: 50px">Lire</label> <input
+					type="text" name="lire" id="lire"> <label for="euro"
+					style="width: 50px">Euro</label> <input type="text" name="euro"
+					id="euro">
 				<button id="converti" style="vertical-align: middle;">converti</button>
 			</fieldset>
 		</form>
