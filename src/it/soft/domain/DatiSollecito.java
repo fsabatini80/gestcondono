@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -24,12 +26,13 @@ public class DatiSollecito implements Serializable {
     private String dataInvioSoll1;
     private String dataInvioSoll2;
     private String dataPagamento;
-    private BigInteger iddatiPratica;
-    private byte pagato;
-    private int progressivoAbuso;
+    private Datipratica iddatiPratica;
+    private Boolean pagato;
+    private Integer progressivoAbuso;
     private String protocolloSoll1;
     private String protocolloSoll2;
     private String tecnicoIncaricato;
+    private String dataStampa;
 
     public DatiSollecito() {
     }
@@ -72,29 +75,30 @@ public class DatiSollecito implements Serializable {
 	this.dataPagamento = dataPagamento;
     }
 
-    @Column(name = "iddati_pratica")
-    public BigInteger getIddatiPratica() {
+    @ManyToOne
+    @JoinColumn(name="iddati_pratica")
+    public Datipratica getIddatiPratica() {
 	return this.iddatiPratica;
     }
 
-    public void setIddatiPratica(BigInteger iddatiPratica) {
+    public void setIddatiPratica(Datipratica iddatiPratica) {
 	this.iddatiPratica = iddatiPratica;
     }
 
-    public byte getPagato() {
+    public Boolean getPagato() {
 	return this.pagato;
     }
 
-    public void setPagato(byte pagato) {
+    public void setPagato(Boolean pagato) {
 	this.pagato = pagato;
     }
 
     @Column(name = "progressivo_abuso")
-    public int getProgressivoAbuso() {
+    public Integer getProgressivoAbuso() {
 	return this.progressivoAbuso;
     }
 
-    public void setProgressivoAbuso(int progressivoAbuso) {
+    public void setProgressivoAbuso(Integer progressivoAbuso) {
 	this.progressivoAbuso = progressivoAbuso;
     }
 
@@ -132,6 +136,15 @@ public class DatiSollecito implements Serializable {
 
     public void setIdAbuso(BigInteger idAbuso) {
 	this.idAbuso = idAbuso;
+    }
+
+    @Column(name = "data_stampa")
+    public String getDataStampa() {
+	return dataStampa;
+    }
+
+    public void setDataStampa(String dataStampa) {
+	this.dataStampa = dataStampa;
     }
 
 }

@@ -1,16 +1,23 @@
 package it.soft.service;
 
+import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DatiSollecitoHome;
 import it.soft.domain.DatiSollecito;
+import it.soft.domain.Utenti;
+import it.soft.util.AuthenticationUtils;
+import it.soft.util.Converter;
 import it.soft.web.pojo.DatiSollecitoPojo;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +26,10 @@ public class DatiSollecitiService {
 
     @Autowired
     DatiSollecitoHome datiSollecitoHome;
+    @Autowired
+    AuthenticationUtils authenticationUtils;
+    @Autowired
+    DatiPraticaHome datiPraticaHome;
 
     public DatiSollecito save(DatiSollecitoPojo pojo) {
 	DatiSollecito datiSollecito = new DatiSollecito();
@@ -77,6 +88,33 @@ public class DatiSollecitiService {
 	    datiSollecito = lista.get(0);
 	}
 	return datiSollecito;
+
+    }
+
+    public Date getDataStampa(String idpratica, String progressivo) {
+	DatiSollecito sollecito = findAll(idpratica, progressivo);
+	if (StringUtils.isEmpty(sollecito.getDataStampa())) {
+	    return new Date();
+	}
+	return Converter.convertData(sollecito.getDataStampa());
+    }
+
+    public void saveDataStampa(String idpratica, String idabuso,
+	    String progressivo) {
+	DatiSollecito sollecito = findAll(idpratica, progressivo);
+	sollecito.setDataStampa(Converter.dateToString(new Date()));
+	if (sollecito.getIddatiSollecito() == null) {
+	    sollecito.setIddatiPratica(datiPraticaHome.findById(BigDecimal
+		    .valueOf(Integer.parseInt(idpratica))));
+	    sollecito.setProgressivoAbuso(Converter.stringToint(progressivo));
+	    sollecito.setIdAbuso(Converter.stringToBigInteger(idabuso));
+	    Utenti user = authenticationUtils.getUtente();
+	    sollecito.setTecnicoIncaricato(user.getNome().concat(" ")
+		    .concat(user.getCognome()));
+	    datiSollecitoHome.persist(sollecito);
+	} else {
+	    datiSollecitoHome.merge(sollecito);
+	}
 
     }
 }

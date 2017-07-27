@@ -35,20 +35,6 @@
 				<value>it.soft.domain</value>
 			</list>
 		</property>
-		<!-- BEGIN MAP DOMAIN con ANNOTATION <property name="annotatedClasses"> 
-			<list> <value>it.soft.domain.Utenti</value> <value>it.soft.domain.Comune</value> 
-			<value>it.soft.domain.Datiabuso</value> <value>it.soft.domain.Datipratica</value> 
-			<value>it.soft.domain.LeggiCondono</value> <value>it.soft.domain.Richiedente</value> 
-			<value>it.soft.domain.RiduzioneReddito</value> <value>it.soft.domain.TipoEsenzioni</value> 
-			<value>it.soft.domain.TipologiaAbuso</value> <value>it.soft.domain.TipologiaDestinazioneUso</value> 
-			<value>it.soft.domain.TipologiaRiduzioneReddito</value> <value>it.soft.domain.TipoOpera</value> 
-			<value>it.soft.domain.TipoRiduzione</value> <value>it.soft.domain.SoggettiAbuso</value> 
-			<value>it.soft.domain.TipologiaDocumento</value> <value>it.soft.domain.DocumentiAbuso</value> 
-			<value>it.soft.domain.DatiFabbricati</value> <value>it.soft.domain.DatiLocalizzazione</value> 
-			<value>it.soft.domain.DatiTerreni</value> <value>it.soft.domain.RelSoggettoAbuso</value> 
-			<value>it.soft.domain.DatiAlloggio</value> <value>it.soft.domain.EpocaAbuso</value> 
-			<value>it.soft.domain.TipologiaAlloggio</value> <value>it.soft.domain.CaratteristicheSpeciali</value> 
-			<value>it.soft.domain.DatiVersamenti</value> </list> </property> -->
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.current_session_context_class">thread

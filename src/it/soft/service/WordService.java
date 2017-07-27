@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -95,7 +96,7 @@ public class WordService {
 
     public XWPFDocument createDoc(XWPFDocument document,
 	    DatiPraticaService praticaService, DatiAbusoService abusoService,
-	    String idpratica, String idabuso, String progressivo)
+	    String idpratica, String idabuso, String progressivo, Date data_stampa)
 	    throws Exception {
 
 	DatiPraticaPojo praticaDB = praticaService.findById(idpratica);
@@ -138,7 +139,7 @@ public class WordService {
 
 	Double oblazioneDovuta = datiVersamentiService.getOblazioneDovuta(
 		importoCalcolato, abusoDB, dataAbuso,
-		praticaDB.getLeggeCondono());
+		praticaDB.getLeggeCondono(), data_stampa);
 	oblazioneDovuta = Converter.round(oblazioneDovuta, 2);
 
 	createPage1(document, praticaDB, abusoDB, listaSoggetti, alloggi,
@@ -155,12 +156,12 @@ public class WordService {
 	if (Constants.ID_LEGGE_724_94.equals(praticaDB.getLeggeCondono())) {
 	    oneriConcessSaldo = datiVersamentiService
 		    .getOneriConcessSaldoLegge2(oneriConcessVersato,
-			    oneriConcessCalcolato, abusoDB, praticaDB);
+			    oneriConcessCalcolato, abusoDB, praticaDB, data_stampa);
 	}
 	if (Constants.ID_LEGGE_326_03.equals(praticaDB.getLeggeCondono())) {
 	    oneriConcessSaldo = datiVersamentiService
 		    .getOneriConcessSaldoLegge3(oneriConcessVersato,
-			    oneriConcessCalcolato, abusoDB, praticaDB);
+			    oneriConcessCalcolato, abusoDB, praticaDB, data_stampa);
 	}
 	if (oneriConcessSaldo < 0)
 	    oneriConcessSaldo = new Double(0.0);
@@ -177,7 +178,7 @@ public class WordService {
 		oneriConcessCalcolato, oneriConcessSaldo, dirittiIstrut,
 		dirittiRilPerm, dirittiPareri, agibilita, oneriAutodeterminata,
 		praticaDB.getLeggeCondono(), idabuso, progressivo, idpratica,
-		dataAbuso);
+		dataAbuso, data_stampa);
 	createPage4(document);
 
 	createFooter(document, praticaDB, abusoDB);
@@ -518,7 +519,7 @@ public class WordService {
 	    Double dirittiIstrut, Double dirittiRilPerm, Double dirittiPareri,
 	    Double agibilita, Double oneriAutodeterminata, Object leggeCondono,
 	    String idabuso, String progressivo, String idpratica,
-	    Double dataAbuso) {
+	    Double dataAbuso, Date data_stampa) {
 
 	Double metaImportoResiduo = importoRediduo / 2;
 	metaImportoResiduo = Converter.round(metaImportoResiduo, 2);
@@ -600,7 +601,7 @@ public class WordService {
 	if (Constants.ID_LEGGE_326_03.equals(leggeCondono)) {
 	    saldo = addOblazioneRegionale(document, importoOblazione,
 		    importoCalcolato, importoVersato, importoRediduo, idabuso,
-		    progressivo, idpratica, dataAbuso);
+		    progressivo, idpratica, dataAbuso, data_stampa);
 	}
 
 	// ONERI CONCESSORI
@@ -809,7 +810,7 @@ public class WordService {
     private Double addOblazioneRegionale(XWPFDocument document,
 	    Double importoOblazione, Double importoCalcolato,
 	    Double importoVersato, Double importoRediduo, String idabuso,
-	    String progressivo, String idpratica, Double dataAbuso) {
+	    String progressivo, String idpratica, Double dataAbuso, Date data_stampa) {
 	XWPFTable table_ = document.createTable(1, 1);
 	UtilityWord.addTableCellCenter(table_.getRow(0).getCell(0),
 		"OBLAZIONE REGIONALE", true, ParagraphAlignment.LEFT);
@@ -869,7 +870,7 @@ public class WordService {
 		importoVersatoRegione, autodeterminaRegione,
 		importoCalcolato * 0.1, dataAbuso,
 		BigInteger.valueOf(Integer.valueOf(progressivo)),
-		Integer.valueOf(idpratica));
+		Integer.valueOf(idpratica), data_stampa);
 	XWPFTable table4 = document.createTable(1, 3);
 	UtilityWord
 		.addTableCellCenter(

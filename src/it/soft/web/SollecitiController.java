@@ -5,17 +5,19 @@ import it.soft.dao.DatiPraticaHome;
 import it.soft.dao.DatiSollecitoHome;
 import it.soft.domain.DatiSollecito;
 import it.soft.domain.Datiabuso;
+import it.soft.domain.Utenti;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
 import it.soft.service.DatiSollecitiService;
 import it.soft.service.WordService;
+import it.soft.util.AuthenticationUtils;
 import it.soft.web.pojo.DatiPraticaPojo;
 import it.soft.web.pojo.DatiSollecitoPojo;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +50,8 @@ public class SollecitiController extends BaseController {
     WordService wservice;
     @Autowired
     DatiAbusoService datiAbusoService;
+    @Autowired
+    AuthenticationUtils authenticationUtils;
 
     DatiSollecitoPojo datiSollecitoPojo;
 
@@ -58,10 +62,9 @@ public class SollecitiController extends BaseController {
     public ModelAndView solleciti(@RequestParam(value = "idpratica") String id,
 	    @RequestParam(value = "idabuso") String idabuso, ModelMap model)
 	    throws Exception {
-
+	ResourceBundle.getBundle("it.soft.exception.error-messages_it_IT");
 	String view = "table/sollecitiList";
-	List<DatiSollecito> list = datiSollecitoHome.findAll(BigInteger
-		.valueOf(Integer.valueOf(id)));
+	List<DatiSollecito> list = datiSollecitiService.findAll(id);
 	this.idPratica = id;
 	this.idAbuso = idabuso;
 	initSollecito(model);
@@ -69,12 +72,24 @@ public class SollecitiController extends BaseController {
 	model.addAttribute("idpratica", this.idPratica);
 	return new ModelAndView(view, model);
     }
+    
+    @RequestMapping(value = "/sollecitiListAll", method = RequestMethod.GET)
+    public ModelAndView sollecitiListAll(ModelMap model)
+	    throws Exception {
+	ResourceBundle.getBundle("it.soft.exception.error-messages_it_IT");
+	String view = "table/sollecitiListAll";
+	List<DatiSollecito> list = datiSollecitiService.findAll();
+	model.addAttribute("solleciti", list);
+	model.addAttribute("idpratica", "0");
+	return new ModelAndView(view, model);
+    }
 
     @RequestMapping(value = "/nuovoSollecito", method = RequestMethod.GET)
     public ModelAndView nuovoSollecito(ModelMap model) throws Exception {
-	initSollecito(model);
 	String view = "form/formSollecito";
 	DatiSollecitoPojo pojo = new DatiSollecitoPojo();
+	initDatiSollecito(pojo);
+	initSollecito(model);
 	model.addAttribute("datiSollecitoPojo", pojo);
 	return new ModelAndView(view, model);
     }
@@ -109,21 +124,10 @@ public class SollecitiController extends BaseController {
 	    @RequestParam(value = "idSollecito") String id, ModelMap model)
 	    throws Exception {
 	String view = "form/formSollecito";
-	initSollecito(model);
 	DatiSollecitoPojo pojo = datiSollecitiService.findById(id);
+	initSollecito(model);
 	model.addAttribute("datiSollecitoPojo", pojo);
 	return new ModelAndView(view, model);
-    }
-
-    private void initSollecito(ModelMap model) {
-
-	List<String> progressivi = new ArrayList<String>();
-	List<Datiabuso> abusi = datiAbusoHome.findAll(datiPraticaHome
-		.findById(BigDecimal.valueOf(Integer.parseInt(idPratica))));
-	for (Datiabuso datiabuso : abusi) {
-	    progressivi.add(String.valueOf(datiabuso.getProgressivo()));
-	}
-	model.addAttribute("progressivi", progressivi);
     }
 
     @RequestMapping(value = "/stampaSollecito1", method = RequestMethod.GET)
@@ -145,7 +149,8 @@ public class SollecitiController extends BaseController {
 		    datiPraticaService, datiAbusoService, idpratica, idabuso,
 		    progressivo);
 	    document = wservice.createDoc(document, datiPraticaService,
-		    datiAbusoService, idpratica, idabuso, progressivo);
+		    datiAbusoService, idpratica, idabuso, progressivo,
+		    datiSollecitiService.getDataStampa(idpratica, progressivo));
 	    ServletOutputStream out = response.getOutputStream();
 	    document.write(out);
 	    out.flush();
@@ -175,7 +180,8 @@ public class SollecitiController extends BaseController {
 		    datiPraticaService, datiAbusoService, idpratica, idabuso,
 		    progressivo);
 	    document = wservice.createDoc(document, datiPraticaService,
-		    datiAbusoService, idpratica, idabuso, progressivo);
+		    datiAbusoService, idpratica, idabuso, progressivo,
+		    datiSollecitiService.getDataStampa(idpratica, progressivo));
 	    ServletOutputStream out = response.getOutputStream();
 	    document.write(out);
 	    out.flush();
@@ -184,5 +190,22 @@ public class SollecitiController extends BaseController {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
+    }
+
+    private void initDatiSollecito(DatiSollecitoPojo pojo) {
+	Utenti user = authenticationUtils.getUtente();
+	pojo.setTecnicoIncaricato(user.getNome().concat(" ")
+		.concat(user.getCognome()));
+    }
+
+    private void initSollecito(ModelMap model) {
+
+	List<String> progressivi = new ArrayList<String>();
+	List<Datiabuso> abusi = datiAbusoHome.findAll(datiPraticaHome
+		.findById(BigDecimal.valueOf(Integer.parseInt(idPratica))));
+	for (Datiabuso datiabuso : abusi) {
+	    progressivi.add(String.valueOf(datiabuso.getProgressivo()));
+	}
+	model.addAttribute("progressivi", progressivi);
     }
 }

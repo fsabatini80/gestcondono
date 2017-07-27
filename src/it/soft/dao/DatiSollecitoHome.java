@@ -2,10 +2,6 @@ package it.soft.dao;
 
 import it.soft.domain.DatiSollecito;
 import it.soft.domain.Datiabuso;
-import it.soft.domain.TabCalcOblazione;
-import it.soft.domain.TipoEsenzioni;
-import it.soft.domain.TipoRiduzione;
-import it.soft.domain.TipologiaRiduzioneReddito;
 
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -14,6 +10,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.BeanUtils;
@@ -160,7 +157,7 @@ public class DatiSollecitoHome {
     }
 
     @SuppressWarnings("unchecked")
-    public List<DatiSollecito> findAll(BigInteger idPratica,
+    public List<DatiSollecito> findBy(BigInteger idPratica,
 	    Integer progressivo, String tecnicoincaricato) {
 	try {
 	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
@@ -194,176 +191,45 @@ public class DatiSollecitoHome {
 	}
     }
 
+    // SELECT * FROM db_condoni_guidonia.dati_sollecito,
+    // db_condoni_guidonia.datipratica
+    // where iddati_pratica=iddatipratica
+    // and legge_condono = 1
+    // and data_invio_soll1 =''
+    // and pagato = 0;
     @SuppressWarnings("unchecked")
-    public List<TabCalcOblazione> findOblazione(Double dataAbuso,
-	    String leggeCondono, Integer tipoAbuso) {
+    public List<DatiSollecito> findBy(String data_invio_soll_1,
+	    int idLeggeCondono) {
 	try {
 	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 		    .getCurrentSession();
 	    sess.beginTransaction();
-	    Criteria cr = sess.createCriteria(TabCalcOblazione.class);
-	    cr.add(Restrictions.lt("dataInizio", dataAbuso));
-	    cr.add(Restrictions.ge("dataFine", dataAbuso));
-	    cr.add(Restrictions.eq("leggeCondono",
-		    Integer.valueOf(leggeCondono)));
-	    cr.add(Restrictions.eq("tipoabuso", tipoAbuso));
-	    List<TabCalcOblazione> results = cr.list();
-	    return results;
+	    Query query = sess
+		    .createQuery("FROM DatiSollecito e INNER JOIN e.iddatiPratica WHERE e.dataInvioSoll1 !=:data_invio_soll_1  AND e.iddatiPratica.leggeCondono.idleggiCondono =:idLeggeCondono ");
+	    query.setParameter("data_invio_soll_1", data_invio_soll_1);
+	    query.setParameter("idLeggeCondono", idLeggeCondono);
+	    return query.list();
 	} catch (RuntimeException re) {
-	    log.error("findOblazione failed", re);
+	    log.error("findBy failed", re);
 	    throw re;
 	}
     }
 
-    @SuppressWarnings("unchecked")
-    public List<TabCalcOblazione> findOblazione(String destinazioneUso,
-	    String leggeCondono, Integer tipoAbuso) {
+    public List<DatiSollecito> findBy(String data_invio_soll_1, Boolean pagato,
+	    int idLeggeCondono) {
 	try {
 	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 		    .getCurrentSession();
 	    sess.beginTransaction();
-	    Criteria cr = sess.createCriteria(TabCalcOblazione.class);
-	    cr.add(Restrictions.eq("destinazioneUso",
-		    Integer.valueOf(destinazioneUso)));
-	    cr.add(Restrictions.eq("leggeCondono",
-		    Integer.valueOf(leggeCondono)));
-	    cr.add(Restrictions.eq("tipoabuso", tipoAbuso));
-	    List<TabCalcOblazione> results = cr.list();
-	    return results;
+	    Query query = sess
+		    .createQuery("FROM DatiSollecito e INNER JOIN e.iddatiPratica WHERE e.dataInvioSoll1 !=:data_invio_soll_1 AND e.pagato =:pagato AND e.iddatiPratica.leggeCondono.idleggiCondono =:idLeggeCondono ");
+	    query.setParameter("data_invio_soll_1", data_invio_soll_1);
+	    query.setParameter("pagato", pagato);
+	    query.setParameter("idLeggeCondono", idLeggeCondono);
+	    return query.list();
 	} catch (RuntimeException re) {
-	    log.error("findOblazione failed", re);
+	    log.error("findBy failed", re);
 	    throw re;
 	}
     }
-
-    @SuppressWarnings("unchecked")
-    public TipoEsenzioni findEsenzioneById(Integer idtipoEsenzioni) {
-
-	log.debug("getting TipoEsenzioni instance with id: " + idtipoEsenzioni);
-	try {
-	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-		    .getCurrentSession();
-	    sess.beginTransaction();
-	    TipoEsenzioni tipoEsenzioni = new TipoEsenzioni();
-	    tipoEsenzioni.setIdtipoEsenzioni(idtipoEsenzioni);
-	    Criteria cr = sess.createCriteria(TipoEsenzioni.class);
-	    cr.add(Restrictions.eq("idtipoEsenzioni", idtipoEsenzioni));
-	    List<TipoEsenzioni> results = cr.list();
-	    if (results != null && !results.isEmpty()) {
-		for (Iterator<TipoEsenzioni> iterator = results.iterator(); iterator
-			.hasNext();) {
-		    TipoEsenzioni tipoEsenzioni2 = iterator.next();
-		    sess.refresh(tipoEsenzioni2);
-		    BeanUtils.copyProperties(tipoEsenzioni2, tipoEsenzioni);
-		}
-	    }
-	    log.debug("findEsenzioneById successful");
-	    sess.close();
-	    return tipoEsenzioni;
-	} catch (RuntimeException re) {
-	    log.error("findEsenzioneById failed", re);
-	    throw re;
-	}
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<TipoEsenzioni> findEsenzioni(BigInteger idLeggeCondono) {
-	try {
-	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-		    .getCurrentSession();
-	    sess.beginTransaction();
-	    Criteria cr = sess.createCriteria(TipoEsenzioni.class);
-	    cr.add(Restrictions.eq("idleggeCondono", idLeggeCondono));
-	    List<TipoEsenzioni> results = cr.list();
-	    return results;
-	} catch (RuntimeException re) {
-	    log.error("findEsenzioni failed", re);
-	    throw re;
-	}
-    }
-
-    @SuppressWarnings("unchecked")
-    public TipoRiduzione findRiduzioneById(Integer idtipoRiduzione) {
-
-	log.debug("getting TipoRiduzione instance with id: " + idtipoRiduzione);
-	try {
-	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-		    .getCurrentSession();
-	    sess.beginTransaction();
-	    TipoRiduzione tipoRiduzione = new TipoRiduzione();
-	    tipoRiduzione.setIdtipoRiduzione(idtipoRiduzione);
-	    Criteria cr = sess.createCriteria(TipoRiduzione.class);
-	    cr.add(Restrictions.eq("idtipoRiduzione", idtipoRiduzione));
-	    List<TipoRiduzione> results = cr.list();
-	    if (results != null && !results.isEmpty()) {
-		for (Iterator<TipoRiduzione> iterator = results.iterator(); iterator
-			.hasNext();) {
-		    TipoRiduzione tipoRiduzione2 = iterator.next();
-		    sess.refresh(tipoRiduzione2);
-		    BeanUtils.copyProperties(tipoRiduzione2, tipoRiduzione);
-		}
-	    }
-	    log.debug("findRiduzioneById successful");
-	    sess.close();
-	    return tipoRiduzione;
-	} catch (RuntimeException re) {
-	    log.error("findRiduzioneById failed", re);
-	    throw re;
-	}
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<TipoRiduzione> findRiduzioni(BigInteger idLeggeCondono) {
-	try {
-	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-		    .getCurrentSession();
-	    sess.beginTransaction();
-	    Criteria cr = sess.createCriteria(TipoRiduzione.class);
-	    cr.add(Restrictions.eq("idleggeCondono", idLeggeCondono));
-	    List<TipoRiduzione> results = cr.list();
-	    return results;
-	} catch (RuntimeException re) {
-	    log.error("findEsenzioni failed", re);
-	    throw re;
-	}
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<TipologiaRiduzioneReddito> findAllTipologiaRiduzioneReddito() {
-	log.debug("getting TipologiaRiduzioneReddito instance");
-	try {
-	    return (List<TipologiaRiduzioneReddito>) hibernateTemplate
-		    .findByExample("it.soft.domain.TipologiaRiduzioneReddito",
-			    new TipologiaRiduzioneReddito());
-	} catch (RuntimeException re) {
-	    log.error("findAllTipologiaRiduzioneReddito failed", re);
-	    throw re;
-	}
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<DatiSollecito> findBy(String dataVersamento,
-	    String ufficioPostale, String codiceVersamento) {
-
-	log.debug("getting DatiSollecito instance with dataversamento: "
-		+ dataVersamento);
-	try {
-	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
-		    .getCurrentSession();
-	    sess.beginTransaction();
-	    Criteria cr = sess.createCriteria(DatiSollecito.class);
-	    cr.add(Restrictions.eq("dataVersamento", dataVersamento));
-	    cr.add(Restrictions.eq("ufficioPostale", ufficioPostale));
-	    cr.add(Restrictions.eq("codiceVersamento", codiceVersamento));
-	    List<DatiSollecito> results = cr.list();
-	    log.debug("search versamento successful");
-	    sess.close();
-	    return results;
-	} catch (RuntimeException re) {
-	    log.error("search versamento failed", re);
-	    throw re;
-	}
-
-    }
-
 }

@@ -23,64 +23,64 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HomeController extends BaseController {
 
-	@Autowired
-	private UtentiHome utentiHome;
+    @Autowired
+    private UtentiHome utentiHome;
 
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public ModelAndView home(ModelMap model) throws Exception{
+    @RequestMapping(value = "/home", method = RequestMethod.GET)
+    public ModelAndView home(ModelMap model) throws Exception {
 
-		User user = (User) SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal();
-		String name = user.getUsername();
-		Utenti utenti = utentiHome.findByUser(name);
-		List<Utenti> utentiAll = utentiHome.findAll();
+	User user = (User) SecurityContextHolder.getContext()
+		.getAuthentication().getPrincipal();
+	String name = user.getUsername();
+	Utenti utenti = utentiHome.findByUser(name);
+	List<Utenti> utentiAll = utentiHome.findAll();
 
-		model.addAttribute("utenti", utenti);
-		model.addAttribute("utentiAll", utentiAll);
-		model.addAttribute("utenteDel", new Utenti());
-		model.addAttribute("utenteNew", new Utenti());
+	model.addAttribute("utenti", utenti);
+	model.addAttribute("utentiAll", utentiAll);
+	model.addAttribute("utenteDel", new Utenti());
+	model.addAttribute("utenteNew", new Utenti());
 
-		return new ModelAndView("home", model);
+	return new ModelAndView("home", model);
+    }
+
+    @RequestMapping(value = "/modificaUtente", method = RequestMethod.POST)
+    public ModelAndView modificaDatiUtente(HttpServletRequest request,
+	    HttpServletResponse response, Utenti utente) throws Exception {
+
+	ModelMap model = new ModelMap();
+
+	User user = (User) SecurityContextHolder.getContext()
+		.getAuthentication().getPrincipal();
+	String name = user.getUsername();
+	Utenti utenti = utentiHome.findByUser(name);
+	utente.setIdUtenti(utenti.getIdUtenti());
+	utentiHome.merge(utente);
+
+	return new ModelAndView("redirect:home.htm", model);
+    }
+
+    @RequestMapping(value = "/addUtente", method = RequestMethod.POST)
+    public ModelAndView addUtente(HttpServletRequest request,
+	    HttpServletResponse response, Utenti u) throws Exception {
+	ModelMap model = new ModelMap();
+
+	utentiHome.persist(u);
+
+	return new ModelAndView("redirect:home.htm", model);
+    }
+
+    @RequestMapping(value = "/removeUtente", method = RequestMethod.GET)
+    public ModelAndView removeUtente(HttpServletRequest request,
+	    HttpServletResponse response,
+	    @RequestParam(value = "user") String id) throws Exception {
+	ModelMap model = new ModelMap();
+	try {
+	    utentiHome.remove(utentiHome.findById(new BigDecimal(id)));
+	} catch (Exception e) {
+	    throw new CustomException("99", e.getMessage());
 	}
 
-	@RequestMapping(value = "/modificaUtente", method = RequestMethod.POST)
-	public ModelAndView modificaDatiUtente(HttpServletRequest request,
-			HttpServletResponse response, Utenti utente) throws Exception{
-
-		ModelMap model = new ModelMap();
-
-		User user = (User) SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal();
-		String name = user.getUsername();
-		Utenti utenti = utentiHome.findByUser(name);
-		utente.setIdUtenti(utenti.getIdUtenti());
-		utentiHome.merge(utente);
-
-		return new ModelAndView("redirect:home.htm", model);
-	}
-
-	@RequestMapping(value = "/addUtente", method = RequestMethod.POST)
-	public ModelAndView addUtente(HttpServletRequest request,
-			HttpServletResponse response, Utenti u) throws Exception{
-		ModelMap model = new ModelMap();
-
-		utentiHome.persist(u);
-
-		return new ModelAndView("redirect:home.htm", model);
-	}
-
-	@RequestMapping(value = "/removeUtente", method = RequestMethod.GET)
-	public ModelAndView removeUtente(HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(value = "user") String id) throws Exception{
-		ModelMap model = new ModelMap();
-		try {
-			utentiHome.remove(utentiHome.findById(new BigDecimal(id)));
-		} catch (Exception e) {
-			throw new CustomException("99", e.getMessage());
-		}
-
-		return new ModelAndView("redirect:home.htm", model);
-	}
+	return new ModelAndView("redirect:home.htm", model);
+    }
 
 }

@@ -3,6 +3,7 @@ package it.soft.util;
 import it.soft.exception.CustomException;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -192,5 +193,9 @@ public class Converter {
 
     public static int stringToint(String s) {
 	return Integer.parseInt(s);
+    }
+    
+    public static BigInteger stringToBigInteger(String s) {
+	return new BigInteger(s);
     }
 }

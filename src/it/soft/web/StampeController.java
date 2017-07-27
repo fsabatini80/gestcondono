@@ -3,6 +3,7 @@ package it.soft.web;
 import it.soft.domain.StampeSolleciti;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
+import it.soft.service.DatiSollecitiService;
 import it.soft.service.StampeSollecitiService;
 import it.soft.service.WordService;
 import it.soft.util.Converter;
@@ -40,6 +41,8 @@ public class StampeController extends BaseController {
     DatiAbusoService datiAbusoService;
     @Autowired
     StampeSollecitiService stampeSollecitiService;
+    @Autowired
+    DatiSollecitiService datiSollecitiService;
 
     @RequestMapping(value = "/stampaLettera", method = RequestMethod.GET)
     public void stampaLettera(
@@ -57,12 +60,14 @@ public class StampeController extends BaseController {
 	try {
 	    XWPFDocument document = new XWPFDocument();
 	    document = wservice.createDoc(document, datiPraticaService,
-		    datiAbusoService, idpratica, idabuso, progressivo);
+		    datiAbusoService, idpratica, idabuso, progressivo,
+		    datiSollecitiService.getDataStampa(idpratica, progressivo));
 	    ServletOutputStream out = response.getOutputStream();
 	    document.write(out);
 	    out.flush();
 	    out.close();
-
+	    datiSollecitiService
+		    .saveDataStampa(idpratica, idabuso, progressivo);
 	    saveToDB(idpratica, idabuso, progressivo, document);
 	} catch (Exception e) {
 	    e.printStackTrace();

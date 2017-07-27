@@ -395,7 +395,7 @@ public class DatiVersamentiService {
     }
 
     public Double getOblazioneDovuta(Double oblazioneCalcolata,
-	    DatiAbusoPojo abusoDB, Double dataAbuso, String leggeCondono) {
+	    DatiAbusoPojo abusoDB, Double dataAbuso, String leggeCondono, Date data_stampa) {
 
 	List<DatiVersamento> vers = datiVersamentiHome.findAll(
 		BigInteger.valueOf(Integer.valueOf(abusoDB.getIdPratica())),
@@ -412,13 +412,13 @@ public class DatiVersamentiService {
 
 	if (Constants.ID_LEGGE_47_85.equals(leggeCondono)) {
 	    return getOblazione47_85(importoVersValidi, autoDetermina,
-		    oblazioneCalcolata, abusoDB, dataAbuso, leggeCondono, vers);
+		    oblazioneCalcolata, abusoDB, dataAbuso, leggeCondono, vers, data_stampa);
 	} else if (Constants.ID_LEGGE_724_94.equals(leggeCondono)) {
 	    return getOblazione724_94(importoVersValidi, autoDetermina,
-		    oblazioneCalcolata, abusoDB, dataAbuso, leggeCondono, vers);
+		    oblazioneCalcolata, abusoDB, dataAbuso, leggeCondono, vers, data_stampa);
 	} else if (Constants.ID_LEGGE_326_03.equals(leggeCondono)) {
 	    return getOblazione326_03(importoVersValidi, autoDetermina,
-		    oblazioneCalcolata, abusoDB, dataAbuso, leggeCondono, vers);
+		    oblazioneCalcolata, abusoDB, dataAbuso, leggeCondono, vers, data_stampa);
 	}
 
 	return 0.0;
@@ -428,10 +428,10 @@ public class DatiVersamentiService {
     private Double getOblazione47_85(Double importoVersValidi,
 	    Double autoDetermina, Double oblazioneCalcolata,
 	    DatiAbusoPojo abusoDB, Double dataAbuso, String leggeCondono,
-	    List<DatiVersamento> vers) {
+	    List<DatiVersamento> vers, Date dtOdierna) {
 	Double im = new Double(0.0);
 	Double oblazioneEIM = new Double(0.0);
-	Date dtOdierna = new Date();
+//	Date dtOdierna = new Date();
 	List<String> causali = new ArrayList<String>();
 	causali.add(Constants.OBLAZIONE_COMUNE_CAUSALE_SEL);
 	causali.add(Constants.OBLAZIONE_MINISTERO_CAUSALE_SEL);
@@ -503,8 +503,8 @@ public class DatiVersamentiService {
     private Double getOblazione724_94(Double importoVersValidi,
 	    Double autoDetermina, Double oblazioneCalcolata,
 	    DatiAbusoPojo abusoDB, Double dataAbuso, String leggeCondono,
-	    List<DatiVersamento> vers) {
-	Date dtOdierna = new Date();
+	    List<DatiVersamento> vers, Date dtOdierna) {
+//	Date dtOdierna = new Date();
 	List<String> causali = new ArrayList<String>();
 	causali.add(Constants.OBLAZIONE_COMUNE_CAUSALE_SEL);
 	causali.add(Constants.OBLAZIONE_MINISTERO_CAUSALE_SEL);
@@ -545,8 +545,8 @@ public class DatiVersamentiService {
     private Double getOblazione326_03(Double importoVersValidi,
 	    Double autoDetermina, Double oblazioneCalcolata,
 	    DatiAbusoPojo abusoDB, Double dataAbuso, String leggeCondono,
-	    List<DatiVersamento> vers) {
-	Date dtOdierna = new Date();
+	    List<DatiVersamento> vers, Date dtOdierna) {
+//	Date dtOdierna = new Date();
 	List<String> causali = new ArrayList<String>();
 	causali.add(Constants.OBLAZIONE_COMUNE_CAUSALE_SEL);
 	causali.add(Constants.OBLAZIONE_MINISTERO_CAUSALE_SEL);
@@ -586,8 +586,8 @@ public class DatiVersamentiService {
 
     public Double getOblazioneSaldo(Double importoVersValidi,
 	    Double autoDetermina, Double oblazioneCalcolata, Double dataAbuso,
-	    BigInteger idPratica, Integer progressivo) {
-	Date dtOdierna = new Date();
+	    BigInteger idPratica, Integer progressivo, Date dtOdierna) {
+//	Date dtOdierna = new Date();
 	List<DatiVersamento> vers = datiVersamentiHome.findAll(idPratica,
 		progressivo);
 	List<String> causali = new ArrayList<String>();
@@ -1619,7 +1619,7 @@ public class DatiVersamentiService {
 
     public Double getOneriConcessSaldoLegge2(Double oneriConcessVersato,
 	    Double oneriConcessCalcolato, DatiAbusoPojo abusoDB,
-	    DatiPraticaPojo praticaDB) {
+	    DatiPraticaPojo praticaDB, Date data_stampa) {
 	Double autodeterminataOnere = abusoDB.getAutodeterminataOneri();
 
 	List<DatiVersamento> vers = datiVersamentiHome.findAll(
@@ -1642,7 +1642,7 @@ public class DatiVersamentiService {
 		delta = autodeterminataOnere - versValidi1995;
 	    }
 	    Double interessiMora = calcolaInteressiMoraOneri(abusoDB,
-		    praticaDB, autodeterminataOnere, oneriConcessCalcolato);
+		    praticaDB, autodeterminataOnere, oneriConcessCalcolato, data_stampa);
 	    System.out.println("interessi di mora per gli oneri: "
 		    + interessiMora);
 	    if (autodeterminataOnere <= oneriConcessCalcolato) {
@@ -1669,7 +1669,7 @@ public class DatiVersamentiService {
 
     public Double getOneriConcessSaldoLegge3(Double oneriConcessVersato,
 	    Double oneriConcessCalcolato, DatiAbusoPojo abusoDB,
-	    DatiPraticaPojo praticaDB) {
+	    DatiPraticaPojo praticaDB, Date data_stampa) {
 	Double autodeterminataOnere = abusoDB.getAutodeterminataOneri();
 	if (oneriConcessVersato.doubleValue() == autodeterminataOnere
 		.doubleValue()) {
@@ -1686,7 +1686,7 @@ public class DatiVersamentiService {
 	    // calcolato < versato< autodeterminata
 	    if (delta > 0) {
 		interessiMora = calcolaInteressiMoraOneriLegge3(abusoDB,
-			praticaDB, autodeterminataOnere, oneriConcessCalcolato);
+			praticaDB, autodeterminataOnere, oneriConcessCalcolato, data_stampa);
 	    }
 	    System.out.println("interessi di mora per gli oneri: "
 		    + interessiMora);
@@ -1728,8 +1728,8 @@ public class DatiVersamentiService {
 
     private Double calcolaInteressiMoraOneri(DatiAbusoPojo abusoDB,
 	    DatiPraticaPojo praticaDB, Double autodeterminataOnere,
-	    double oneriCalcolati) {
-	Date dtOdierna = new Date();
+	    double oneriCalcolati, Date dtOdierna) {
+//	Date dtOdierna = new Date();
 	Double interessiMora = new Double(0.0);
 	String dtOdiernastr = Converter.dateToString(dtOdierna);
 
@@ -1816,8 +1816,8 @@ public class DatiVersamentiService {
 
     private Double calcolaInteressiMoraOneriLegge3(DatiAbusoPojo abusoDB,
 	    DatiPraticaPojo praticaDB, Double autodeterminataOnere,
-	    double oneriCalcolati) {
-	Date dtOdierna = new Date();
+	    double oneriCalcolati, Date dtOdierna) {
+//	Date dtOdierna = new Date();
 	Double interessiMora = new Double(0.0);
 	String dtOdiernastr = Converter.dateToString(dtOdierna);
 

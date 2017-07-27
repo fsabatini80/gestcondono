@@ -1,6 +1,8 @@
 package it.soft.web;
 
+import it.soft.dao.DatiSollecitoHome;
 import it.soft.dao.LeggiCondonoHome;
+import it.soft.domain.DatiSollecito;
 import it.soft.domain.Datipratica;
 import it.soft.service.DatiAbusoService;
 import it.soft.service.DatiPraticaService;
@@ -20,56 +22,28 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class CruscottoController extends BaseController {
 
-    // @Autowired
-    // DatiPraticaHome datiPraticaHome;
     @Autowired
     LeggiCondonoHome leggiCondonoHome;
-    // @Autowired
-    // DestinazioneUsoHome destinazioneUsoHome;
-    // @Autowired
-    // EpocaAbusoHome epocaAbusoHome;
-    // @Autowired
-    // TipoOperaHome tipoOperaHome;
-    // @Autowired
-    // TipologiaAbusoHome tipologiaAbusoHome;
-    // @Autowired
-    // UtentiHome utentiHome;
-    // @Autowired
-    // ComuniHome comuniHome;
-    // @Autowired
-    // TipoAlloggioHome tipoAlloggioHome;
-    // @Autowired
-    // CaratteristicheHome caratteristicheHome;
-    // @Autowired
-    // SoggettiAbusoHome soggettiAbusoHome;
-
-    // @Autowired
-    // DatiPraticaValidator validatorPratica;
-    // @Autowired
-    // DatiAbusoValidator datiAbusoValidator;
 
     @Autowired
     DatiPraticaService datiPraticaService;
     @Autowired
     DatiAbusoService datiAbusoService;
+    @Autowired
+    DatiSollecitoHome datiSollecitoHome;
 
     private int abusi47;
     private int abusi724;
     private int abusi326;
 
-    // DatiPraticaPojo praticaPojo;
+    private int sollecitate47;
+    private int sollecitate724;
+    private int sollecitate326;
+    private int sollecitateInsolute47;
+    private int sollecitateInsolute724;
+    private int sollecitateInsolute326;
 
-    // DatiAbusoPojo abusoPojo;
-    // String idDatiAlloggio;
-    // List<String> comuni;
-    // List<String> province;
-    // List<TipologiaDestinazioneUso> tipologiaDestinazioneUsos;
-    // List<EpocaAbuso> epocaAbusos;
-    // List<TipoOpera> tipoOperas;
-    // List<TipologiaAbuso> tipologiaAbusos;
-    // List<TipologiaAlloggio> tipologiaAlloggios;
-    // List<CaratteristicheSpeciali> caratteristicheSpecialis;
-    // List<SoggettiAbuso> soggettiAbusos;
+    // DatiPraticaPojo praticaPojo;
 
     @RequestMapping(value = "/cruscotto", method = RequestMethod.GET)
     public ModelAndView cruscottoHome(ModelMap model, DatiPraticaPojo pojo,
@@ -108,7 +82,6 @@ public class CruscottoController extends BaseController {
     }
 
     private int contaAbusi(List<Datipratica> list) {
-	// TODO Auto-generated method stub
 	int count = 0;
 	for (Datipratica datipratica : list) {
 	    count = count
@@ -119,14 +92,32 @@ public class CruscottoController extends BaseController {
     }
 
     private void setFakeData(ModelMap model) {
-	model.addAttribute("istruiteL47", "0");
-	model.addAttribute("istruiteL724", "0");
-	model.addAttribute("istruiteL326", "0");
-	model.addAttribute("istruiteLTot", "0");
-	model.addAttribute("daistruireL47", "0");
-	model.addAttribute("daistruireL724", "0");
-	model.addAttribute("daistruireL326", "0");
-	model.addAttribute("daistruireTot", "0");
+
+	List<DatiSollecito> sollecitateL47 = datiSollecitoHome.findBy("", 1);
+	List<DatiSollecito> sollecitateL724 = datiSollecitoHome.findBy("", 2);
+	List<DatiSollecito> sollecitateL326 = datiSollecitoHome.findBy("", 3);
+	model.addAttribute("sollecitateL47", sollecitateL47.size());
+	model.addAttribute("sollecitateL724", sollecitateL724.size());
+	model.addAttribute("sollecitateL326", sollecitateL326.size());
+	model.addAttribute("sollecitateTot", sollecitateL47.size()
+		+ sollecitateL724.size() + sollecitateL326.size());
+
+	List<DatiSollecito> sollecitateInsoluteL47 = datiSollecitoHome.findBy(
+		"", false, 1);
+	List<DatiSollecito> sollecitateInsoluteL724 = datiSollecitoHome.findBy(
+		"", false, 2);
+	List<DatiSollecito> sollecitateInsoluteL326 = datiSollecitoHome.findBy(
+		"", false, 3);
+
+	model.addAttribute("sollecitateInsoluteL47",
+		sollecitateInsoluteL47.size());
+	model.addAttribute("sollecitateInsoluteL724",
+		sollecitateInsoluteL724.size());
+	model.addAttribute("sollecitateInsoluteL326",
+		sollecitateInsoluteL326.size());
+	model.addAttribute("sollecitateInsoluteTot",
+		sollecitateInsoluteL47.size() + sollecitateInsoluteL724.size()
+			+ sollecitateInsoluteL326.size());
     }
 
     public int getAbusi47() {
@@ -151,6 +142,54 @@ public class CruscottoController extends BaseController {
 
     public void setAbusi326(int abusi326) {
 	this.abusi326 = abusi326;
+    }
+
+    public int getSollecitateInsolute326() {
+	return sollecitateInsolute326;
+    }
+
+    public void setSollecitateInsolute326(int sollecitateInsolute326) {
+	this.sollecitateInsolute326 = sollecitateInsolute326;
+    }
+
+    public int getSollecitate724() {
+	return sollecitate724;
+    }
+
+    public void setSollecitate724(int sollecitate724) {
+	this.sollecitate724 = sollecitate724;
+    }
+
+    public int getSollecitateInsolute724() {
+	return sollecitateInsolute724;
+    }
+
+    public void setSollecitateInsolute724(int sollecitateInsolute724) {
+	this.sollecitateInsolute724 = sollecitateInsolute724;
+    }
+
+    public int getSollecitateInsolute47() {
+	return sollecitateInsolute47;
+    }
+
+    public void setSollecitateInsolute47(int sollecitateInsolute47) {
+	this.sollecitateInsolute47 = sollecitateInsolute47;
+    }
+
+    public int getSollecitate326() {
+	return sollecitate326;
+    }
+
+    public void setSollecitate326(int sollecitate326) {
+	this.sollecitate326 = sollecitate326;
+    }
+
+    public int getSollecitate47() {
+	return sollecitate47;
+    }
+
+    public void setSollecitate47(int sollecitate47) {
+	this.sollecitate47 = sollecitate47;
     }
 
 }

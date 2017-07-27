@@ -18,120 +18,93 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "utenti", catalog = "db_condoni_guidonia", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "password"),
-		@UniqueConstraint(columnNames = "username") })
+	@UniqueConstraint(columnNames = "password"),
+	@UniqueConstraint(columnNames = "username") })
 public class Utenti implements java.io.Serializable {
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 2067739759191453346L;
-	/**
+    private static final long serialVersionUID = 2067739759191453346L;
+    /**
 	 * 
 	 */
 
-	private BigDecimal idUtenti;
-	private String username;
-	private String password;
-	private String nome;
-	private String cognome;
-	private String ruolo;
-//	private Comune comune;
+    private BigDecimal idUtenti;
+    private String username;
+    private String password;
+    private String nome;
+    private String cognome;
+    private String ruolo;
 
-	public Utenti() {
-	}
+    // private Comune comune;
 
-	public Utenti(String username, String password, String nome,
-			String cognome, String ruolo) {
-		this.username = username;
-		this.password = password;
-		this.nome = nome;
-		this.cognome = cognome;
-		this.ruolo = ruolo;
-	}
+    public Utenti() {
+    }
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "idutenti", unique = true, nullable = false)
-	public BigDecimal getIdUtenti() {
-		return this.idUtenti;
-	}
+    public Utenti(String username, String password, String nome,
+	    String cognome, String ruolo) {
+	this.username = username;
+	this.password = password;
+	this.nome = nome;
+	this.cognome = cognome;
+	this.ruolo = ruolo;
+    }
 
-	public void setIdUtenti(BigDecimal idUtenti) {
-		this.idUtenti = idUtenti;
-	}
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "idutenti", unique = true, nullable = false)
+    public BigDecimal getIdUtenti() {
+	return this.idUtenti;
+    }
 
-	@Column(name = "username", unique = true, length = 45)
-	public String getUsername() {
-		return this.username;
-	}
+    public void setIdUtenti(BigDecimal idUtenti) {
+	this.idUtenti = idUtenti;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    @Column(name = "username", unique = true, length = 45)
+    public String getUsername() {
+	return this.username;
+    }
 
-	@Column(name = "password", unique = true, length = 45)
-	public String getPassword() {
-		return this.password;
-	}
+    public void setUsername(String username) {
+	this.username = username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    @Column(name = "password", unique = true, length = 45)
+    public String getPassword() {
+	return this.password;
+    }
 
-	@Column(name = "nome", length = 45)
-	public String getNome() {
-		return this.nome;
-	}
+    public void setPassword(String password) {
+	this.password = password;
+    }
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    @Column(name = "nome", length = 45)
+    public String getNome() {
+	return this.nome;
+    }
 
-	@Column(name = "cognome", length = 45)
-	public String getCognome() {
-		return this.cognome;
-	}
+    public void setNome(String nome) {
+	this.nome = nome;
+    }
 
-	public void setCognome(String cognome) {
-		this.cognome = cognome;
-	}
+    @Column(name = "cognome", length = 45)
+    public String getCognome() {
+	return this.cognome;
+    }
 
-	@Column(name = "ruolo", length = 45)
-	public String getRuolo() {
-		return this.ruolo;
-	}
+    public void setCognome(String cognome) {
+	this.cognome = cognome;
+    }
 
-	public void setRuolo(String ruolo) {
-		this.ruolo = ruolo;
-	}
+    @Column(name = "ruolo", length = 45)
+    public String getRuolo() {
+	return this.ruolo;
+    }
 
-//	@ManyToOne(cascade = CascadeType.ALL)
-//	@JoinColumn(name = "id_rel_comuni_utente")
-//	public Comune getComune() {
-//		return this.comune;
-//	}
-//
-//	public void setComune(Comune comune) {
-//		this.comune = comune;
-//	}
-
-	// @OneToMany(cascade = CascadeType.ALL, mappedBy = "utenti")
-	// public Set<Turni> getTurnis() {
-	// return this.turnis;
-	// }
-	//
-	// public void setTurnis(Set<Turni> turnis) {
-	// this.turnis = turnis;
-	// }
-	//
-	// @OneToMany(cascade = CascadeType.ALL, mappedBy = "utenti")
-	// public Set<Preferenze> getPreferenzes() {
-	// return this.preferenzes;
-	// }
-	//
-	// public void setPreferenzes(Set<Preferenze> preferenzes) {
-	// this.preferenzes = preferenzes;
-	// }
+    public void setRuolo(String ruolo) {
+	this.ruolo = ruolo;
+    }
 
 }
