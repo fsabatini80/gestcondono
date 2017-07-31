@@ -11,6 +11,7 @@ import it.soft.service.DatiPraticaService;
 import it.soft.service.DatiSollecitiService;
 import it.soft.service.WordService;
 import it.soft.util.AuthenticationUtils;
+import it.soft.util.Converter;
 import it.soft.web.pojo.DatiPraticaPojo;
 import it.soft.web.pojo.DatiSollecitoPojo;
 
@@ -72,15 +73,22 @@ public class SollecitiController extends BaseController {
 	model.addAttribute("idpratica", this.idPratica);
 	return new ModelAndView(view, model);
     }
-    
+
     @RequestMapping(value = "/sollecitiListAll", method = RequestMethod.GET)
-    public ModelAndView sollecitiListAll(ModelMap model)
-	    throws Exception {
+    public ModelAndView sollecitiListAll(ModelMap model) throws Exception {
 	ResourceBundle.getBundle("it.soft.exception.error-messages_it_IT");
 	String view = "table/sollecitiListAll";
 	List<DatiSollecito> list = datiSollecitiService.findAll();
 	model.addAttribute("solleciti", list);
-	model.addAttribute("idpratica", "0");
+	return new ModelAndView(view, model);
+    }
+    
+    @RequestMapping(value = "/scadenzeListAll", method = RequestMethod.GET)
+    public ModelAndView scadenzeListAll(ModelMap model) throws Exception {
+	ResourceBundle.getBundle("it.soft.exception.error-messages_it_IT");
+	String view = "table/scadenzeList";
+	List<DatiSollecito> list = datiSollecitiService.getPraticheInScadenza();
+	model.addAttribute("solleciti", list);
 	return new ModelAndView(view, model);
     }
 
@@ -102,7 +110,8 @@ public class SollecitiController extends BaseController {
 		.concat(this.idPratica).concat("&idabuso=")
 		.concat(this.idAbuso);
 	this.datiSollecitoPojo = pojo;
-	pojo.setIddatiPratica(this.idPratica);
+	pojo.setIddatiPratica(datiPraticaHome.findById(Converter
+		.stringToBigDdecimal(idPratica)));
 	pojo.setIdAbuso(this.idAbuso);
 	datiSollecitiService.save(pojo);
 	return new ModelAndView(view, model);

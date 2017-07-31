@@ -42,6 +42,9 @@ public class CruscottoController extends BaseController {
     private int sollecitateInsolute47;
     private int sollecitateInsolute724;
     private int sollecitateInsolute326;
+    private int scadute47;
+    private int scadute724;
+    private int scadute326;
 
     // DatiPraticaPojo praticaPojo;
 
@@ -118,6 +121,12 @@ public class CruscottoController extends BaseController {
 	model.addAttribute("sollecitateInsoluteTot",
 		sollecitateInsoluteL47.size() + sollecitateInsoluteL724.size()
 			+ sollecitateInsoluteL326.size());
+
+	model.addAttribute("scaduteL47", "0");
+	model.addAttribute("scaduteL724", "0");
+	model.addAttribute("scaduteL326", "0");
+	model.addAttribute("scaduteTot", "0");
+
     }
 
     public int getAbusi47() {
@@ -190,6 +199,30 @@ public class CruscottoController extends BaseController {
 
     public void setSollecitate47(int sollecitate47) {
 	this.sollecitate47 = sollecitate47;
+    }
+
+    public int getScadute47() {
+	return scadute47;
+    }
+
+    public void setScadute47(int scadute47) {
+	this.scadute47 = scadute47;
+    }
+
+    public int getScadute724() {
+	return scadute724;
+    }
+
+    public void setScadute724(int scadute724) {
+	this.scadute724 = scadute724;
+    }
+
+    public int getScadute326() {
+	return scadute326;
+    }
+
+    public void setScadute326(int scadute326) {
+	this.scadute326 = scadute326;
     }
 
 }

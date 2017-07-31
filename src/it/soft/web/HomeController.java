@@ -39,6 +39,7 @@ public class HomeController extends BaseController {
 	model.addAttribute("utentiAll", utentiAll);
 	model.addAttribute("utenteDel", new Utenti());
 	model.addAttribute("utenteNew", new Utenti());
+	model.addAttribute("existScadenze", existScadenze());
 
 	return new ModelAndView("home", model);
     }

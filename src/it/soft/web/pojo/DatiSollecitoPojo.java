@@ -1,5 +1,7 @@
 package it.soft.web.pojo;
 
+import it.soft.domain.Datipratica;
+
 import java.io.Serializable;
 
 public class DatiSollecitoPojo implements Serializable {
@@ -10,7 +12,7 @@ public class DatiSollecitoPojo implements Serializable {
     private String dataInvioSoll1;
     private String dataInvioSoll2;
     private String dataPagamento;
-    private String iddatiPratica;
+    private Datipratica iddatiPratica;
     private boolean pagato;
     private String progressivoAbuso;
     private String protocolloSoll1;
@@ -53,11 +55,11 @@ public class DatiSollecitoPojo implements Serializable {
 	this.dataPagamento = dataPagamento;
     }
 
-    public String getIddatiPratica() {
+    public Datipratica getIddatiPratica() {
 	return this.iddatiPratica;
     }
 
-    public void setIddatiPratica(String iddatiPratica) {
+    public void setIddatiPratica(Datipratica iddatiPratica) {
 	this.iddatiPratica = iddatiPratica;
     }
 

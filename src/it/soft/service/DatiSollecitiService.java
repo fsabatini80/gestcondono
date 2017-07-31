@@ -11,7 +11,10 @@ import it.soft.web.pojo.DatiSollecitoPojo;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -63,7 +66,7 @@ public class DatiSollecitiService {
     }
 
     public List<DatiSollecito> findAll(String idPratica) {
-	BigInteger idPratBD = BigInteger.valueOf(Integer.valueOf(idPratica));
+	BigDecimal idPratBD = BigDecimal.valueOf(Integer.valueOf(idPratica));
 	return datiSollecitoHome.findAll(idPratBD);
     }
 
@@ -116,5 +119,35 @@ public class DatiSollecitiService {
 	    datiSollecitoHome.merge(sollecito);
 	}
 
+    }
+
+    public List<DatiSollecito> getPraticheInScadenza() {
+	List<DatiSollecito> solleciti = datiSollecitoHome.findBy(false);
+	List<DatiSollecito> sollecitiAnswer = new ArrayList<DatiSollecito>();
+	for (DatiSollecito sollecito : solleciti) {
+	    String dataStampaString = sollecito.getDataStampa();
+	    Date dataStampa = Converter.convertData(dataStampaString);
+	    Calendar gc = GregorianCalendar.getInstance();
+	    gc.add(Calendar.DAY_OF_MONTH, -60);
+	    if (dataStampa.before(gc.getTime())) {
+		sollecitiAnswer.add(sollecito);
+	    }
+	}
+	return sollecitiAnswer;
+    }
+
+    public boolean existPraticheInScadenza() {
+	List<DatiSollecito> solleciti = datiSollecitoHome.findBy(false);
+	for (DatiSollecito sollecito : solleciti) {
+	    String dataStampaString = sollecito.getDataStampa();
+	    Date dataStampa = Converter.convertData(dataStampaString);
+	    Calendar gc = GregorianCalendar.getInstance();
+	    gc.add(Calendar.DAY_OF_MONTH, -60);
+	    if (dataStampa.before(gc.getTime())) {
+		System.out.println("pratiche in scadenza");
+		return true;
+	    }
+	}
+	return false;
     }
 }

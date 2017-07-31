@@ -38,7 +38,7 @@ public class Converter {
     }
 
     public static Date convertData(String dataDomanda) {
-	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	try {
 	    return dateFormat.parse(dataDomanda);
 	} catch (ParseException e) {

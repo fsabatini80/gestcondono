@@ -42,3 +42,4 @@
 	<a href="<c:url value="ricercaPratica.htm" />" title="INDIETRO">
 		Indietro </a>
 </div>
+<jsp:include page="tpl/footer.jsp" />

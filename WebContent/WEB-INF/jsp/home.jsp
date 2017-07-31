@@ -19,6 +19,6 @@
 		<jsp:include page="table/utentiList.jsp"></jsp:include>
 	</div>
 </div>
-
+<jsp:include page="tpl/footer.jsp" />
 </body>
 </html>

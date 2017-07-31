@@ -22,6 +22,6 @@
 	</a>
 </div>
 
-
+<jsp:include page="tpl/footer.jsp" />
 </body>
 </html>

@@ -157,12 +157,16 @@
 <title>Gestione Condoni</title>
 </head>
 <body onkeypress="textToUpperCase();" onkeyup="textToUpperCase();">
-	<div id="barra" class="ui-widget-header" align="right">
+	<div id="barra" class="ui-widget-header" style="text-align: right">
 
 		<h3>
+			<!-- <img title="logo" src="img/logoCondono.png"
+				style="position: absolute; left: 5px; top: 5px" alt="logo"
+				height="85px"> -->
 			Benvenuto
 			<sec:authentication property="principal.username" />
-			<img title="${utenti.nome} ${utenti.cognome}" src="img/32/user.png">
+			<img align="right" title="${utenti.nome} ${utenti.cognome}"
+				src="img/32/user.png">
 			<sec:authorize ifAnyGranted="ROLE_ANONYMOUS">
 				<a href="<c:url value="/j_spring_security_logout"/>">Login</a>
 			</sec:authorize>
@@ -174,8 +178,9 @@
 	<br />
 	<div id="barraMenu" class="ui-widget-header">
 		<a href="<c:url value="home.htm" />">Home</a> <a
-			href="<c:url value="homePratica.htm" />"> Pratiche</a> <a href="#">Scadenze</a>
-		<a href="sollecitiListAll.htm">Solleciti</a>
+			href="<c:url value="homePratica.htm" />"> Pratiche</a> <a
+			href="scadenzeListAll.htm">Scadenze</a> <a
+			href="sollecitiListAll.htm">Solleciti</a>
 		<sec:authorize access="hasRole('superadmin')">
 			<a href="stampe.htm">Stampe</a>
 		</sec:authorize>

@@ -36,6 +36,14 @@
 			<td>${abusiTot}</td>
 		</tr>
 		<tr>
+			<td>Domande scadute</td>
+			<td>n.</td>
+			<td>${scaduteL47}</td>
+			<td>${scaduteL724}</td>
+			<td>${scaduteL326}</td>
+			<td>${scaduteTot}</td>
+		</tr>
+		<tr>
 			<td>Domande sollecitate</td>
 			<td>n.</td>
 			<td>${sollecitateL47}</td>

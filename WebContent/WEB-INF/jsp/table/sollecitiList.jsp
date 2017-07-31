@@ -39,11 +39,11 @@
 					<td>${sollecito.protocolloSoll2}</td>
 					<td>${sollecito.dataPagamento}</td>
 					<td><a
-						href="<c:url value="stampaSollecito1.htm?idpratica=${sollecito.iddatiPratica}&idabuso=${sollecito.idAbuso}&progressivo=${sollecito.progressivoAbuso}" />"
+						href="<c:url value="stampaSollecito1.htm?idpratica=${sollecito.iddatiPratica.iddatipratica}&idabuso=${sollecito.idAbuso}&progressivo=${sollecito.progressivoAbuso}" />"
 						title="stampa primo sollecito"><img
 							src="img/24/hand_yellow_card.png" title="stampa primo sollecito"></a></td>
 					<td><a
-						href="<c:url value="stampaSollecito2.htm?idpratica=${sollecito.iddatiPratica}&idabuso=${sollecito.idAbuso}&progressivo=${sollecito.progressivoAbuso}" />"
+						href="<c:url value="stampaSollecito2.htm?idpratica=${sollecito.iddatiPratica.iddatipratica}&idabuso=${sollecito.idAbuso}&progressivo=${sollecito.progressivoAbuso}" />"
 						title="stampa secondo sollecito"><img
 							src="img/24/hand_red_card.png" title="stampa secondo sollecito"></a></td>
 					<td><a

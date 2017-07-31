@@ -3,6 +3,7 @@ package it.soft.dao;
 import it.soft.domain.DatiSollecito;
 import it.soft.domain.Datiabuso;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
@@ -124,13 +125,13 @@ public class DatiSollecitoHome {
     }
 
     @SuppressWarnings("unchecked")
-    public List<DatiSollecito> findAll(BigInteger idPratica) {
+    public List<DatiSollecito> findAll(BigDecimal idPratica) {
 	try {
 	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
 		    .getCurrentSession();
 	    sess.beginTransaction();
 	    Criteria cr = sess.createCriteria(DatiSollecito.class);
-	    cr.add(Restrictions.eq("iddatiPratica", idPratica));
+	    cr.add(Restrictions.eq("iddatiPratica.iddatipratica", idPratica));
 	    List<DatiSollecito> results = cr.list();
 	    return results;
 	} catch (RuntimeException re) {
@@ -227,6 +228,21 @@ public class DatiSollecitoHome {
 	    query.setParameter("pagato", pagato);
 	    query.setParameter("idLeggeCondono", idLeggeCondono);
 	    return query.list();
+	} catch (RuntimeException re) {
+	    log.error("findBy failed", re);
+	    throw re;
+	}
+    }
+
+    public List<DatiSollecito> findBy(Boolean pagato) {
+	try {
+	    org.hibernate.Session sess = hibernateTemplate.getSessionFactory()
+		    .getCurrentSession();
+	    sess.beginTransaction();
+	    Criteria cr = sess.createCriteria(DatiSollecito.class);
+	    cr.add(Restrictions.eq("pagato", pagato));
+	    List<DatiSollecito> results = cr.list();
+	    return results;
 	} catch (RuntimeException re) {
 	    log.error("findBy failed", re);
 	    throw re;
