@@ -27,127 +27,128 @@ import org.springframework.stereotype.Service;
 @Service
 public class DatiSollecitiService {
 
-    @Autowired
-    DatiSollecitoHome datiSollecitoHome;
-    @Autowired
-    AuthenticationUtils authenticationUtils;
-    @Autowired
-    DatiPraticaHome datiPraticaHome;
+	@Autowired
+	DatiSollecitoHome datiSollecitoHome;
+	@Autowired
+	AuthenticationUtils authenticationUtils;
+	@Autowired
+	DatiPraticaHome datiPraticaHome;
 
-    public DatiSollecito save(DatiSollecitoPojo pojo) {
-	DatiSollecito datiSollecito = new DatiSollecito();
-	try {
-	    ConvertUtilsBean convertUtilsBean = BeanUtilsBean.getInstance()
-		    .getConvertUtils();
-	    convertUtilsBean.register(false, true, -1);
-	    org.apache.commons.beanutils.BeanUtils.copyProperties(
-		    datiSollecito, pojo);
-	} catch (IllegalAccessException e) {
-	    e.printStackTrace();
-	} catch (InvocationTargetException e) {
-	    e.printStackTrace();
-	}
-	datiSollecitoHome.persist(datiSollecito);
-	return datiSollecito;
-    }
-
-    public DatiSollecitoPojo findById(String id) {
-	DatiSollecito source = datiSollecitoHome.findById(BigInteger
-		.valueOf(Integer.parseInt(id)));
-	DatiSollecitoPojo target = new DatiSollecitoPojo();
-	try {
-	    BeanUtils.copyProperties(target, source);
-	} catch (IllegalAccessException e) {
-	    e.printStackTrace();
-	} catch (InvocationTargetException e) {
-	    e.printStackTrace();
-	}
-	return target;
-    }
-
-    public List<DatiSollecito> findAll(String idPratica) {
-	BigDecimal idPratBD = BigDecimal.valueOf(Integer.valueOf(idPratica));
-	return datiSollecitoHome.findAll(idPratBD);
-    }
-
-    public List<DatiSollecito> findAll() {
-	return datiSollecitoHome.findAll();
-    }
-
-    public void remove(String id) {
-	DatiSollecito source = datiSollecitoHome.findById(BigInteger
-		.valueOf(Integer.parseInt(id)));
-	datiSollecitoHome.remove(source);
-
-    }
-
-    public DatiSollecito findAll(String idpratica, String progressivo) {
-	BigInteger idPratBD = BigInteger.valueOf(Integer.valueOf(idpratica));
-	Integer progressivoInt = Integer.valueOf(progressivo);
-	List<DatiSollecito> lista = datiSollecitoHome.findAll(idPratBD,
-		progressivoInt);
-	DatiSollecito datiSollecito = new DatiSollecito();
-	if (lista != null && !lista.isEmpty()) {
-	    datiSollecito = lista.get(0);
-	}
-	return datiSollecito;
-
-    }
-
-    public Date getDataStampa(String idpratica, String progressivo) {
-	DatiSollecito sollecito = findAll(idpratica, progressivo);
-	if (StringUtils.isEmpty(sollecito.getDataStampa())) {
-	    return new Date();
-	}
-	return Converter.convertData(sollecito.getDataStampa());
-    }
-
-    public void saveDataStampa(String idpratica, String idabuso,
-	    String progressivo) {
-	DatiSollecito sollecito = findAll(idpratica, progressivo);
-	sollecito.setDataStampa(Converter.dateToString(new Date()));
-	if (sollecito.getIddatiSollecito() == null) {
-	    sollecito.setIddatiPratica(datiPraticaHome.findById(BigDecimal
-		    .valueOf(Integer.parseInt(idpratica))));
-	    sollecito.setProgressivoAbuso(Converter.stringToint(progressivo));
-	    sollecito.setIdAbuso(Converter.stringToBigInteger(idabuso));
-	    Utenti user = authenticationUtils.getUtente();
-	    sollecito.setTecnicoIncaricato(user.getNome().concat(" ")
-		    .concat(user.getCognome()));
-	    datiSollecitoHome.persist(sollecito);
-	} else {
-	    datiSollecitoHome.merge(sollecito);
+	public DatiSollecito save(DatiSollecitoPojo pojo) {
+		DatiSollecito datiSollecito = new DatiSollecito();
+		try {
+			ConvertUtilsBean convertUtilsBean = BeanUtilsBean.getInstance()
+					.getConvertUtils();
+			convertUtilsBean.register(false, true, -1);
+			org.apache.commons.beanutils.BeanUtils.copyProperties(
+					datiSollecito, pojo);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		datiSollecitoHome.persist(datiSollecito);
+		return datiSollecito;
 	}
 
-    }
-
-    public List<DatiSollecito> getPraticheInScadenza() {
-	List<DatiSollecito> solleciti = datiSollecitoHome.findBy(false);
-	List<DatiSollecito> sollecitiAnswer = new ArrayList<DatiSollecito>();
-	for (DatiSollecito sollecito : solleciti) {
-	    String dataStampaString = sollecito.getDataStampa();
-	    Date dataStampa = Converter.convertData(dataStampaString);
-	    Calendar gc = GregorianCalendar.getInstance();
-	    gc.add(Calendar.DAY_OF_MONTH, -60);
-	    if (dataStampa.before(gc.getTime())) {
-		sollecitiAnswer.add(sollecito);
-	    }
+	public DatiSollecitoPojo findById(String id) {
+		DatiSollecito source = datiSollecitoHome.findById(BigInteger
+				.valueOf(Integer.parseInt(id)));
+		DatiSollecitoPojo target = new DatiSollecitoPojo();
+		try {
+			BeanUtils.copyProperties(target, source);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return target;
 	}
-	return sollecitiAnswer;
-    }
 
-    public boolean existPraticheInScadenza() {
-	List<DatiSollecito> solleciti = datiSollecitoHome.findBy(false);
-	for (DatiSollecito sollecito : solleciti) {
-	    String dataStampaString = sollecito.getDataStampa();
-	    Date dataStampa = Converter.convertData(dataStampaString);
-	    Calendar gc = GregorianCalendar.getInstance();
-	    gc.add(Calendar.DAY_OF_MONTH, -60);
-	    if (dataStampa.before(gc.getTime())) {
-		System.out.println("pratiche in scadenza");
-		return true;
-	    }
+	public List<DatiSollecito> findAll(String idPratica) {
+		BigDecimal idPratBD = BigDecimal.valueOf(Integer.valueOf(idPratica));
+		return datiSollecitoHome.findAll(idPratBD);
 	}
-	return false;
-    }
+
+	public List<DatiSollecito> findAll() {
+		return datiSollecitoHome.findAll();
+	}
+
+	public void remove(String id) {
+		DatiSollecito source = datiSollecitoHome.findById(BigInteger
+				.valueOf(Integer.parseInt(id)));
+		datiSollecitoHome.remove(source);
+
+	}
+
+	public DatiSollecito findAll(String idpratica, String progressivo) {
+		BigDecimal idPratBD = BigDecimal.valueOf(Integer.valueOf(idpratica));
+		Integer progressivoInt = Integer.valueOf(progressivo);
+		List<DatiSollecito> lista = datiSollecitoHome.findAll(
+				datiPraticaHome.findById(idPratBD), progressivoInt);
+		DatiSollecito datiSollecito = new DatiSollecito();
+		if (lista != null && !lista.isEmpty()) {
+			datiSollecito = lista.get(0);
+		}
+		return datiSollecito;
+
+	}
+
+	public Date getDataStampa(String idpratica, String progressivo) {
+		DatiSollecito sollecito = findAll(idpratica, progressivo);
+		if (StringUtils.isEmpty(sollecito.getDataStampa())) {
+			return new Date();
+		}
+		return Converter.convertData(sollecito.getDataStampa());
+	}
+
+	public void saveDataStampa(String idpratica, String idabuso,
+			String progressivo) {
+		DatiSollecito sollecito = findAll(idpratica, progressivo);
+		sollecito.setDataStampa(Converter.dateToString(new Date()));
+		if (sollecito.getIddatiSollecito() == null) {
+			sollecito.setIddatiPratica(datiPraticaHome.findById(BigDecimal
+					.valueOf(Integer.parseInt(idpratica))));
+			sollecito.setProgressivoAbuso(Converter.stringToint(progressivo));
+			sollecito.setIdAbuso(Converter.stringToBigInteger(idabuso));
+			sollecito.setPagato(false);
+			Utenti user = authenticationUtils.getUtente();
+			sollecito.setTecnicoIncaricato(user.getNome().concat(" ")
+					.concat(user.getCognome()));
+			datiSollecitoHome.persist(sollecito);
+		} else {
+			datiSollecitoHome.merge(sollecito);
+		}
+
+	}
+
+	public List<DatiSollecito> getPraticheInScadenza() {
+		List<DatiSollecito> solleciti = datiSollecitoHome.findBy(false);
+		List<DatiSollecito> sollecitiAnswer = new ArrayList<DatiSollecito>();
+		for (DatiSollecito sollecito : solleciti) {
+			String dataStampaString = sollecito.getDataStampa();
+			Date dataStampa = Converter.convertData(dataStampaString);
+			Calendar gc = GregorianCalendar.getInstance();
+			gc.add(Calendar.DAY_OF_MONTH, -60);
+			if (dataStampa.before(gc.getTime())) {
+				sollecitiAnswer.add(sollecito);
+			}
+		}
+		return sollecitiAnswer;
+	}
+
+	public boolean existPraticheInScadenza() {
+		List<DatiSollecito> solleciti = datiSollecitoHome.findBy(false);
+		for (DatiSollecito sollecito : solleciti) {
+			String dataStampaString = sollecito.getDataStampa();
+			Date dataStampa = Converter.convertData(dataStampaString);
+			Calendar gc = GregorianCalendar.getInstance();
+			gc.add(Calendar.DAY_OF_MONTH, -60);
+			if (dataStampa.before(gc.getTime())) {
+				System.out.println("pratiche in scadenza");
+				return true;
+			}
+		}
+		return false;
+	}
 }
