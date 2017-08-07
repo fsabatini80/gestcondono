@@ -25,6 +25,11 @@
 			<td><form:errors path="dataStampa" cssClass="ui-state-error" /></td>
 		</tr>
 		<tr>
+			<td>Data ricevuta:</td>
+			<td><form:input path="dataRicevuta" id="datepicker4" /></td>
+			<td><form:errors path="dataRicevuta" cssClass="ui-state-error" /></td>
+		</tr>
+		<tr>
 			<td>Protocollo primo sollecito:</td>
 			<td><form:input path="protocolloSoll1" /> <form:hidden
 					path="iddatiPratica" /> <form:hidden path="iddatiSollecito" /></td>
@@ -59,7 +64,7 @@
 		</tr>
 		<tr>
 			<td>Tecnico incaricato:</td>
-			<td><form:input path="tecnicoIncaricato" readonly="true"/></td>
+			<td><form:input path="tecnicoIncaricato" readonly="true" /></td>
 			<td><form:errors path="tecnicoIncaricato"
 					cssClass="ui-state-error" /></td>
 		</tr>

@@ -81,6 +81,12 @@
 			changeMonth : true,
 			yearRange : "1900:2026"
 		});
+		$("#datepicker4").datepicker({
+			dateFormat : "dd-mm-yy",
+			changeYear : true,
+			changeMonth : true,
+			yearRange : "1900:2026"
+		});
 
 		$("#effect").hide();
 		$("#effect1").hide();

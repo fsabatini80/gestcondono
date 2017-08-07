@@ -19,6 +19,7 @@ public class DatiSollecitoPojo implements Serializable {
     private String protocolloSoll2;
     private String tecnicoIncaricato;
     private String dataStampa;
+    private String dataRicevuta;
 
     public DatiSollecitoPojo() {
     }
@@ -117,6 +118,14 @@ public class DatiSollecitoPojo implements Serializable {
 
     public void setDataStampa(String dataStampa) {
 	this.dataStampa = dataStampa;
+    }
+
+    public String getDataRicevuta() {
+	return dataRicevuta;
+    }
+
+    public void setDataRicevuta(String dataRicevuta) {
+	this.dataRicevuta = dataRicevuta;
     }
 
 }

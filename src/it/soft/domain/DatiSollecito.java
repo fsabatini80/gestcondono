@@ -33,6 +33,9 @@ public class DatiSollecito implements Serializable {
     private String protocolloSoll2;
     private String tecnicoIncaricato;
     private String dataStampa;
+    private String dataRicevuta;
+    
+    
 
     public DatiSollecito() {
     }
@@ -145,6 +148,15 @@ public class DatiSollecito implements Serializable {
 
     public void setDataStampa(String dataStampa) {
 	this.dataStampa = dataStampa;
+    }
+
+    @Column(name="data_ricevuta")
+    public String getDataRicevuta() {
+	return dataRicevuta;
+    }
+
+    public void setDataRicevuta(String dataRicevuta) {
+	this.dataRicevuta = dataRicevuta;
     }
 
 }
