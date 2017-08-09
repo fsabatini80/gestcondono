@@ -19,25 +19,30 @@
 	<table id="example10" class="display">
 		<thead>
 			<tr>
-				<th>Sott.</th>
+				<th>Numero Protocollo</th>
+				<th>Sot</th>
+				<th>Legge della Pratica</th>
+				<th>Protocollo Sollecito1</th>
+				<th>Data Protocollo Sollecito 1</th>
+				<th>Protocollo Sollecito 2</th>
+				<th>Data Protocollo Sollecito 2</th>
 				<th>Tecnico Incaricato</th>
-				<th>Numero Protocollo 1</th>
-				<th>Numero Protocollo 2</th>
-				<th>Data Pagamento</th>
-				<th>soll. 1</th>
-				<th>soll. 2</th>
+				<th>Stampa Sollecito 1</th>
+				<th>Stampa Sollecito 2</th>
 				<th>mod.</th>
-				<!-- th>canc.</th> -->
 			</tr>
 		</thead>
 		<tbody align="center">
 			<c:forEach var="sollecito" items="${solleciti}">
 				<tr>
+					<td>${sollecito.iddatiPratica.numeroProtocollo}</td>
 					<td>${sollecito.progressivoAbuso}</td>
-					<td>${sollecito.tecnicoIncaricato}</td>
+					<td>${sollecito.iddatiPratica.leggeCondono.leggeNumero}</td>
 					<td>${sollecito.protocolloSoll1}</td>
+					<td>${sollecito.dataInvioSoll1}</td>
 					<td>${sollecito.protocolloSoll2}</td>
-					<td>${sollecito.dataPagamento}</td>
+					<td>${sollecito.dataInvioSoll2}</td>
+					<td>${sollecito.tecnicoIncaricato}</td>
 					<td><a
 						href="<c:url value="stampaSollecito1.htm?idpratica=${sollecito.iddatiPratica.iddatipratica}&idabuso=${sollecito.idAbuso}&progressivo=${sollecito.progressivoAbuso}" />"
 						title="stampa primo sollecito"><img
@@ -50,10 +55,6 @@
 						href="<c:url value="modificaSollecito.htm?idSollecito=${sollecito.iddatiSollecito}" />"
 						title="modifica sollecito"><img src="img/24/edit.png"
 							title="modifica sollecito"></a></td>
-					<!-- <td><a
-						href="<c:url value="removeSollecito.htm?idSollecito=${sollecito.iddatiSollecito}" />"
-						title="cancella sollecito"><img src="img/24/delete.png"
-							title="cancella sollecito"></a></td> -->
 				</tr>
 			</c:forEach>
 		</tbody>
