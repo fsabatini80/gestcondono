@@ -6,6 +6,7 @@
 <form:form action="salvaSollecito.htm" commandName="datiSollecitoPojo"
 	cssClass="ui-widget">
 	<form:errors path="*" cssClass="errorblock" element="div" />
+	<form:hidden path="${idAbuso}"/>
 	<h2
 		class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons">Dati
 		Sollecito</h2>

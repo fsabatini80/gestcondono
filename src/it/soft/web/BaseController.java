@@ -5,11 +5,13 @@ import it.soft.service.DatiSollecitiService;
 import it.soft.service.MailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@Scope("session")
 public class BaseController {
 
     @Autowired

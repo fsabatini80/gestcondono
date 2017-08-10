@@ -47,7 +47,7 @@
 						title="stampa secondo sollecito"><img
 							src="img/24/hand_red_card.png" title="stampa secondo sollecito"></a></td>
 					<td><a
-						href="<c:url value="modificaSollecito.htm?idSollecito=${sollecito.iddatiSollecito}" />"
+						href="<c:url value="modificaSollecito.htm?idSollecito=${sollecito.iddatiSollecito}&idabuso=${sollecito.idAbuso}&progressivo=${sollecito.progressivoAbuso}" />"
 						title="modifica sollecito"><img src="img/24/edit.png"
 							title="modifica sollecito"></a></td>
 				</tr>

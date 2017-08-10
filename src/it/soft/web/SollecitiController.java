@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.Errors;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@Scope("session")
 public class SollecitiController extends BaseController {
 
     @Autowired
@@ -136,6 +138,7 @@ public class SollecitiController extends BaseController {
 	DatiSollecitoPojo pojo = datiSollecitiService.findById(id);
 	this.idPratica = String.valueOf(pojo.getIddatiPratica()
 		.getIddatipratica());
+	this.idAbuso = pojo.getIdAbuso();
 	initSollecito(model);
 	model.addAttribute("datiSollecitoPojo", pojo);
 	return new ModelAndView(view, model);
